@@ -10,7 +10,7 @@ Kubernetes and your code.
 
 ## Documentation
 
-Docs are available at https://docs.amphitheatre.app/cli - we are still working
+Docs are available at https://docs.amphitheatre.app/cli/overview - we are still working
 on refining it and contributions are welcome!
 
 ## Contributing
