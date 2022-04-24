@@ -16,7 +16,7 @@ on refining it and contributions are welcome!
 ## Contributing
 
 If anything feels off, or if you feel that some functionality is missing, please
-check out the [contributing page](https://docs.amphitheatre.app/contributing).
+check out the [contributing page](https://docs.amphitheatre.app/contributing/overview/).
 There you will find instructions for sharing your feedback, building the tool
 locally, and submitting pull requests to the project.
 
