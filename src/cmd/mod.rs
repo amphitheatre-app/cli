@@ -113,7 +113,38 @@ pub fn build() -> Command<'static> {
             .arg(Arg::new("shell").takes_value(true).required(true).help("bash or zsh"))
             .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
         )
-        .subcommand(Command::new("config").about("Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)"))
+        .subcommand(Command::new("config")
+            .about("Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)")
+            .arg_required_else_help(true)
+            .subcommand(Command::new("list")
+                .about("List all values set in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("all").short('a').long("all").takes_value(false).help("Show values for all kubecontexts"),
+                    Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
+                    Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
+                ])
+                .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            )
+            .subcommand(Command::new("set")
+                .about("Set a value in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
+                    Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
+                    Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
+                ])
+                .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            )
+            .subcommand(Command::new("unset")
+                .about("Unset a value in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
+                    Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
+                    Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
+                ])
+                .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            )
+            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        )
         .subcommand(Command::new("debug").about("Run a pipeline in debug mode"))
         .subcommand(Command::new("deploy").about("Deploy pre-built artifacts"))
         .subcommand(Command::new("dev").about("Run a pipeline in development mode"))
@@ -137,4 +168,5 @@ pub fn build() -> Command<'static> {
         .subcommand(Command::new("survey").about("Opens a web browser to fill out the Amphitheatre survey"))
         .subcommand(Command::new("test").about("Run tests against your built application images"))
         .subcommand(Command::new("version").about("Print the version information"))
+        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
 }
