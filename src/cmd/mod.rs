@@ -502,7 +502,17 @@ pub fn build() -> Command<'static> {
             ])
             .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
         )
-        .subcommand(Command::new("options").about("Outpu a list of global command-line options (applies to all commands)"))
+        .subcommand(Command::new("options")
+            .about("Outpu a list of global command-line options (applies to all commands)")
+            .args(&[
+                Arg::new("color").long("color").default_value("34").help("Specify the default output color in ANSI escape codes"),
+                Arg::new("interactive").long("interactive").takes_value(false).help("Allow user prompts for more information"),
+                Arg::new("timestamps").long("timestamps").takes_value(false).help("Print timestamps in logs"),
+                Arg::new("update-check").long("update-check").takes_value(false).help("Check for a more recent version of Amphitheatre"),
+                Arg::new("verbosity").short('v').long("verbosity").default_value("warning").help("Log level: one of [panic fatal error warning info debug trace]"),
+               
+            ])
+        )
         .subcommand(Command::new("render").about("Perform all image builds, and output rendered Kubernetes manifests"))
         .subcommand(Command::new("run").about("Run a pipeline"))
         .subcommand(Command::new("schema").about("List JSON schemas used to validate .amp.yaml configuration"))
