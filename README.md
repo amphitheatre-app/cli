@@ -10,13 +10,13 @@ Kubernetes and your code.
 
 ## Documentation
 
-Docs are available at https://docs.amphitheatre.app/cli/overview - we are still working
+Docs are available at https://docs.amphitheatre.app/cli/ - we are still working
 on refining it and contributions are welcome!
 
 ## Contributing
 
 If anything feels off, or if you feel that some functionality is missing, please
-check out the [contributing page](https://docs.amphitheatre.app/contributing/overview/).
+check out the [contributing page](https://docs.amphitheatre.app/contributing/).
 There you will find instructions for sharing your feedback, building the tool
 locally, and submitting pull requests to the project.
 
