@@ -16,7 +16,7 @@ use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("options")
-        .about("Outpu a list of global command-line options (applies to all commands)")
+        .about("Output a list of global command-line options (applies to all commands)")
         .args(&[
             Arg::new("color").long("color").default_value("34").help("Specify the default output color in ANSI escape codes"),
             Arg::new("interactive").long("interactive").takes_value(false).help("Allow user prompts for more information"),
