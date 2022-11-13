@@ -1,5 +1,7 @@
 use clap::{Arg, Command};
 
+mod version;
+
 pub fn build() -> Command<'static> {
     Command::new("amp")
         .about("Amphitheatre's offcial command line tool")
@@ -676,10 +678,6 @@ pub fn build() -> Command<'static> {
             ])
             .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
         )
-        .subcommand(Command::new("version")
-            .about("Print the version information")
-            .arg(Arg::new("output").short('o').long("output").default_value("{{.Version}}").help("Format output"))
-            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
-        )
+        .subcommand(version::build())
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
 }
