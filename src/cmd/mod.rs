@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::Command;
+use clap::{App, ArgMatches, Command};
 
 mod apply;
 mod build;
@@ -33,54 +33,43 @@ mod survey;
 mod test;
 mod version;
 
+lazy_static::lazy_static! {
+    static ref COMMANDS: Vec<(&'static str, fn() -> App<'static>, for<'r> fn(&'r ArgMatches))> = vec![
+        ("apply", apply::build, apply::execute),
+        ("build", build::build, build::execute),
+        ("clean", clean::build, clean::execute),
+        ("completion", completion::build, completion::execute),
+        ("config", config::build, config::execute),
+        ("debug", debug::build, debug::execute),
+        ("deploy", deploy::build, deploy::execute),
+        ("dev", dev::build, dev::execute),
+        ("diagnose", diagnose::build, diagnose::execute),
+        ("fix", fix::build, fix::execute),
+        ("init", init::build, init::execute),
+        ("options", options::build, options::execute),
+        ("render", render::build, render::execute),
+        ("run", run::build, run::execute),
+        ("schema", schema::build, schema::execute),
+        ("survey", survey::build, survey::execute),
+        ("test", test::build, test::execute),
+        ("version", version::build, version::execute),
+    ];
+}
+
 pub fn build() -> Command<'static> {
     Command::new("amp")
         .about("Amphitheatre's offcial command line tool")
         .arg_required_else_help(true)
-
-        .subcommand(apply::build())
-        .subcommand(build::build())
-        .subcommand(clean::build())
-        .subcommand(completion::build())
-        .subcommand(config::build())
-        .subcommand(debug::build())
-        .subcommand(deploy::build())
-        .subcommand(dev::build())
-        .subcommand(diagnose::build())
-        .subcommand(fix::build())
-        .subcommand(init::build())
-        .subcommand(options::build())
-        .subcommand(render::build())
-        .subcommand(run::build())
-        .subcommand(schema::build())
-        .subcommand(survey::build())
-        .subcommand(test::build())
-        .subcommand(version::build())
+        .subcommands(COMMANDS.iter().map(move |(_, build, _)| build()).collect::<Vec<App>>())
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
 }
 
 pub fn execute() {
     let matches = build().get_matches();
 
-    match matches.subcommand() {
-        Some(("apply", args)) => apply::execute(args),
-        Some(("build", args)) => build::execute(args),
-        Some(("clean", args)) => clean::execute(args),
-        Some(("completion", args)) => completion::execute(args),
-        Some(("config", args)) => config::execute(args),
-        Some(("debug", args)) => debug::execute(args),
-        Some(("deploy", args)) => deploy::execute(args),
-        Some(("dev", args)) => dev::execute(args),
-        Some(("diagnose", args)) => diagnose::execute(args),
-        Some(("fix", args)) => fix::execute(args),
-        Some(("init", args)) => init::execute(args),
-        Some(("options", args)) => options::execute(args),
-        Some(("render", args)) => render::execute(args),
-        Some(("run", args)) => run::execute(args),
-        Some(("schema", args)) => schema::execute(args),
-        Some(("survey", args)) => survey::execute(args),
-        Some(("test", args)) => test::execute(args),
-        Some(("version", args)) => version::execute(args),
-        _ => unreachable!(),
+    if let Some((name, args)) = matches.subcommand() {
+        if let Some((_, _, execute)) = COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
+            return execute(args);
+        }
     }
 }
