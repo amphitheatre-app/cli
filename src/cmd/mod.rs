@@ -56,12 +56,14 @@ lazy_static::lazy_static! {
     ];
 }
 
+const AFTER_HELP_STRING: &'static str = "Use \"amp options\" for a list of global command-line options (applies to all commands).";
+
 pub fn build() -> Command<'static> {
     Command::new("amp")
         .about("Amphitheatre's offcial command line tool")
         .arg_required_else_help(true)
         .subcommands(COMMANDS.iter().map(move |(_, build, _)| build()).collect::<Vec<App>>())
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(AFTER_HELP_STRING)
 }
 
 pub fn execute() {

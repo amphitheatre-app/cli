@@ -32,7 +32,7 @@ pub fn build() -> Command<'static> {
                 locally. `never` means the user takes responsibility for updating remote repositories."),
             Arg::new("version").long("version").default_value("amp/v1").help("Target schema version to upgrade to")
         ])
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

@@ -36,7 +36,7 @@ pub fn build() -> Command<'static> {
                 locally. `never` means the user takes responsibility for updating remote repositories."),
             Arg::new("yaml-only").long("yaml-only").takes_value(false).help("Only prints the effective .amp.yaml configuration")
         ])
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

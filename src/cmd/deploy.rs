@@ -72,7 +72,7 @@ pub fn build() -> Command<'static> {
             Arg::new("wait-for-deletions-max").long("wait-for-deletions-max").default_value("1m0s")
                 .help("Max duration to wait for pending deletions"),
         ])
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

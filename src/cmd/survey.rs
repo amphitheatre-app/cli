@@ -19,7 +19,7 @@ pub fn build() -> Command<'static> {
         .about("Opens a web browser to fill out the Amphitheatre survey")
         .arg(Arg::new("id").long("id").default_value("hats").help("Survey ID for survey command to open"))
         .arg_required_else_help(true)
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

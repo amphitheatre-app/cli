@@ -20,9 +20,9 @@ pub fn build() -> Command<'static> {
         .subcommand(Command::new("get")
             .about("Print a given .amp.yaml's json schema")
             .arg(Arg::new("options").takes_value(true))
-            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            .after_help(super::AFTER_HELP_STRING)
         )
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

@@ -89,7 +89,7 @@ pub fn build() -> Command<'static> {
                 .help("Choose which artifacts to watch. Artifacts with image names that contain \
                     the expression will be watched only. Default is to watch sources for all artifacts")
         ])
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

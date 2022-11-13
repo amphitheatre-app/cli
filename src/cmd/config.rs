@@ -25,7 +25,7 @@ pub fn build() -> Command<'static> {
                 Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
                 Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
             ])
-            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            .after_help(super::AFTER_HELP_STRING)
         )
         .subcommand(Command::new("set")
             .about("Set a value in the global Amphitheatre config")
@@ -34,7 +34,7 @@ pub fn build() -> Command<'static> {
                 Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
                 Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
             ])
-            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            .after_help(super::AFTER_HELP_STRING)
         )
         .subcommand(Command::new("unset")
             .about("Unset a value in the global Amphitheatre config")
@@ -43,9 +43,9 @@ pub fn build() -> Command<'static> {
                 Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
                 Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
             ])
-            .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+            .after_help(super::AFTER_HELP_STRING)
         )
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {

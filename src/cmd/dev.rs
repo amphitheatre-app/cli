@@ -90,7 +90,7 @@ pub fn build() -> Command<'static> {
                     the expression will be watched only. Default is to watch sources for all artifacts"),
             Arg::new("watch-poll-interval").short('i').long("watch-poll-interval").default_value("1000").help("Interval (in ms) between two checks for file changes")
         ])
-        .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+        .after_help(super::AFTER_HELP_STRING)
 }
 
 pub fn execute(args: &ArgMatches) {
