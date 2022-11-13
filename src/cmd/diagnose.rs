@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("diagnose")
@@ -37,4 +37,8 @@ pub fn build() -> Command<'static> {
             Arg::new("yaml-only").long("yaml-only").takes_value(false).help("Only prints the effective .amp.yaml configuration")
         ])
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }

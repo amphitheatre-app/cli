@@ -58,3 +58,29 @@ pub fn build() -> Command<'static> {
         .subcommand(version::build())
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
 }
+
+pub fn execute() {
+    let matches = build().get_matches();
+
+    match matches.subcommand() {
+        Some(("apply", args)) => apply::execute(args),
+        Some(("build", args)) => build::execute(args),
+        Some(("clean", args)) => clean::execute(args),
+        Some(("completion", args)) => completion::execute(args),
+        Some(("config", args)) => config::execute(args),
+        Some(("debug", args)) => debug::execute(args),
+        Some(("deploy", args)) => deploy::execute(args),
+        Some(("dev", args)) => dev::execute(args),
+        Some(("diagnose", args)) => diagnose::execute(args),
+        Some(("fix", args)) => fix::execute(args),
+        Some(("init", args)) => init::execute(args),
+        Some(("options", args)) => options::execute(args),
+        Some(("render", args)) => render::execute(args),
+        Some(("run", args)) => run::execute(args),
+        Some(("schema", args)) => schema::execute(args),
+        Some(("survey", args)) => survey::execute(args),
+        Some(("test", args)) => test::execute(args),
+        Some(("version", args)) => version::execute(args),
+        _ => unreachable!(),
+    }
+}

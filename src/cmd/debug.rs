@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("debug")
@@ -87,4 +87,8 @@ pub fn build() -> Command<'static> {
             Arg::new("watch-poll-interval").short('i').long("watch-poll-interval").default_value("1000").help("Interval (in ms) between two checks for file changes")
         ])
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }

@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("version")
         .about("Print the version information")
         .arg(Arg::new("output").short('o').long("output").default_value("{{.Version}}").help("Format output"))
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(_args: &ArgMatches) {
+    println!("amp 0.1.0")
 }

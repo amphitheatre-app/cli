@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("options")
@@ -24,4 +24,8 @@ pub fn build() -> Command<'static> {
             Arg::new("update-check").long("update-check").takes_value(false).help("Check for a more recent version of Amphitheatre"),
             Arg::new("verbosity").short('v').long("verbosity").default_value("warning").help("Log level: one of [panic fatal error warning info debug trace]"),
         ])
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }

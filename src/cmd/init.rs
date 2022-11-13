@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("init")
@@ -43,4 +43,8 @@ pub fn build() -> Command<'static> {
                 locally. `never` means the user takes responsibility for updating remote repositories."),
         ])
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("fix")
@@ -33,4 +33,8 @@ pub fn build() -> Command<'static> {
             Arg::new("version").long("version").default_value("amp/v1").help("Target schema version to upgrade to")
         ])
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }

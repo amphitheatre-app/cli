@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, Command};
+use clap::{Arg, ArgMatches, Command};
 
 pub fn build() -> Command<'static> {
     Command::new("completion")
         .about("Output shell completion for the given shell (bash or zsh)")
         .arg(Arg::new("shell").takes_value(true).required(true).help("bash or zsh"))
         .after_help("Use \"amp options\" for a list of global command-line options (applies to all commands).")
+}
+
+pub fn execute(args: &ArgMatches) {
+    todo!()
 }
