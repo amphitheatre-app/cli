@@ -1,15 +1,9 @@
 [package]
-name = "amp"
+name = "errors"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[workspace]
-members = ["components/*"]
-
 [dependencies]
-clap = "3.1.11"
-lazy_static = "1.4.0"
-
-errors = { path = "components/errors" }
+anyhow = "1.0.66"
