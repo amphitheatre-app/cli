@@ -12,13 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgMatches, Command};
+use std::path::Path;
+use clap::{Arg, ArgAction, ArgMatches, Command};
 use errors::Result;
 
 pub fn build() -> Command<'static> {
     Command::new("init")
         .about("Generate configuration for deploying an application")
         .args(&[
+            Arg::new("name")
+                .long("name")
+                .takes_value(true)
+                .help("Set the Character name. Defaults to the directory name."),
+            Arg::new("force")
+                .long("force")
+                .action(ArgAction::SetTrue)
+                .help("Force the generation of the Amphitheatre config"),
+
             Arg::new("analyze").long("analyze").takes_value(false).help("Print all discoverable Dockerfiles and images in JSON format to stdout"),
             Arg::new("artifact").short('a').long("artifact").takes_value(true)
                 .help("'='-delimited Dockerfile/image pair, or JSON string, to generate build artifact\
@@ -27,7 +37,6 @@ pub fn build() -> Command<'static> {
             Arg::new("compose-file").long("compose-file").takes_value(true).help("Initialize from a docker-compose file"),
             Arg::new("default-kustomization").long("default-kustomization").takes_value(true).help("Default Kustomization overlay path (others will be added as profiles)"),
             Arg::new("filename").short('f').long("filename").default_value(".amp.yaml").help("Path or URL to the Amphitheatre config file"),
-            Arg::new("force").long("force").takes_value(false).help("Force the generation of the Amphitheatre config"),
             Arg::new("generate-manifests").long("generate-manifests").takes_value(false)
                 .help("Allows amp to try and generate basic kubernetes resources to get your project started"),
             Arg::new("kubernetes-manifest").short('k').long("kubernetes-manifest").takes_value(true)
@@ -47,5 +56,40 @@ pub fn build() -> Command<'static> {
 }
 
 pub fn execute(args: &ArgMatches) -> Result<()> {
-    todo!()
+    let path = std::env::current_dir()?;
+
+    let name = args
+        .get_one::<String>("name")
+        .map(String::as_str)
+        .or_else(||get_directory_name(&path).ok())
+        .unwrap();
+    let force = args.get_flag("force");
+
+    if let Err(e) = create_new_character(name, force) {
+        println!("Failed to create the character: {}", e.to_string());
+        std::process::exit(1);
+    }
+
+    Ok(())
+}
+
+fn get_directory_name<'a>(path: &'a Path) -> Result<&'a str> {
+    let file_name = path.file_name().ok_or_else(|| {
+        errors::format_err!(
+            "cannot auto-detect character name from path {:?} ; use --name to override",
+            path.as_os_str()
+        )
+    })?;
+
+    file_name.to_str().ok_or_else(|| {
+        errors::format_err!(
+            "cannot create character with a non-unicode name: {:?}",
+            file_name
+        )
+    })
+}
+
+fn create_new_character<'a>(name: &'a str, force: bool) -> Result<()> {
+    println!("The character name is {}, and force is {}", name, force);
+    Ok(())
 }
