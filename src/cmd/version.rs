@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use clap::{Arg, ArgMatches, Command};
+use errors::Result;
 
 pub fn build() -> Command<'static> {
     Command::new("version")
@@ -21,6 +22,7 @@ pub fn build() -> Command<'static> {
         .after_help(super::AFTER_HELP_STRING)
 }
 
-pub fn execute(_args: &ArgMatches) {
-    println!("amp 0.1.0")
+pub fn execute(_args: &ArgMatches) -> Result<()>{
+    println!("amp 0.1.0");
+    Ok(())
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use clap::{Arg, ArgMatches, Command};
+use errors::Result;
 
 pub fn build() -> Command<'static> {
     Command::new("dev")
@@ -93,6 +94,6 @@ pub fn build() -> Command<'static> {
         .after_help(super::AFTER_HELP_STRING)
 }
 
-pub fn execute(args: &ArgMatches) {
+pub fn execute(args: &ArgMatches) -> Result<()> {
     todo!()
 }

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use clap::{App, ArgMatches, Command};
+use errors::Result;
 
 mod apply;
 mod build;
@@ -33,8 +34,12 @@ mod survey;
 mod test;
 mod version;
 
+type CmdName = &'static str;
+type FnBuiler = fn() -> App<'static>;
+type FnExcuter = for<'r> fn(&'r ArgMatches) -> Result<()>;
+
 lazy_static::lazy_static! {
-    static ref COMMANDS: Vec<(&'static str, fn() -> App<'static>, for<'r> fn(&'r ArgMatches))> = vec![
+    static ref COMMANDS: Vec<(CmdName, FnBuiler, FnExcuter)> = vec![
         ("apply", apply::build, apply::execute),
         ("build", build::build, build::execute),
         ("clean", clean::build, clean::execute),
@@ -56,13 +61,20 @@ lazy_static::lazy_static! {
     ];
 }
 
-const AFTER_HELP_STRING: &'static str = "Use \"amp options\" for a list of global command-line options (applies to all commands).";
+const AFTER_HELP_STRING: &'static str =
+    "Use \"amp options\" for a list of global \
+    command-line options (applies to all commands).";
 
 pub fn build() -> Command<'static> {
     Command::new("amp")
         .about("Amphitheatre's offcial command line tool")
         .arg_required_else_help(true)
-        .subcommands(COMMANDS.iter().map(move |(_, build, _)| build()).collect::<Vec<App>>())
+        .subcommands(
+            COMMANDS
+                .iter()
+                .map(move |(_, build, _)| build())
+                .collect::<Vec<App>>()
+        )
         .after_help(AFTER_HELP_STRING)
 }
 
@@ -70,8 +82,12 @@ pub fn execute() {
     let matches = build().get_matches();
 
     if let Some((name, args)) = matches.subcommand() {
-        if let Some((_, _, execute)) = COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
-            return execute(args);
+        if let Some((_, _, execute)) =
+            COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
+            if let Err(e) = execute(args) {
+                println!("Failed to execute the {} command, error is {}",
+                name, e.to_string());
+            }
         }
     }
 }

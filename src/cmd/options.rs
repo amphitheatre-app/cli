@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use clap::{Arg, ArgMatches, Command};
+use errors::Result;
 
 pub fn build() -> Command<'static> {
     Command::new("options")
@@ -26,6 +27,6 @@ pub fn build() -> Command<'static> {
         ])
 }
 
-pub fn execute(args: &ArgMatches) {
+pub fn execute(args: &ArgMatches) -> Result<()> {
     todo!()
 }
