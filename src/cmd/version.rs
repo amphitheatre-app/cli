@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgMatches, Command};
+use clap::{ArgMatches, Command};
 use errors::Result;
 
 pub fn build() -> Command<'static> {
     Command::new("version")
         .about("Print the version information")
-        .arg(Arg::new("output").short('o').long("output").default_value("{{.Version}}").help("Format output"))
         .after_help(super::AFTER_HELP_STRING)
 }
 
