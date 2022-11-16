@@ -22,12 +22,13 @@ const FILE_NAME: &str = ".amp.toml";
 
 pub fn build() -> Command<'static> {
     Command::new("init")
-        .about("Generate configuration for deploying an application")
+        .about("Create a new Amphitheatre character in an existing directory")
         .args(&[
             Arg::new("name")
                 .long("name")
                 .takes_value(true)
-                .help("Set the character name. Defaults to the directory name."),
+                .help("Set the character name. Defaults to the directory name.")
+                .display_order(1),
             Arg::new("force")
                 .long("force")
                 .action(ArgAction::SetTrue)
@@ -56,7 +57,7 @@ pub fn execute(args: &ArgMatches) -> Result<()> {
         std::process::exit(1);
     }
 
-    println!("Created the character: {}, see more manfifest at .amp.toml", name);
+    println!("Created the character: {}. See more definitions at `.amp.toml`", name);
 
     Ok(())
 }
