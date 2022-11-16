@@ -15,6 +15,10 @@
 use std::path::Path;
 use clap::{Arg, ArgAction, ArgMatches, Command};
 use errors::Result;
+use std::fs;
+use schema::Manifest;
+
+const FILE_NAME: &str = ".amp.toml";
 
 pub fn build() -> Command<'static> {
     Command::new("init")
@@ -23,34 +27,11 @@ pub fn build() -> Command<'static> {
             Arg::new("name")
                 .long("name")
                 .takes_value(true)
-                .help("Set the Character name. Defaults to the directory name."),
+                .help("Set the character name. Defaults to the directory name."),
             Arg::new("force")
                 .long("force")
                 .action(ArgAction::SetTrue)
-                .help("Force the generation of the Amphitheatre config"),
-
-            Arg::new("analyze").long("analyze").takes_value(false).help("Print all discoverable Dockerfiles and images in JSON format to stdout"),
-            Arg::new("artifact").short('a').long("artifact").takes_value(true)
-                .help("'='-delimited Dockerfile/image pair, or JSON string, to generate build artifact\
-                    (example: --artifact='{\"builder\":\"Docker\",\"payload\":{\"path\":\"/web/Dockerfile.web\"},\"image\":\"gcr.io/web-project/image\"}')"),
-            Arg::new("assume-yes").long("assume-yes").takes_value(false).help("If true, amp will skip yes/no confirmation from the user and default to yes"),
-            Arg::new("compose-file").long("compose-file").takes_value(true).help("Initialize from a docker-compose file"),
-            Arg::new("default-kustomization").long("default-kustomization").takes_value(true).help("Default Kustomization overlay path (others will be added as profiles)"),
-            Arg::new("filename").short('f').long("filename").default_value(".amp.yaml").help("Path or URL to the Amphitheatre config file"),
-            Arg::new("generate-manifests").long("generate-manifests").takes_value(false)
-                .help("Allows amp to try and generate basic kubernetes resources to get your project started"),
-            Arg::new("kubernetes-manifest").short('k').long("kubernetes-manifest").takes_value(true)
-                .help("A path or a glob pattern to kubernetes manifests (can be non-existent) to be added \
-                    to the kubectl deployer (overrides detection of kubernetes manifests). Repeat the\
-                    flag for multiple entries. E.g.: amp init -k pod.yaml -k k8s/*.yml"),
-            Arg::new("module").short('m').long("module").default_value("[]").help("Filter Amphitheatre configs to only the provided named modules"),
-            Arg::new("remote-cache-dir").long("remote-cache-dir").default_value("$HOME/.amp/repos").help("Specify the location of the git repositories cache"),
-            Arg::new("skip-build").long("skip-build").takes_value(false).help("Skip generating build artifacts in Amphitheatre config"),
-            Arg::new("sync-remote-cache").long("sync-remote-cache").default_value("always")
-            .help("Controls how Amphitheatre manages the remote config cache (see `remote-cache-dir`). \
-                One of `always` (default), `missing`, or `never`. `always` syncs remote repositories \
-                to latest on access. `missing` only clones remote repositories if they do not exist \
-                locally. `never` means the user takes responsibility for updating remote repositories."),
+                .help("Force the generation of the Amphitheatre character"),
         ])
         .after_help(super::AFTER_HELP_STRING)
 }
@@ -61,19 +42,26 @@ pub fn execute(args: &ArgMatches) -> Result<()> {
     let name = args
         .get_one::<String>("name")
         .map(String::as_str)
-        .or_else(||get_directory_name(&path).ok())
+        .or_else(||name(&path).ok())
         .unwrap();
     let force = args.get_flag("force");
 
-    if let Err(e) = create_new_character(name, force) {
+    if !force && path.join(FILE_NAME).exists() {
+        println!("`amp init` cannot be run on existing Amphitheatre character");
+        std::process::exit(1);
+    }
+
+    if let Err(e) = create(name) {
         println!("Failed to create the character: {}", e.to_string());
         std::process::exit(1);
     }
 
+    println!("Created the character: {}, see more manfifest at .amp.toml", name);
+
     Ok(())
 }
 
-fn get_directory_name<'a>(path: &'a Path) -> Result<&'a str> {
+fn name<'a>(path: &'a Path) -> Result<&'a str> {
     let file_name = path.file_name().ok_or_else(|| {
         errors::format_err!(
             "cannot auto-detect character name from path {:?} ; use --name to override",
@@ -89,7 +77,14 @@ fn get_directory_name<'a>(path: &'a Path) -> Result<&'a str> {
     })
 }
 
-fn create_new_character<'a>(name: &'a str, force: bool) -> Result<()> {
-    println!("The character name is {}, and force is {}", name, force);
+fn create<'a>(name: &'a str) -> Result<()> {
+    // Init and fill the Manifest fields.
+    let mut manifest = Manifest::default();
+    manifest.character.name = String::from(name);
+
+    // Convert the Manifest to a TOML String.
+    let serialized = toml::to_string(&manifest).expect("Could not encode TOML value");
+    fs::write(FILE_NAME, serialized).expect("Could not write to file!");
+
     Ok(())
 }
