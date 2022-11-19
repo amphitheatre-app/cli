@@ -14,6 +14,8 @@
 
 mod character;
 mod manifest;
+mod playbook;
 
 pub use character::*;
 pub use manifest::*;
+pub use playbook::*;

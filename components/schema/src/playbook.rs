@@ -12,23 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use serde::{Serialize, Deserialize};
+use std::fmt::Display;
 
-#[derive(Serialize, Deserialize, Default, Clone)]
+use serde::{Serialize, Deserialize};
+use super::Character;
+
+#[derive(Serialize, Deserialize, Default)]
 #[serde(rename_all = "kebab-case")]
-pub struct Character {
-    pub name: String,
-    pub version: String,
-    pub authors: Vec<String>,
+pub struct Playbook {
+    pub id: u64,
+    pub title: String,
     pub description: String,
-    pub readme: String,
-    pub homepage: String,
-    pub repository: String,
-    pub license: String,
-    pub license_file: String,
-    pub keywords: Vec<String>,
-    pub categories: Vec<String>,
-    pub exclude: Vec<String>,
-    pub include: Vec<String>,
-    pub publish: Vec<String>,
+    pub lead: Character,
+}
+
+impl Display for Playbook {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Playbook ({}, {})", self.title, self.description)
+    }
 }
