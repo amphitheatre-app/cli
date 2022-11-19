@@ -13,5 +13,8 @@ clap = "3.1.11"
 lazy_static = "1.4.0"
 toml = "0.5"
 
+client = { path = "components/client" }
 errors = { path = "components/errors" }
 schema = { path = "components/schema" }
+
+ctrlc = "3.2.3"
