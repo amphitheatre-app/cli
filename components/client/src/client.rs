@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use crate::playbooks::Playbooks;
+
 use std::collections::HashMap;
 
 use serde::de::DeserializeOwned;
@@ -25,7 +27,7 @@ const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "amp/";
 
 const API_VERSION: &str = "v1";
-const DEFAULT_BASE_URL: &str = "https::/api.amphitheatre.app";
+const DEFAULT_BASE_URL: &str = "https://api.amphitheatre.app";
 
 /// Represents the Rust client for the Amphitheatre API
 ///
@@ -482,6 +484,8 @@ impl Client {
     fn url(&self, path: &str) -> String {
         let mut url = self.versioned_url();
         url.push_str(path);
+
+        println!("url = {}", url);
         url
     }
 }
@@ -506,5 +510,12 @@ mod tests {
         client.set_base_url("https://example.com");
 
         assert_eq!(client.versioned_url(), "https://example.com/v1");
+    }
+}
+
+impl Client {
+    /// Returns the `playbooks` service attached to this client
+    pub fn playbooks(&self) -> Playbooks {
+        Playbooks { client: self }
     }
 }

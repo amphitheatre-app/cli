@@ -14,5 +14,10 @@
 //
 // Heavily inspired by https://github.com/dnsimple/dnsimple-rust
 
-pub mod client;
-pub mod error;
+mod client;
+mod error;
+mod playbooks;
+
+pub use client::*;
+pub use error::*;
+pub use playbooks::*;
