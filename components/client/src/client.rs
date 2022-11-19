@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::playbooks::Playbooks;
+use crate::Accounts;
+use crate::Playbooks;
 
 use std::collections::HashMap;
 
@@ -514,6 +515,11 @@ mod tests {
 }
 
 impl Client {
+    /// Returns the `accounts` services attached to this client
+    pub fn accounts(&self) -> Accounts {
+        Accounts { client: self }
+    }
+
     /// Returns the `playbooks` service attached to this client
     pub fn playbooks(&self) -> Playbooks {
         Playbooks { client: self }
