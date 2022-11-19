@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use schema::Character;
+
+use client::{Client, PlaybookPayload};
+use errors::{Result};
+
 use clap::{Arg, ArgMatches, Command};
-use errors::Result;
+use std::{thread, time::Duration};
 
 pub fn build() -> Command<'static> {
     Command::new("run")
@@ -93,6 +98,61 @@ pub fn build() -> Command<'static> {
         .after_help(super::AFTER_HELP_STRING)
 }
 
-pub fn execute(args: &ArgMatches) -> Result<()> {
-    todo!()
+/*
+ * Run a single Character via Docker Image
+ */
+pub fn execute(_args: &ArgMatches) -> Result<()> {
+    // Handle signal.
+    ctrlc::set_handler(|| {
+        std::process::exit(0);
+    }).expect("Error setting Ctrl-C handler");
+
+    // Validate
+
+    // Create playbook from this Character
+    let client = Client::new(String::from("AUTH_TOKEN"));
+    let payload = PlaybookPayload {
+        title: "test".to_string(),
+        description: "".to_string(),
+        lead: "https://github.com/amphitheatre-app/amp-example-go".to_string(),
+    };
+    let response =
+        client.playbooks().create(0001, payload);
+    if let Err(e) = response {
+        eprintln!("Error: Could not create the playbook ({})", e);
+        std::process::exit(1);
+    }
+
+    let playbook = response.unwrap().data.unwrap();
+
+    // Sync the source to remote Dev Container
+    if let Err(e) = sync(".".to_string(), src(&playbook.lead)) {
+        eprintln!("Error: Could not sync the sources ({})", e);
+        std::process::exit(1);
+    }
+
+    // Run
+    if let Err(e) = client.playbooks().start(0001, playbook.id) {
+        eprintln!("Error: Could not start playbook #{} ({})", &playbook.title, e);
+        std::process::exit(1);
+    }
+
+    println!("Visit: http://{}.amphitheatre.app", &playbook.id);
+
+    // Read event stream looply.
+    loop {
+        let event = client.playbooks().events();
+        println!("Received event: {}", event);
+
+        thread::sleep(Duration::from_secs(2));
+    }
+}
+
+fn sync(src: String, dest: String) -> Result<()> {
+    println!("Sync the sources from {} to {}", src, dest);
+    Ok(())
+}
+
+fn src(_: &Character) -> String {
+    String::from("/src/")
 }
