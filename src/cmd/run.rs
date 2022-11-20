@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use client::client::Client;
+use client::playbooks::PlaybookPayload;
+use errors::Result;
 use schema::Character;
-
-use client::{Client, PlaybookPayload};
-use errors::{Result};
 
 use clap::{Arg, ArgMatches, Command};
 use std::{thread, time::Duration};

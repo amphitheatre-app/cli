@@ -12,16 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::Accounts;
-use crate::Playbooks;
-
 use std::collections::HashMap;
 
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use crate::accounts::Accounts;
 use crate::error::Error;
+use crate::playbooks::Playbooks;
 use ureq::Request;
 
 const VERSION: &str = "0.1.0";
