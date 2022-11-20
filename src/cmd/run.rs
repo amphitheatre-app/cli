@@ -64,7 +64,7 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
         lead: "https://github.com/amphitheatre-app/amp-example-go".to_string(),
     };
     let response =
-        client.playbooks().create(0001, payload);
+        client.playbooks().create(payload);
     if let Err(e) = response {
         eprintln!("Error: Could not create the playbook ({})", e);
         std::process::exit(1);
@@ -79,7 +79,7 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
     }
 
     // Run
-    if let Err(e) = client.playbooks().start(0001, playbook.id) {
+    if let Err(e) = client.playbooks().start(playbook.id) {
         eprintln!("Error: Could not start playbook #{} ({})", &playbook.title, e);
         std::process::exit(1);
     }
@@ -88,7 +88,7 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
 
     // Read event stream looply.
     loop {
-        let event = client.playbooks().events();
+        let event = client.playbooks().events(playbook.id);
         println!("Received event: {}", event);
 
         thread::sleep(Duration::from_secs(2));
