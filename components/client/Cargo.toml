@@ -13,3 +13,7 @@ thiserror = "1.0"
 
 errors = { path = "../errors" }
 schema = { path = "../schema" }
+
+[dev-dependencies]
+mockito = "0.31"
+assert_matches = "1.5"
