@@ -41,9 +41,9 @@ const DEFAULT_BASE_URL: &str = "https://api.amphitheatre.app";
 /// use client::client::Client;
 ///
 /// let client = Client::new(String::from("AUTH_TOKEN"));
-/// let identity = client.identity().whoami().unwrap().data.unwrap();
+/// let response = client.accounts().me().unwrap();
 ///
-/// let account = identity.account.unwrap();
+/// let account = response.data.unwrap();
 /// ```
 ///
 pub struct Client {
@@ -191,7 +191,7 @@ impl Client {
     ///
     /// ```no_run
     /// use client::client::Client;
-    /// lit mut client = Client::new(String::from("AUTH_TOKEN"));
+    /// let mut client = Client::new(String::from("AUTH_TOKEN"));
     /// client.set_base_url("https:://example.com");
     /// ```
     ///

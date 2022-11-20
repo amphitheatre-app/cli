@@ -49,7 +49,7 @@ impl Accounts<'_> {
     /// # Examples
     ///
     /// ```no_run
-    /// use client::Client;
+    /// use client::client::Client;
     ///
     /// let client = Client::new(String::from("AUTH_TOKEN"));
     /// let response = client.accounts().me().unwrap();
