@@ -35,7 +35,7 @@ pub enum Error {
     #[error("{0}")]
     GatewayTimeout(String),
 
-    #[error("Method not allowed")]
+    #[error("Method not Allowed")]
     MethodNotAllowed,
 
     #[error("{0}")]

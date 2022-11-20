@@ -59,6 +59,7 @@ pub trait Endpoint {
 }
 
 /// Represents the response from an API call
+#[derive(Debug)]
 pub struct Response<T> {
     /// The maximum number of requests you can perform per hour.
     pub rate_limit: String,
