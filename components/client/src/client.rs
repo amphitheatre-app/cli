@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
 use crate::accounts::Accounts;
-use crate::error::Error;
+use crate::errors::Error;
 use crate::playbooks::Playbooks;
 use ureq::Request;
 

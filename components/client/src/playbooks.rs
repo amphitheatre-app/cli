@@ -15,7 +15,7 @@
 use schema::Playbook;
 use crate::client::{Client, RequestOptions, Response, Endpoint, EmptyResponse};
 use serde::{Deserialize, Serialize};
-use crate::error::Error;
+use crate::errors::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PlaybookPayload {

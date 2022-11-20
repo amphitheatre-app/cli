@@ -14,7 +14,7 @@
 
 use crate::client::{Client, Response, Endpoint};
 use serde::{Deserialize, Serialize};
-use crate::error::Error;
+use crate::errors::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Account {
