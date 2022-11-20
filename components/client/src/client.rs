@@ -20,6 +20,7 @@ use serde_json::{json, Value};
 
 use crate::accounts::Accounts;
 use crate::errors::Error;
+use crate::oauth::OAuth;
 use crate::playbooks::Playbooks;
 use ureq::Request;
 
@@ -481,7 +482,7 @@ impl Client {
         request.set("Authorization", auth_token.as_str())
     }
 
-    fn url(&self, path: &str) -> String {
+    pub fn url(&self, path: &str) -> String {
         let mut url = self.versioned_url();
         url.push_str(path);
 
@@ -517,6 +518,11 @@ impl Client {
     /// Returns the `accounts` services attached to this client
     pub fn accounts(&self) -> Accounts {
         Accounts { client: self }
+    }
+
+    /// Returns the `oauth` service attached to this client
+    pub fn oauth(&self) -> OAuth {
+        OAuth { client: self }
     }
 
     /// Returns the `playbooks` service attached to this client

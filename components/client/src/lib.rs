@@ -17,4 +17,5 @@
 pub mod accounts;
 pub mod client;
 pub mod errors;
+pub mod oauth;
 pub mod playbooks;
