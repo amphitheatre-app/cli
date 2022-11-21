@@ -18,7 +18,7 @@ mod common;
 
 #[test]
 fn me_success_with_account() {
-    let setup = setup_mock_for("/me", "me/success", "GET");
+    let setup = setup_mock_for("/me", "accounts/get_me_success", "GET");
     let client = setup.0;
     let response = client.accounts().me().unwrap();
 
