@@ -21,7 +21,7 @@ mod common;
 
 #[test]
 fn validation_error() {
-    let setup = setup_mock_for("/me", "validation-error", "GET");
+    let setup = setup_mock_for("/me", "errors/validation-error", "GET");
     let client = setup.0;
 
     let response = client.accounts().me();
@@ -36,7 +36,7 @@ fn validation_error() {
 
 #[test]
 fn not_found() {
-    let setup = setup_mock_for("/me", "notfound-certificate", "GET");
+    let setup = setup_mock_for("/me", "errors/notfound-certificate", "GET");
     let client = setup.0;
 
     let response = client.accounts().me();
@@ -47,7 +47,7 @@ fn not_found() {
 
 #[test]
 fn method_not_allowed() {
-    let setup = setup_mock_for("/me", "method-not-allowed", "GET");
+    let setup = setup_mock_for("/me", "errors/method-not-allowed", "GET");
     let client = setup.0;
 
     let response = client.accounts().me();
@@ -58,7 +58,7 @@ fn method_not_allowed() {
 
 #[test]
 fn bad_gateway() {
-    let setup = setup_mock_for("/me", "badgateway", "GET");
+    let setup = setup_mock_for("/me", "errors/badgateway", "GET");
     let client = setup.0;
 
     let response = client.accounts().me();
@@ -68,7 +68,7 @@ fn bad_gateway() {
 }
 #[test]
 fn transport() {
-    let setup = setup_mock_for("/other", "badgateway", "GET");
+    let setup = setup_mock_for("/other", "errors/badgateway", "GET");
     let client = setup.0;
 
     let response = client.accounts().me();
