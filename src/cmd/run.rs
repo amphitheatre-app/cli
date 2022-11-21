@@ -15,7 +15,6 @@
 use client::client::Client;
 use client::playbooks::PlaybookPayload;
 use errors::Result;
-use schema::Character;
 
 use clap::{Arg, ArgMatches, Command};
 use std::{thread, time::Duration};
@@ -72,11 +71,11 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
 
     let playbook = response.unwrap().data.unwrap();
 
-    // Sync the source to remote Dev Container
-    if let Err(e) = sync(".".to_string(), src(&playbook.lead)) {
-        eprintln!("Error: Could not sync the sources ({})", e);
-        std::process::exit(1);
-    }
+    // // Sync the source to remote Dev Container
+    // if let Err(e) = sync(".".to_string(), src(&playbook.lead())) {
+    //     eprintln!("Error: Could not sync the sources ({})", e);
+    //     std::process::exit(1);
+    // }
 
     // Run
     if let Err(e) = client.playbooks().start(playbook.id) {
@@ -95,11 +94,11 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
     }
 }
 
-fn sync(src: String, dest: String) -> Result<()> {
-    println!("Sync the sources from {} to {}", src, dest);
-    Ok(())
-}
+// fn sync(src: String, dest: String) -> Result<()> {
+//     println!("Sync the sources from {} to {}", src, dest);
+//     Ok(())
+// }
 
-fn src(_: &Character) -> String {
-    String::from("/src/")
-}
+// fn src(_: &Character) -> String {
+//     String::from("/src/")
+// }
