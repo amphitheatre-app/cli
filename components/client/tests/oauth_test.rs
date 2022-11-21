@@ -21,7 +21,7 @@ mod common;
 fn exchange_authorization_for_token_test() {
     let setup = setup_mock_for(
         "/oauth/access_token",
-        "oauthAccessToken/success",
+        "oauth/access-token-success",
         "POST"
     );
     let client = setup.0;
