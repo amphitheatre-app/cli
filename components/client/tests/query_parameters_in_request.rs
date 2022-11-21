@@ -32,7 +32,11 @@ impl Endpoint for IdsEndpoint {
 
 #[test]
 fn can_paginate() {
-    let setup = setup_mock_for("/pagination_test?page=2&per_page=2", "pages-2of3", "GET");
+    let setup = setup_mock_for(
+        "/pagination_test?page=2&per_page=2",
+        "requests/pages-2of3",
+        "GET"
+    );
     let client = setup.0;
     let options = RequestOptions {
         filters: None,
@@ -50,7 +54,11 @@ fn can_paginate() {
 
 #[test]
 fn can_filter() {
-    let setup = setup_mock_for("/filter_test?name_like=example", "pages-2of3", "GET");
+    let setup = setup_mock_for(
+        "/filter_test?name_like=example",
+        "requests/pages-2of3",
+        "GET"
+    );
     let client = setup.0;
     let mut filters = HashMap::new();
     filters.insert("name_like".to_string(), "example".to_string());
@@ -67,7 +75,11 @@ fn can_filter() {
 
 #[test]
 fn can_sort() {
-    let setup = setup_mock_for("/sort_test?sort=expiration%3Aasc", "pages-2of3", "GET");
+    let setup = setup_mock_for(
+        "/sort_test?sort=expiration%3Aasc",
+        "requests/pages-2of3",
+        "GET"
+    );
     let client = setup.0;
     let options = RequestOptions {
         filters: None,
