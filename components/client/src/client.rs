@@ -18,6 +18,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
+use crate::actors::Actors;
 use crate::accounts::Accounts;
 use crate::errors::Error;
 use crate::oauth::OAuth;
@@ -519,6 +520,11 @@ impl Client {
     /// Returns the `accounts` services attached to this client
     pub fn accounts(&self) -> Accounts {
         Accounts { client: self }
+    }
+
+    /// Returns the `actors` services attached to this client
+    pub fn actors(&self) -> Actors {
+        Actors { client: self }
     }
 
     /// Returns the `oauth` service attached to this client

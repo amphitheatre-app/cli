@@ -129,8 +129,8 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn events(&self, playbook_id: u64) -> String {
-        let path = format!("/playbooks/{}/events", playbook_id);
+    pub fn events(&self, _playbook_id: u64) -> String {
+        // let path = format!("/playbooks/{}/events", playbook_id);
         String::from("event stream (JSON)")
     }
 
