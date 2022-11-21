@@ -12,10 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use schema::Playbook;
 use crate::client::{Client, RequestOptions, Response, Endpoint, EmptyResponse};
 use serde::{Deserialize, Serialize};
 use crate::errors::Error;
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Playbook {
+    /// The playbook ID in Amphitheatre.
+    pub id: u64,
+    /// The title of the playbook.
+    pub title: String,
+    /// The description of the playbook.
+    pub description: String,
+    /// When the playbook was created in Amphitheatre.
+    pub created_at: String,
+    /// When the playbook was last updated in Amphitheatre.
+    pub updated_at: String,
+}
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct PlaybookPayload {
