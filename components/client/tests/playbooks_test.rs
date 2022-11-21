@@ -1,3 +1,17 @@
+// Copyright 2022 The Amphitheatre Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 use crate::common::setup_mock_for;
 use client::playbooks::PlaybookPayload;
 mod common;
@@ -6,7 +20,7 @@ mod common;
 fn list_playbooks_test() {
     let setup = setup_mock_for(
         "/playbooks",
-        "playbooks/list_playbooks_success",
+        "playbooks/list-playbooks-success",
         "GET"
     );
     let client = setup.0;
@@ -33,7 +47,7 @@ fn list_playbooks_test() {
 fn create_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks",
-        "playbooks/create_playbook_created",
+        "playbooks/create-playbook-created",
         "POST"
     );
     let client = setup.0;
@@ -60,7 +74,7 @@ fn create_playbook_test() {
 fn get_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1",
-        "playbooks/get_playbook_success",
+        "playbooks/get-playbook-success",
         "GET"
     );
     let client = setup.0;
@@ -84,7 +98,7 @@ fn get_playbook_test() {
 fn update_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1",
-        "playbooks/update_playbook_success",
+        "playbooks/update-playbook-success",
         "PATCH"
     );
     let client = setup.0;
@@ -112,7 +126,7 @@ fn update_playbook_test() {
 fn delete_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1",
-        "playbooks/delete_playbook_success",
+        "playbooks/delete-playbook-success",
         "DELETE"
     );
     let client = setup.0;
@@ -128,7 +142,7 @@ fn delete_playbook_test() {
 fn get_playbook_events() {
     let setup = setup_mock_for(
         "/playbooks/1/events",
-        "playbooks/get_playbook_events_success",
+        "playbooks/get-playbook-events-success",
         "GET"
     );
     let client = setup.0;
@@ -143,7 +157,7 @@ fn get_playbook_events() {
 fn start_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1/actions/start",
-        "playbooks/start_playbook_success",
+        "playbooks/start-playbook-success",
         "POST"
     );
     let client = setup.0;
@@ -159,7 +173,7 @@ fn start_playbook_test() {
 fn stop_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1/actions/stop",
-        "playbooks/stop_playbook_success",
+        "playbooks/stop-playbook-success",
         "POST"
     );
     let client = setup.0;

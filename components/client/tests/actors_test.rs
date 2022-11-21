@@ -1,3 +1,18 @@
+// Copyright 2022 The Amphitheatre Authors.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+
 use crate::common::setup_mock_for;
 mod common;
 
@@ -6,7 +21,7 @@ fn list_actors_test() {
     let playbook_id = 1;
     let setup = setup_mock_for(
         format!("/playbooks/{}/actors", playbook_id).as_str(),
-        "actors/list_actors_success",
+        "actors/list-actors-success",
         "GET"
     );
     let client = setup.0;
@@ -33,7 +48,7 @@ fn list_actors_test() {
 fn get_actor_test() {
     let setup = setup_mock_for(
         "/actors/1",
-        "actors/get_actor_success",
+        "actors/get-actor-success",
         "GET"
     );
     let client = setup.0;
@@ -57,7 +72,7 @@ fn get_actor_test() {
 fn get_actor_logs() {
     let setup = setup_mock_for(
         "/actors/1/logs",
-        "actors/get_actor_logs_success",
+        "actors/get-actor-logs-success",
         "GET"
     );
     let client = setup.0;
@@ -72,7 +87,7 @@ fn get_actor_logs() {
 fn get_actor_info_test() {
     let setup = setup_mock_for(
         "/actors/1/info",
-        "actors/get_actor_info_success",
+        "actors/get-actor-info-success",
         "GET"
     );
     let client = setup.0;
@@ -89,7 +104,7 @@ fn get_actor_info_test() {
 fn get_actor_stats_test() {
     let setup = setup_mock_for(
         "/actors/1/stats",
-        "actors/get_actor_stats_success",
+        "actors/get-actor-stats-success",
         "GET"
     );
     let client = setup.0;
