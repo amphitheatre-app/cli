@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 19 Jan 2016 20:50:26 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Status: 201 Created
+X-RateLimit-Limit: 4000
+X-RateLimit-Remaining: 3997
+X-RateLimit-Reset: 1453239045
+ETag: W/"165299b0ea3e5c1c80f1ae622146626f"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 9f577b9e-5bc4-4a8f-adfb-09dbb1992b0e
+X-Runtime: 0.061482
+Strict-Transport-Security: max-age=31536000
+
+{"data":{"CPU USAGE":"1.98%","DISK READ/WRITE":"5.3MB / 43.7 MB","MEMORY USAGE":"65.8MB","NETWORK I/O":"5.7 kB / 3 kB"}}

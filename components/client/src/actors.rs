@@ -19,10 +19,16 @@ use crate::errors::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Actor {
+    /// The actor id
+    pub id: u64,
     /// The title of the actor
     pub title: String,
     /// The description of the actor
     pub description: String,
+    /// When the actor was created in Amphitheatre.
+    pub created_at: String,
+    /// When the actor was last updated in Amphitheatre.
+    pub updated_at: String,
 }
 
 struct ActorEndpoint;

@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 19 Jan 2016 20:50:26 GMT
+Content-Type: application/json; charset=utf-8
+Connection: keep-alive
+Status: 201 Created
+X-RateLimit-Limit: 4000
+X-RateLimit-Remaining: 3997
+X-RateLimit-Reset: 1453239045
+ETag: W/"165299b0ea3e5c1c80f1ae622146626f"
+Cache-Control: max-age=0, private, must-revalidate
+X-Request-Id: 9f577b9e-5bc4-4a8f-adfb-09dbb1992b0e
+X-Runtime: 0.061482
+Strict-Transport-Security: max-age=31536000
+
+{"data":{"environments":{"K3S_TOKEN":"RdqNLMXRiRsHJhmxKurR","K3S_KUBECONFIG_OUTPU":"/output/kubeconfig.yaml","PATH":"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/bin/aux","CRI_CONFIG_FILE":"/var/lib/rancher/k3s/agent/etc/crictl.yaml"},"mounts":{"/VAR/LIB/RANCHER/K3S":"/var/lib/docker/volumes/a78bcb9f7654701e0cfaef4447ef61ced4864e5b93dee7102ec639afb5cf2e1d/_data","/VAR/LOG":"/var/lib/docker/volumes/f64c2f2cf81cfde89879f2a17924b31bd2f2e6a6a738f7df949bf6bd57102d25/_data","/VAR/LIB/CNI":"/var/lib/docker/volumes/00f49631b07ccd74de44d3047d5f889395ac871e05b622890b6dd788d34a59f4/_data","/VAR/LIB/KUBELET":"/var/lib/docker/volumes/bc1b16d39a0e204841695de857122412cfdefd0f672af185b1fa43e635397848/_data"},"port":{"6443/tcp":"0.0.0.0:42397"}}}
