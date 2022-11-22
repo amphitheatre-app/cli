@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::client::{Client, RequestOptions, Response, Endpoint};
+use crate::client::{Client, Endpoint, RequestOptions, Response};
+use crate::errors::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::errors::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Actor {
@@ -78,9 +78,7 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The ID of the actor we want to retrieve
-    pub fn get(
-        &self, actor_id: u64
-    ) -> Result<Response<Actor>, Error> {
+    pub fn get(&self, actor_id: u64) -> Result<Response<Actor>, Error> {
         let path = format!("/actors/{}", actor_id);
         self.client.get::<ActorEndpoint>(&*path, None)
     }
@@ -100,10 +98,7 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The actor id
-    pub fn info(
-        &self,
-        actor_id: u64,
-    ) -> Result<Response<Value>, Error> {
+    pub fn info(&self, actor_id: u64) -> Result<Response<Value>, Error> {
         let path = format!("/actors/{}/info", actor_id);
         self.client.get::<ValueEndpoint>(&*path, None)
     }
@@ -113,10 +108,7 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The actor id
-    pub fn stats(
-        &self,
-        actor_id: u64,
-    ) -> Result<Response<Value>, Error> {
+    pub fn stats(&self, actor_id: u64) -> Result<Response<Value>, Error> {
         let path = format!("/actors/{}/stats", actor_id);
         self.client.get::<ValueEndpoint>(&*path, None)
     }

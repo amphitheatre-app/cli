@@ -18,19 +18,10 @@ mod common;
 
 #[test]
 fn list_playbooks_test() {
-    let setup = setup_mock_for(
-        "/playbooks",
-        "playbooks/list-playbooks-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/playbooks", "playbooks/list-playbooks-success", "GET");
     let client = setup.0;
 
-    let playbooks = client
-        .playbooks()
-        .list(None)
-        .unwrap()
-        .data
-        .unwrap();
+    let playbooks = client.playbooks().list(None).unwrap().data.unwrap();
 
     assert_eq!(2, playbooks.len());
 
@@ -45,11 +36,7 @@ fn list_playbooks_test() {
 
 #[test]
 fn create_playbook_test() {
-    let setup = setup_mock_for(
-        "/playbooks",
-        "playbooks/create-playbook-created",
-        "POST"
-    );
+    let setup = setup_mock_for("/playbooks", "playbooks/create-playbook-created", "POST");
     let client = setup.0;
 
     let payload = PlaybookPayload {
@@ -58,12 +45,7 @@ fn create_playbook_test() {
         lead: String::from("https://github.com/amphitheatre-app/amp-example-go"),
     };
 
-    let playbook = client
-        .playbooks()
-        .create(payload)
-        .unwrap()
-        .data
-        .unwrap();
+    let playbook = client.playbooks().create(payload).unwrap().data.unwrap();
 
     assert_eq!(1, playbook.id);
     assert_eq!("Default", playbook.title);
@@ -72,20 +54,11 @@ fn create_playbook_test() {
 
 #[test]
 fn get_playbook_test() {
-    let setup = setup_mock_for(
-        "/playbooks/1",
-        "playbooks/get-playbook-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/playbooks/1", "playbooks/get-playbook-success", "GET");
     let client = setup.0;
     let playbook_id = 1;
 
-    let playbook = client
-        .playbooks()
-        .get(playbook_id)
-        .unwrap()
-        .data
-        .unwrap();
+    let playbook = client.playbooks().get(playbook_id).unwrap().data.unwrap();
 
     assert_eq!(1, playbook.id);
     assert_eq!("Default", playbook.title);
@@ -96,11 +69,7 @@ fn get_playbook_test() {
 
 #[test]
 fn update_playbook_test() {
-    let setup = setup_mock_for(
-        "/playbooks/1",
-        "playbooks/update-playbook-success",
-        "PATCH"
-    );
+    let setup = setup_mock_for("/playbooks/1", "playbooks/update-playbook-success", "PATCH");
     let client = setup.0;
     let playbook_id = 1;
 
@@ -127,7 +96,7 @@ fn delete_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1",
         "playbooks/delete-playbook-success",
-        "DELETE"
+        "DELETE",
     );
     let client = setup.0;
     let playbook_id = 1;
@@ -143,7 +112,7 @@ fn get_playbook_events() {
     let setup = setup_mock_for(
         "/playbooks/1/events",
         "playbooks/get-playbook-events-success",
-        "GET"
+        "GET",
     );
     let client = setup.0;
     let playbook_id = 1;
@@ -158,7 +127,7 @@ fn start_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1/actions/start",
         "playbooks/start-playbook-success",
-        "POST"
+        "POST",
     );
     let client = setup.0;
     let playbook_id = 1;
@@ -174,7 +143,7 @@ fn stop_playbook_test() {
     let setup = setup_mock_for(
         "/playbooks/1/actions/stop",
         "playbooks/stop-playbook-success",
-        "POST"
+        "POST",
     );
     let client = setup.0;
     let playbook_id = 1;

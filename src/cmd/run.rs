@@ -51,7 +51,8 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
     // Handle signal.
     ctrlc::set_handler(|| {
         std::process::exit(0);
-    }).expect("Error setting Ctrl-C handler");
+    })
+    .expect("Error setting Ctrl-C handler");
 
     // Validate
 
@@ -62,8 +63,7 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
         description: "".to_string(),
         lead: "https://github.com/amphitheatre-app/amp-example-go".to_string(),
     };
-    let response =
-        client.playbooks().create(payload);
+    let response = client.playbooks().create(payload);
     if let Err(e) = response {
         eprintln!("Error: Could not create the playbook ({})", e);
         std::process::exit(1);
@@ -79,7 +79,10 @@ pub fn execute(_args: &ArgMatches) -> Result<()> {
 
     // Run
     if let Err(e) = client.playbooks().start(playbook.id) {
-        eprintln!("Error: Could not start playbook #{} ({})", &playbook.title, e);
+        eprintln!(
+            "Error: Could not start playbook #{} ({})",
+            &playbook.title, e
+        );
         std::process::exit(1);
     }
 

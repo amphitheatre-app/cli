@@ -13,8 +13,8 @@
 // limitations under the License.
 
 use crate::client::Client;
-use serde::{Deserialize, Serialize};
 use crate::errors::Error;
+use serde::{Deserialize, Serialize};
 
 /// Represents the payload used to exchange this information for the
 /// access token (`AccessToken`).
@@ -101,8 +101,8 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let value = serde_json::to_value(params)
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
+        let value =
+            serde_json::to_value(params).map_err(|e| Error::Deserialization(e.to_string()))?;
 
         let response = self
             .client

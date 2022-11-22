@@ -18,7 +18,12 @@ use errors::Result;
 pub fn build() -> Command<'static> {
     Command::new("completion")
         .about("Output shell completion for the given shell (bash or zsh)")
-        .arg(Arg::new("shell").takes_value(true).required(true).help("bash or zsh"))
+        .arg(
+            Arg::new("shell")
+                .takes_value(true)
+                .required(true)
+                .help("bash or zsh"),
+        )
         .after_help(super::AFTER_HELP_STRING)
 }
 

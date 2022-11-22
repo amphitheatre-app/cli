@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::client::{Client, RequestOptions, Response, Endpoint, EmptyResponse};
-use serde::{Deserialize, Serialize};
+use crate::client::{Client, EmptyResponse, Endpoint, RequestOptions, Response};
 use crate::errors::Error;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playbook {
@@ -66,10 +66,7 @@ impl Playbooks<'_> {
     ///
     /// `options`: The `RequestOptions`
     ///             - Sort: `id`, `label`, `email`
-    pub fn list(
-        &self,
-        options: Option<RequestOptions>,
-    ) -> Result<Response<Vec<Playbook>>, Error> {
+    pub fn list(&self, options: Option<RequestOptions>) -> Result<Response<Vec<Playbook>>, Error> {
         self.client.get::<PlaybooksEndpoint>("/playbooks", options)
     }
 
@@ -79,10 +76,7 @@ impl Playbooks<'_> {
     ///
     /// `payload`: the `PlaybookPayload` with the information needed to create
     /// the playbook
-    pub fn create(
-        &self,
-        payload: PlaybookPayload,
-    ) -> Result<Response<Playbook>, Error> {
+    pub fn create(&self, payload: PlaybookPayload) -> Result<Response<Playbook>, Error> {
         match serde_json::to_value(payload) {
             Ok(json) => self.client.post::<PlaybookEndpoint>("/playbooks", json),
             Err(_) => Err(Error::Deserialization(String::from(
@@ -96,9 +90,7 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The ID of the playbook we want to retrieve
-    pub fn get(
-        &self, playbook_id: u64
-    ) -> Result<Response<Playbook>, Error> {
+    pub fn get(&self, playbook_id: u64) -> Result<Response<Playbook>, Error> {
         let path = format!("/playbooks/{}", playbook_id);
         self.client.get::<PlaybookEndpoint>(&*path, None)
     }
@@ -120,7 +112,7 @@ impl Playbooks<'_> {
             Ok(json) => self.client.patch::<PlaybookEndpoint>(&*path, json),
             Err(_) => Err(Error::Deserialization(String::from(
                 "Cannot deserialize json payload",
-            )))
+            ))),
         }
     }
 
@@ -129,10 +121,7 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn delete(
-        &self,
-        playbook_id: u64,
-    ) -> Result<EmptyResponse, Error> {
+    pub fn delete(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
         let path = format!("/playbooks/{}", playbook_id);
         self.client.delete(&*path)
     }
@@ -152,10 +141,7 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn start(
-        &self,
-        playbook_id: u64,
-    ) -> Result<EmptyResponse, Error> {
+    pub fn start(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
         let path = format!("/playbooks/{}/actions/start", playbook_id);
         self.client.empty_post(&*path)
     }
@@ -165,10 +151,7 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn stop(
-        &self,
-        playbook_id: u64,
-    ) -> Result<EmptyResponse, Error> {
+    pub fn stop(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
         let path = format!("/playbooks/{}/actions/stop", playbook_id);
         self.client.empty_post(&*path)
     }

@@ -19,32 +19,68 @@ pub fn build() -> Command<'static> {
     Command::new("config")
         .about("Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)")
         .arg_required_else_help(true)
-        .subcommand(Command::new("list")
-            .about("List all values set in the global Amphitheatre config")
-            .args(&[
-                Arg::new("all").short('a').long("all").takes_value(false).help("Show values for all kubecontexts"),
-                Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
-                Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
-            ])
-            .after_help(super::AFTER_HELP_STRING)
+        .subcommand(
+            Command::new("list")
+                .about("List all values set in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("all")
+                        .short('a')
+                        .long("all")
+                        .takes_value(false)
+                        .help("Show values for all kubecontexts"),
+                    Arg::new("config")
+                        .short('c')
+                        .long("config")
+                        .default_value("$HOME/.amp/config")
+                        .help("Path to Amphitheatre config"),
+                    Arg::new("kube-context")
+                        .long("kube-context")
+                        .takes_value(true)
+                        .help("Kubectl context to set values against"),
+                ])
+                .after_help(super::AFTER_HELP_STRING),
         )
-        .subcommand(Command::new("set")
-            .about("Set a value in the global Amphitheatre config")
-            .args(&[
-                Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
-                Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
-                Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
-            ])
-            .after_help(super::AFTER_HELP_STRING)
+        .subcommand(
+            Command::new("set")
+                .about("Set a value in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("config")
+                        .short('c')
+                        .long("config")
+                        .default_value("$HOME/.amp/config")
+                        .help("Path to Amphitheatre config"),
+                    Arg::new("global")
+                        .short('g')
+                        .long("global")
+                        .takes_value(false)
+                        .help("Set value for global config"),
+                    Arg::new("kube-context")
+                        .long("kube-context")
+                        .takes_value(true)
+                        .help("Kubectl context to set values against"),
+                ])
+                .after_help(super::AFTER_HELP_STRING),
         )
-        .subcommand(Command::new("unset")
-            .about("Unset a value in the global Amphitheatre config")
-            .args(&[
-                Arg::new("config").short('c').long("config").default_value("$HOME/.amp/config").help("Path to Amphitheatre config"),
-                Arg::new("global").short('g').long("global").takes_value(false).help("Set value for global config"),
-                Arg::new("kube-context").long("kube-context").takes_value(true).help("Kubectl context to set values against"),
-            ])
-            .after_help(super::AFTER_HELP_STRING)
+        .subcommand(
+            Command::new("unset")
+                .about("Unset a value in the global Amphitheatre config")
+                .args(&[
+                    Arg::new("config")
+                        .short('c')
+                        .long("config")
+                        .default_value("$HOME/.amp/config")
+                        .help("Path to Amphitheatre config"),
+                    Arg::new("global")
+                        .short('g')
+                        .long("global")
+                        .takes_value(false)
+                        .help("Set value for global config"),
+                    Arg::new("kube-context")
+                        .long("kube-context")
+                        .takes_value(true)
+                        .help("Kubectl context to set values against"),
+                ])
+                .after_help(super::AFTER_HELP_STRING),
         )
         .after_help(super::AFTER_HELP_STRING)
 }

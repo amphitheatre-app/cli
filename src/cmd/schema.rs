@@ -18,10 +18,11 @@ use errors::Result;
 pub fn build() -> Command<'static> {
     Command::new("schema")
         .about("List JSON schemas used to validate .amp.yaml configuration")
-        .subcommand(Command::new("get")
-            .about("Print a given .amp.yaml's json schema")
-            .arg(Arg::new("options").takes_value(true))
-            .after_help(super::AFTER_HELP_STRING)
+        .subcommand(
+            Command::new("get")
+                .about("Print a given .amp.yaml's json schema")
+                .arg(Arg::new("options").takes_value(true))
+                .after_help(super::AFTER_HELP_STRING),
         )
         .after_help(super::AFTER_HELP_STRING)
 }

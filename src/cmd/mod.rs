@@ -61,9 +61,8 @@ lazy_static::lazy_static! {
     ];
 }
 
-const AFTER_HELP_STRING: &'static str =
-    "Use \"amp options\" for a list of global \
-    command-line options (applies to all commands).";
+const AFTER_HELP_STRING: &str =
+    "Use \"amp options\" for a list of global command-line options (applies to all commands).";
 
 pub fn build() -> Command<'static> {
     Command::new("amp")
@@ -73,7 +72,7 @@ pub fn build() -> Command<'static> {
             COMMANDS
                 .iter()
                 .map(move |(_, build, _)| build())
-                .collect::<Vec<App>>()
+                .collect::<Vec<App>>(),
         )
         .after_help(AFTER_HELP_STRING)
 }
@@ -82,11 +81,9 @@ pub fn execute() {
     let matches = build().get_matches();
 
     if let Some((name, args)) = matches.subcommand() {
-        if let Some((_, _, execute)) =
-            COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
+        if let Some((_, _, execute)) = COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
             if let Err(e) = execute(args) {
-                println!("Failed to execute the {} command, error is {}",
-                name, e.to_string());
+                println!("Failed to execute the {} command, error is {}", name, e);
             }
         }
     }

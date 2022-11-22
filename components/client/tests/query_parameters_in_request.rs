@@ -35,7 +35,7 @@ fn can_paginate() {
     let setup = setup_mock_for(
         "/pagination_test?page=2&per_page=2",
         "requests/pages-2of3",
-        "GET"
+        "GET",
     );
     let client = setup.0;
     let options = RequestOptions {
@@ -57,7 +57,7 @@ fn can_filter() {
     let setup = setup_mock_for(
         "/filter_test?name_like=example",
         "requests/pages-2of3",
-        "GET"
+        "GET",
     );
     let client = setup.0;
     let mut filters = HashMap::new();
@@ -78,7 +78,7 @@ fn can_sort() {
     let setup = setup_mock_for(
         "/sort_test?sort=expiration%3Aasc",
         "requests/pages-2of3",
-        "GET"
+        "GET",
     );
     let client = setup.0;
     let options = RequestOptions {

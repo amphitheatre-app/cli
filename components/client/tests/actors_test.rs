@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 use crate::common::setup_mock_for;
 mod common;
 
@@ -22,7 +21,7 @@ fn list_actors_test() {
     let setup = setup_mock_for(
         format!("/playbooks/{}/actors", playbook_id).as_str(),
         "actors/list-actors-success",
-        "GET"
+        "GET",
     );
     let client = setup.0;
 
@@ -46,20 +45,11 @@ fn list_actors_test() {
 
 #[test]
 fn get_actor_test() {
-    let setup = setup_mock_for(
-        "/actors/1",
-        "actors/get-actor-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/actors/1", "actors/get-actor-success", "GET");
     let client = setup.0;
     let actor_id = 1;
 
-    let actor = client
-        .actors()
-        .get(actor_id)
-        .unwrap()
-        .data
-        .unwrap();
+    let actor = client.actors().get(actor_id).unwrap().data.unwrap();
 
     assert_eq!(1, actor.id);
     assert_eq!("Default", actor.title);
@@ -70,11 +60,7 @@ fn get_actor_test() {
 
 #[test]
 fn get_actor_logs() {
-    let setup = setup_mock_for(
-        "/actors/1/logs",
-        "actors/get-actor-logs-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/actors/1/logs", "actors/get-actor-logs-success", "GET");
     let client = setup.0;
     let actor_id = 1;
 
@@ -85,11 +71,7 @@ fn get_actor_logs() {
 
 #[test]
 fn get_actor_info_test() {
-    let setup = setup_mock_for(
-        "/actors/1/info",
-        "actors/get-actor-info-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/actors/1/info", "actors/get-actor-info-success", "GET");
     let client = setup.0;
     let actor_id = 1;
 
@@ -102,11 +84,7 @@ fn get_actor_info_test() {
 
 #[test]
 fn get_actor_stats_test() {
-    let setup = setup_mock_for(
-        "/actors/1/stats",
-        "actors/get-actor-stats-success",
-        "GET"
-    );
+    let setup = setup_mock_for("/actors/1/stats", "actors/get-actor-stats-success", "GET");
     let client = setup.0;
     let actor_id = 1;
 

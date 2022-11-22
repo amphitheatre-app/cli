@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #[allow(unused_variables)]
-
 mod cmd;
 
 fn main() {

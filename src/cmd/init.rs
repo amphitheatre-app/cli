@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::path::Path;
 use clap::{Arg, ArgAction, ArgMatches, Command};
 use errors::Result;
-use std::fs;
 use schema::Manifest;
+use std::fs;
+use std::path::Path;
 
 const FILE_NAME: &str = ".amp.toml";
 
@@ -43,7 +43,7 @@ pub fn execute(args: &ArgMatches) -> Result<()> {
     let name = args
         .get_one::<String>("name")
         .map(String::as_str)
-        .or_else(||name(&path).ok())
+        .or_else(|| name(&path).ok())
         .unwrap();
     let force = args.get_flag("force");
 
@@ -53,16 +53,19 @@ pub fn execute(args: &ArgMatches) -> Result<()> {
     }
 
     if let Err(e) = create(name) {
-        println!("Failed to create the character: {}", e.to_string());
+        println!("Failed to create the character: {}", e);
         std::process::exit(1);
     }
 
-    println!("Created the character: {}. See more definitions at `.amp.toml`", name);
+    println!(
+        "Created the character: {}. See more definitions at `.amp.toml`",
+        name
+    );
 
     Ok(())
 }
 
-fn name<'a>(path: &'a Path) -> Result<&'a str> {
+fn name(path: &Path) -> Result<&str> {
     let file_name = path.file_name().ok_or_else(|| {
         errors::format_err!(
             "cannot auto-detect character name from path {:?} ; use --name to override",
@@ -78,7 +81,7 @@ fn name<'a>(path: &'a Path) -> Result<&'a str> {
     })
 }
 
-fn create<'a>(name: &'a str) -> Result<()> {
+fn create(name: &str) -> Result<()> {
     // Init and fill the Manifest fields.
     let mut manifest = Manifest::default();
     manifest.character.name = String::from(name);

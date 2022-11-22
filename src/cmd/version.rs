@@ -21,7 +21,7 @@ pub fn build() -> Command<'static> {
         .after_help(super::AFTER_HELP_STRING)
 }
 
-pub fn execute(_args: &ArgMatches) -> Result<()>{
+pub fn execute(_args: &ArgMatches) -> Result<()> {
     println!("amp 0.1.0");
     Ok(())
 }

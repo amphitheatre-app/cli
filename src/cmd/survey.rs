@@ -18,7 +18,12 @@ use errors::Result;
 pub fn build() -> Command<'static> {
     Command::new("survey")
         .about("Opens a web browser to fill out the Amphitheatre survey")
-        .arg(Arg::new("id").long("id").default_value("hats").help("Survey ID for survey command to open"))
+        .arg(
+            Arg::new("id")
+                .long("id")
+                .default_value("hats")
+                .help("Survey ID for survey command to open"),
+        )
         .arg_required_else_help(true)
         .after_help(super::AFTER_HELP_STRING)
 }

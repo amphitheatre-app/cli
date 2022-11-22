@@ -18,8 +18,8 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::actors::Actors;
 use crate::accounts::Accounts;
+use crate::actors::Actors;
 use crate::errors::Error;
 use crate::oauth::OAuth;
 use crate::playbooks::Playbooks;
@@ -318,10 +318,7 @@ impl Client {
         self.process_response::<E>(request.send_json(data))
     }
 
-    fn call<E: Endpoint>(
-        &self,
-        request: Request,
-    ) -> Result<Response<E::Output>, Error> {
+    fn call<E: Endpoint>(&self, request: Request) -> Result<Response<E::Output>, Error> {
         self.process_response::<E>(request.call())
     }
 
@@ -331,9 +328,7 @@ impl Client {
     ) -> Result<Response<E::Output>, Error> {
         match result {
             Ok(response) => Self::build_response::<E>(response),
-            Err(ureq::Error::Status(code, response)) => {
-                Err(Error::parse_response(code, response))
-            }
+            Err(ureq::Error::Status(code, response)) => Err(Error::parse_response(code, response)),
             Err(ureq::Error::Transport(transport)) => Err(Error::parse_transport(transport)),
         }
     }
@@ -341,16 +336,12 @@ impl Client {
     fn call_empty(&self, request: Request) -> Result<EmptyResponse, Error> {
         match request.call() {
             Ok(response) => Self::build_empty_response(response),
-            Err(ureq::Error::Status(code, response)) => {
-                Err(Error::parse_response(code, response))
-            }
+            Err(ureq::Error::Status(code, response)) => Err(Error::parse_response(code, response)),
             Err(ureq::Error::Transport(transport)) => Err(Error::parse_transport(transport)),
         }
     }
 
-    fn build_response<E: Endpoint>(
-        resp: ureq::Response,
-    ) -> Result<Response<E::Output>, Error> {
+    fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, Error> {
         let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
         let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
         let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
@@ -364,8 +355,8 @@ impl Client {
             .map_err(|e| Error::Deserialization(e.to_string()))?;
         let pagination = serde_json::from_value(json!(json.get("pagination")))
             .map_err(|e| Error::Deserialization(e.to_string()))?;
-        let body = serde_json::from_value(json)
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
+        let body =
+            serde_json::from_value(json).map_err(|e| Error::Deserialization(e.to_string()))?;
 
         Ok(Response {
             rate_limit,
@@ -405,9 +396,7 @@ impl Client {
         }
     }
 
-    fn build_empty_response(
-        response: ureq::Response,
-    ) -> Result<EmptyResponse, Error> {
+    fn build_empty_response(response: ureq::Response) -> Result<EmptyResponse, Error> {
         Ok(EmptyResponse {
             rate_limit: Self::extract_rate_limit_limit_header(&response)?,
             rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,

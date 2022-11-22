@@ -14,8 +14,8 @@
 //
 // Heavily inspired by https://github.com/dnsimple/dnsimple-rust
 
-pub mod actors;
 pub mod accounts;
+pub mod actors;
 pub mod client;
 pub mod errors;
 pub mod oauth;
