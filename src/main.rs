@@ -13,6 +13,9 @@
 // limitations under the License.
 
 #[allow(unused_variables)]
+#[allow(unused_macros)]
+#[macro_use]
+mod macros;
 mod app;
 mod cmd;
 

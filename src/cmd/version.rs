@@ -22,7 +22,7 @@ pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        println!("amp 0.1.0");
+        display!("amp 0.1.0");
         Ok(())
     }
 }
