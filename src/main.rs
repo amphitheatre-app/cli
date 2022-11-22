@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #[allow(unused_variables)]
+mod app;
 mod cmd;
 
 use clap::Parser;
@@ -22,6 +23,7 @@ use crate::cmd::cli::Cli;
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
+    app::set_global_verbosity(cli.verbose.log_level_filter());
 
     cli.exec()
 }
