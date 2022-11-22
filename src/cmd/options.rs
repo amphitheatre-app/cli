@@ -12,37 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgMatches, Command};
+use clap::Args;
 use errors::Result;
+use std::i32;
 
-pub fn build() -> Command<'static> {
-    Command::new("options")
-        .about("Output a list of global command-line options (applies to all commands)")
-        .args(&[
-            Arg::new("color")
-                .long("color")
-                .default_value("34")
-                .help("Specify the default output color in ANSI escape codes"),
-            Arg::new("interactive")
-                .long("interactive")
-                .takes_value(false)
-                .help("Allow user prompts for more information"),
-            Arg::new("timestamps")
-                .long("timestamps")
-                .takes_value(false)
-                .help("Print timestamps in logs"),
-            Arg::new("update-check")
-                .long("update-check")
-                .takes_value(false)
-                .help("Check for a more recent version of Amphitheatre"),
-            Arg::new("verbosity")
-                .short('v')
-                .long("verbosity")
-                .default_value("warning")
-                .help("Log level: one of [panic fatal error warning info debug trace]"),
-        ])
+/// Output a list of global command-line options (applies to all commands)
+#[derive(Args, Debug)]
+#[command(after_help = super::cli::AFTER_HELP_STRING)]
+pub struct Cli {
+    /// Specify the default output color in ANSI escape codes
+    #[arg(long, default_value = "34")]
+    color: i32,
+
+    /// Allow user prompts for more information
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    interactive: bool,
+
+    /// Print timestamps in logs
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    timestamps: bool,
+
+    /// Check for a more recent version of Amphitheatre
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    update_check: bool,
+
+    /// Log level: one of [panic fatal error warning info debug trace]
+    #[arg(long, default_value = "warning")]
+    verbosity: String,
 }
 
-pub fn execute(args: &ArgMatches) -> Result<()> {
-    todo!()
+impl Cli {
+    pub fn exec(&self) -> Result<()> {
+        Ok(())
+    }
 }

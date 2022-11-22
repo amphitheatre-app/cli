@@ -12,21 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgMatches, Command};
+use clap::Args;
+use clap::CommandFactory;
+use clap_complete::{generate, Shell};
 use errors::Result;
+use std::io;
 
-pub fn build() -> Command<'static> {
-    Command::new("completion")
-        .about("Output shell completion for the given shell (bash or zsh)")
-        .arg(
-            Arg::new("shell")
-                .takes_value(true)
-                .required(true)
-                .help("bash or zsh"),
-        )
-        .after_help(super::AFTER_HELP_STRING)
+use crate::cmd::cli::Cli as RootCli;
+
+/// Display the completion file for a given shell
+#[derive(Args, Debug)]
+#[command()]
+pub struct Cli {
+    #[arg(value_enum)]
+    shell: Shell,
 }
 
-pub fn execute(args: &ArgMatches) -> Result<()> {
-    todo!()
+impl Cli {
+    pub fn exec(&self) -> Result<()> {
+        let mut cmd = RootCli::command();
+        let bin_name = cmd.get_name().to_string();
+        generate(self.shell, &mut cmd, bin_name, &mut io::stdout());
+
+        Ok(())
+    }
 }

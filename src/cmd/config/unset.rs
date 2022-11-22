@@ -15,10 +15,20 @@
 use clap::Args;
 use errors::Result;
 
-/// Delete any resources deployed by Amphitheatre
+/// Unset a value in the global Amphitheatre config
 #[derive(Args, Debug)]
-#[command(after_help = super::cli::AFTER_HELP_STRING)]
-pub struct Cli {}
+#[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
+pub struct Cli {
+    key: String,
+
+    /// Path to Amphitheatre config
+    #[arg(short, long, default_value = "$HOME/.amp/config")]
+    config: Option<String>,
+
+    /// Set value for global config
+    #[arg(short, long)]
+    global: bool,
+}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {

@@ -12,22 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgMatches, Command};
+use clap::Args;
 use errors::Result;
 
-pub fn build() -> Command<'static> {
-    Command::new("survey")
-        .about("Opens a web browser to fill out the Amphitheatre survey")
-        .arg(
-            Arg::new("id")
-                .long("id")
-                .default_value("hats")
-                .help("Survey ID for survey command to open"),
-        )
-        .arg_required_else_help(true)
-        .after_help(super::AFTER_HELP_STRING)
-}
+/// Opens a web browser to fill out the Amphitheatre survey
+#[derive(Args, Debug)]
+#[command(after_help = super::cli::AFTER_HELP_STRING)]
+pub struct Cli {}
 
-pub fn execute(args: &ArgMatches) -> Result<()> {
-    todo!()
+impl Cli {
+    pub fn exec(&self) -> Result<()> {
+        Ok(())
+    }
 }

@@ -12,16 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{ArgMatches, Command};
+use clap::Args;
 use errors::Result;
 
-pub fn build() -> Command<'static> {
-    Command::new("version")
-        .about("Print the version information")
-        .after_help(super::AFTER_HELP_STRING)
-}
+/// Print the version information
+#[derive(Args, Debug)]
+#[command(after_help = super::cli::AFTER_HELP_STRING)]
+pub struct Cli {}
 
-pub fn execute(_args: &ArgMatches) -> Result<()> {
-    println!("amp 0.1.0");
-    Ok(())
+impl Cli {
+    pub fn exec(&self) -> Result<()> {
+        println!("amp 0.1.0");
+        Ok(())
+    }
 }

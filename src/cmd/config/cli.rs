@@ -12,16 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::Args;
+use clap::{Args, Subcommand};
 use errors::Result;
 
-/// Delete any resources deployed by Amphitheatre
+/// Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)
 #[derive(Args, Debug)]
-#[command(after_help = super::cli::AFTER_HELP_STRING)]
-pub struct Cli {}
+#[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
+pub struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    List(super::list::Cli),
+    Set(super::set::Cli),
+    Unset(super::unset::Cli),
+}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        Ok(())
+        match &self.command {
+            Commands::List(cli) => cli.exec(),
+            Commands::Set(cli) => cli.exec(),
+            Commands::Unset(cli) => cli.exec(),
+        }
     }
 }

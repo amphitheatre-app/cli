@@ -12,79 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{App, ArgMatches, Command};
-use errors::Result;
-
-mod apply;
-mod build;
-mod clean;
-mod completion;
-mod config;
-mod debug;
-mod deploy;
-mod dev;
-mod diagnose;
-mod fix;
-mod init;
-mod options;
-mod render;
-mod run;
-mod schema;
-mod survey;
-mod test;
-mod version;
-
-type CmdName = &'static str;
-type FnBuiler = fn() -> App<'static>;
-type FnExcuter = for<'r> fn(&'r ArgMatches) -> Result<()>;
-
-lazy_static::lazy_static! {
-    static ref COMMANDS: Vec<(CmdName, FnBuiler, FnExcuter)> = vec![
-        ("apply", apply::build, apply::execute),
-        ("build", build::build, build::execute),
-        ("clean", clean::build, clean::execute),
-        ("completion", completion::build, completion::execute),
-        ("config", config::build, config::execute),
-        ("debug", debug::build, debug::execute),
-        ("deploy", deploy::build, deploy::execute),
-        ("dev", dev::build, dev::execute),
-        ("diagnose", diagnose::build, diagnose::execute),
-        ("fix", fix::build, fix::execute),
-        ("init", init::build, init::execute),
-        ("options", options::build, options::execute),
-        ("render", render::build, render::execute),
-        ("run", run::build, run::execute),
-        ("schema", schema::build, schema::execute),
-        ("survey", survey::build, survey::execute),
-        ("test", test::build, test::execute),
-        ("version", version::build, version::execute),
-    ];
-}
-
-const AFTER_HELP_STRING: &str =
-    "Use \"amp options\" for a list of global command-line options (applies to all commands).";
-
-pub fn build() -> Command<'static> {
-    Command::new("amp")
-        .about("Amphitheatre's offcial command line tool")
-        .arg_required_else_help(true)
-        .subcommands(
-            COMMANDS
-                .iter()
-                .map(move |(_, build, _)| build())
-                .collect::<Vec<App>>(),
-        )
-        .after_help(AFTER_HELP_STRING)
-}
-
-pub fn execute() {
-    let matches = build().get_matches();
-
-    if let Some((name, args)) = matches.subcommand() {
-        if let Some((_, _, execute)) = COMMANDS.iter().find(|&&(cmd, _, _)| cmd == name) {
-            if let Err(e) = execute(args) {
-                println!("Failed to execute the {} command, error is {}", name, e);
-            }
-        }
-    }
-}
+pub mod apply;
+pub mod build;
+pub mod clean;
+pub mod cli;
+pub mod completion;
+pub mod config;
+pub mod debug;
+pub mod deploy;
+pub mod dev;
+pub mod diagnose;
+pub mod fix;
+pub mod init;
+pub mod options;
+pub mod render;
+pub mod run;
+pub mod schema;
+pub mod survey;
+pub mod test;
+pub mod version;

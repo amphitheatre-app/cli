@@ -12,73 +12,51 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Arg, ArgAction, ArgMatches, Command};
+use clap::Args;
 use errors::Result;
 use schema::Manifest;
 use std::fs;
-use std::path::Path;
 
 const FILE_NAME: &str = ".amp.toml";
 
-pub fn build() -> Command<'static> {
-    Command::new("init")
-        .about("Create a new Amphitheatre character in an existing directory")
-        .args(&[
-            Arg::new("name")
-                .long("name")
-                .takes_value(true)
-                .help("Set the character name. Defaults to the directory name.")
-                .display_order(1),
-            Arg::new("force")
-                .long("force")
-                .action(ArgAction::SetTrue)
-                .help("Force the generation of the Amphitheatre character"),
-        ])
-        .after_help(super::AFTER_HELP_STRING)
+/// Create a new Amphitheatre character in an existing directory
+#[derive(Args, Debug)]
+#[command(after_help = super::cli::AFTER_HELP_STRING)]
+pub struct Cli {
+    /// Set the character name. Defaults to the directory name.
+    #[arg(long)]
+    name: Option<String>,
+    /// Force the generation of the Amphitheatre character
+    #[arg(long, action= clap::ArgAction::SetTrue)]
+    force: bool,
 }
 
-pub fn execute(args: &ArgMatches) -> Result<()> {
-    let path = std::env::current_dir()?;
+impl Cli {
+    pub fn exec(&self) -> Result<()> {
+        let path = std::env::current_dir().unwrap();
 
-    let name = args
-        .get_one::<String>("name")
-        .map(String::as_str)
-        .or_else(|| name(&path).ok())
-        .unwrap();
-    let force = args.get_flag("force");
+        let name = self
+            .name
+            .as_deref()
+            .unwrap_or_else(|| path.file_name().unwrap().to_str().unwrap());
 
-    if !force && path.join(FILE_NAME).exists() {
-        println!("`amp init` cannot be run on existing Amphitheatre character");
-        std::process::exit(1);
+        if !self.force && path.join(FILE_NAME).exists() {
+            println!("`amp init` cannot be run on existing Amphitheatre character");
+            std::process::exit(1);
+        }
+
+        if let Err(e) = create(name) {
+            println!("Failed to create the character: {}", e);
+            std::process::exit(1);
+        }
+
+        println!(
+            "Created the character: {}. See more definitions at `.amp.toml`",
+            name
+        );
+
+        Ok(())
     }
-
-    if let Err(e) = create(name) {
-        println!("Failed to create the character: {}", e);
-        std::process::exit(1);
-    }
-
-    println!(
-        "Created the character: {}. See more definitions at `.amp.toml`",
-        name
-    );
-
-    Ok(())
-}
-
-fn name(path: &Path) -> Result<&str> {
-    let file_name = path.file_name().ok_or_else(|| {
-        errors::format_err!(
-            "cannot auto-detect character name from path {:?} ; use --name to override",
-            path.as_os_str()
-        )
-    })?;
-
-    file_name.to_str().ok_or_else(|| {
-        errors::format_err!(
-            "cannot create character with a non-unicode name: {:?}",
-            file_name
-        )
-    })
 }
 
 fn create(name: &str) -> Result<()> {

@@ -15,6 +15,13 @@
 #[allow(unused_variables)]
 mod cmd;
 
-fn main() {
-    cmd::execute()
+use clap::Parser;
+use errors::Result;
+
+use crate::cmd::cli::Cli;
+
+fn main() -> Result<()> {
+    let cli = Cli::parse();
+
+    cli.exec()
 }
