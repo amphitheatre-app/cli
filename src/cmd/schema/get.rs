@@ -14,6 +14,7 @@
 
 use clap::Args;
 use errors::Result;
+use schema::Character;
 
 /// Print a given .amp.toml's json schema
 #[derive(Args, Debug)]
@@ -25,6 +26,11 @@ pub struct Cli {
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
+        if self.options.is_none() {
+            let json = serde_json::to_string_pretty(&Character::default())?;
+            display!("{}", json);
+        }
+
         Ok(())
     }
 }
