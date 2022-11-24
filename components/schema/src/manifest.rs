@@ -20,3 +20,6 @@ use serde::{Deserialize, Serialize};
 pub struct Manifest {
     pub character: Character,
 }
+
+#[derive(Clone, Debug)]
+pub struct VirtualManifest {}

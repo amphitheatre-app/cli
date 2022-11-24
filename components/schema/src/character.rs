@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fmt;
+
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Default, Clone)]
@@ -31,4 +33,20 @@ pub struct Character {
     pub exclude: Vec<String>,
     pub include: Vec<String>,
     pub publish: Vec<String>,
+}
+
+impl fmt::Display for Character {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {}", self.name, self.version)
+    }
+}
+
+impl fmt::Debug for Character {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Character")
+            .field("name", &self.name)
+            .field("version", &self.version)
+            .field("..", &"..")
+            .finish()
+    }
 }
