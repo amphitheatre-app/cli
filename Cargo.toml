@@ -1,7 +1,13 @@
 [package]
-edition = "2021"
 name = "amp"
+description = "Amphitheatre's official command line tool"
 version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+homepage = "https://amphitheatre.app"
+documentation = "https://docs.amphitheatre.app/cli/"
+repository = "https://github.com/amphitheatre-app/cli"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
