@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::client::{Client, Endpoint, Response};
-use crate::errors::Error;
+use super::client::{Client, Endpoint, Response};
+use super::errors::Error;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]

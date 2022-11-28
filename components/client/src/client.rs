@@ -18,11 +18,11 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
 
-use crate::accounts::Accounts;
-use crate::actors::Actors;
-use crate::errors::Error;
-use crate::oauth::OAuth;
-use crate::playbooks::Playbooks;
+use super::accounts::Accounts;
+use super::actors::Actors;
+use super::errors::Error;
+use super::oauth::OAuth;
+use super::playbooks::Playbooks;
 use ureq::Request;
 
 const VERSION: &str = "0.1.0";
