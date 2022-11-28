@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod cli;
-pub mod find;
-pub mod list;
-pub mod set;
-pub mod unset;
+pub fn canonicalize_path(path: &String) -> String {
+    match dunce::canonicalize(path) {
+        Ok(p) => p.display().to_string(),
+        Err(_) => path.to_string(),
+    }
+}

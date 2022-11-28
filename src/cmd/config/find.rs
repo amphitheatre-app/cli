@@ -12,32 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use clap::{Args, Subcommand};
+use crate::config;
+use clap::Args;
 use errors::Result;
 
-/// Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)
+/// Locate the config file
 #[derive(Args, Debug)]
 #[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
-pub struct Cli {
-    #[command(subcommand)]
-    command: Commands,
-}
-
-#[derive(Subcommand, Debug)]
-enum Commands {
-    Find(super::find::Cli),
-    List(super::list::Cli),
-    Set(super::set::Cli),
-    Unset(super::unset::Cli),
-}
+pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        match &self.command {
-            Commands::List(cli) => cli.exec(),
-            Commands::Set(cli) => cli.exec(),
-            Commands::Unset(cli) => cli.exec(),
-            Commands::Find(cli) => cli.exec(),
-        }
+        display!("{}", config::path()?.display());
+        Ok(())
     }
 }

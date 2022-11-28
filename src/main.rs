@@ -18,6 +18,8 @@
 mod macros;
 mod app;
 mod cmd;
+mod config;
+mod platform;
 
 use clap::Parser;
 use errors::Result;
@@ -27,6 +29,7 @@ use crate::cmd::cli::Cli;
 fn main() -> Result<()> {
     let cli = Cli::parse();
     app::set_global_verbosity(cli.verbose.log_level_filter());
+    app::set_global_config(config::load()?);
 
     cli.exec()
 }
