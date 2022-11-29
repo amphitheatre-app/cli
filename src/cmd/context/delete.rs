@@ -15,31 +15,15 @@
 use clap::Args;
 use errors::Result;
 
-use crate::ops;
-
-/// Run a pipeline, build & deploy once
+/// Delete a context
 #[derive(Args, Debug)]
-#[command(after_help = super::cli::AFTER_HELP_STRING)]
+#[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
 pub struct Cli {
-    /// Show the build logs and output
-    #[arg(long, action = clap::ArgAction::SetTrue)]
-    cleanup: bool,
-
-    /// Recreate Kubernetes resources if necessary for deployment, warning: might cause downtime!
-    #[arg(long, action= clap::ArgAction::SetTrue)]
-    force: bool,
-
-    /// Activate profiles by name (prefixed with `-` to disable a profile)
-    #[arg(short, long, default_value = "[]")]
-    profile: Option<Vec<String>>,
-
-    /// Stream logs from deployed objects
-    #[arg(long, action= clap::ArgAction::SetTrue)]
-    tail: bool,
+    url: String,
 }
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        ops::run()
+        Ok(())
     }
 }
