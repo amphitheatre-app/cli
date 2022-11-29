@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod build;
 pub mod clean;
 pub mod cli;
 pub mod completion;
@@ -21,12 +20,9 @@ pub mod debug;
 pub mod deploy;
 pub mod dev;
 pub mod diagnose;
-pub mod fix;
 pub mod init;
 pub mod options;
 pub mod render;
 pub mod run;
-pub mod schema;
-pub mod survey;
 pub mod test;
 pub mod version;

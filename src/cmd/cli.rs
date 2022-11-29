@@ -36,7 +36,6 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    Build(super::build::Cli),
     Clean(super::clean::Cli),
     Completion(super::completion::Cli),
     Config(super::config::cli::Cli),
@@ -44,13 +43,10 @@ enum Commands {
     Deploy(super::deploy::Cli),
     Dev(super::dev::Cli),
     Diagnose(super::diagnose::Cli),
-    Fix(super::fix::Cli),
     Init(super::init::Cli),
     Options(super::options::Cli),
     Render(super::render::Cli),
     Run(super::run::Cli),
-    Schema(super::schema::cli::Cli),
-    Survey(super::survey::Cli),
     Test(super::test::Cli),
     Version(super::version::Cli),
 }
@@ -58,7 +54,6 @@ enum Commands {
 impl Cli {
     pub fn exec(&self) -> Result<()> {
         match &self.command {
-            Commands::Build(cli) => cli.exec(),
             Commands::Clean(cli) => cli.exec(),
             Commands::Completion(cli) => cli.exec(),
             Commands::Config(cli) => cli.exec(),
@@ -66,13 +61,10 @@ impl Cli {
             Commands::Deploy(cli) => cli.exec(),
             Commands::Dev(cli) => cli.exec(),
             Commands::Diagnose(cli) => cli.exec(),
-            Commands::Fix(cli) => cli.exec(),
             Commands::Init(cli) => cli.exec(),
             Commands::Options(cli) => cli.exec(),
             Commands::Render(cli) => cli.exec(),
             Commands::Run(cli) => cli.exec(),
-            Commands::Schema(cli) => cli.exec(),
-            Commands::Survey(cli) => cli.exec(),
             Commands::Test(cli) => cli.exec(),
             Commands::Version(cli) => cli.exec(),
         }
