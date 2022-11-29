@@ -19,6 +19,7 @@ mod macros;
 mod app;
 mod cmd;
 mod config;
+mod ops;
 mod platform;
 
 use clap::Parser;
