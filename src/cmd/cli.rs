@@ -36,7 +36,6 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    Apply(super::apply::Cli),
     Build(super::build::Cli),
     Clean(super::clean::Cli),
     Completion(super::completion::Cli),
@@ -59,7 +58,6 @@ enum Commands {
 impl Cli {
     pub fn exec(&self) -> Result<()> {
         match &self.command {
-            Commands::Apply(cli) => cli.exec(),
             Commands::Build(cli) => cli.exec(),
             Commands::Clean(cli) => cli.exec(),
             Commands::Completion(cli) => cli.exec(),
