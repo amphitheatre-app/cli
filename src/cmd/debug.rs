@@ -19,6 +19,10 @@ use errors::Result;
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
     /// When set to false, builds wait for API request instead of running automatically
     #[arg(long, action= clap::ArgAction::SetTrue)]
     auto_build: bool,
@@ -38,6 +42,14 @@ pub struct Cli {
     /// Delete deployments after dev or debug mode is interrupted
     #[arg(long, action= clap::ArgAction::SetTrue)]
     cleanup: bool,
+
+    /// File for global configurations
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
+    /// Path or URL to the Amphitheatre config file
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
 
     /// Recreate Kubernetes resources if necessary for deployment,
     /// warning: might cause downtime!
