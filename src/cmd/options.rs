@@ -14,7 +14,6 @@
 
 use clap::Args;
 use errors::Result;
-use std::i32;
 
 /// Output a list of global command-line options (applies to all commands)
 #[derive(Args, Debug)]
