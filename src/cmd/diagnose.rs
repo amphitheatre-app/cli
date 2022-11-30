@@ -19,6 +19,18 @@ use errors::Result;
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
+    /// File for global configurations
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
+    /// Path or URL to the Amphitheatre config file
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
+
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]")]
     profile: Option<Vec<String>>,
