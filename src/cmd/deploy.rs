@@ -19,10 +19,27 @@ use errors::Result;
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
+    /// File for global configurations
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
+    /// Path or URL to the Amphitheatre config file
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
+
     /// Recreate Kubernetes resources if necessary for deployment,
     /// warning: might cause downtime!
     #[arg(long, action= clap::ArgAction::SetTrue)]
     force: bool,
+
+    /// Run `status-check` iteratively after each deploy step,
+    /// instead of all-together at the end of all deploys (default)
+    #[arg(long, action= clap::ArgAction::SetTrue)]
+    iterative_status_check: bool,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]")]
