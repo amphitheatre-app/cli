@@ -18,7 +18,23 @@ use errors::Result;
 /// Delete any resources deployed by Amphitheatre
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
-pub struct Cli {}
+pub struct Cli {
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
+    /// File for global configurations (defaults to $HOME/.amp/config)
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
+    /// If true, amp will skip yes/no confirmation from the user and default to yes
+    #[arg(long, action = clap::ArgAction::SetTrue)]
+    dry_run: bool,
+
+    /// Path or URL to the Amphitheatre config file
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
+}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
