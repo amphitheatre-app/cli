@@ -19,6 +19,10 @@ use errors::Result;
 #[derive(Args, Debug)]
 #[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// File for global configurations
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
     url: String,
 }
 

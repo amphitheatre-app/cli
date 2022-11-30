@@ -23,7 +23,7 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
     assume_yes: bool,
 
-    /// File for global configurations (defaults to $HOME/.amp/config)
+    /// File for global configurations
     #[arg(short, long, default_value = "~/.amp/config")]
     config: Option<String>,
 
