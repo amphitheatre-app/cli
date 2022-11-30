@@ -23,12 +23,25 @@ const FILE_NAME: &str = ".amp.toml";
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
-    /// Set the character name. Defaults to the directory name.
-    #[arg(long)]
-    name: Option<String>,
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
+    /// File for global configurations
+    #[arg(short, long, default_value = "~/.amp/config")]
+    config: Option<String>,
+
+    /// File to write generated manifests to
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
+
     /// Force the generation of the Amphitheatre character
     #[arg(long, action= clap::ArgAction::SetTrue)]
     force: bool,
+
+    /// Set the character name. Defaults to the directory name.
+    #[arg(long)]
+    name: Option<String>,
 }
 
 impl Cli {
