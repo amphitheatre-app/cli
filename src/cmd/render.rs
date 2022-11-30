@@ -19,6 +19,14 @@ use errors::Result;
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// If true, amp will skip yes/no confirmation from the user
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    assume_yes: bool,
+
+    /// Path or URL to the Amphitheatre config file
+    #[arg(short, long, default_value = ".amp.toml")]
+    filename: Option<String>,
+
     /// Show the build logs and output
     #[arg(long, action = clap::ArgAction::SetTrue)]
     loud: bool,

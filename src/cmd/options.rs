@@ -20,10 +20,6 @@ use std::i32;
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
-    /// Specify the default output color in ANSI escape codes
-    #[arg(long, default_value = "34")]
-    color: i32,
-
     /// Allow user prompts for more information
     #[arg(long, action = clap::ArgAction::SetTrue)]
     interactive: bool,
