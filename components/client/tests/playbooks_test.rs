@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::common::setup_mock_for;
 use client::playbooks::PlaybookPayload;
+
+use crate::common::setup_mock_for;
 mod common;
 
 #[test]

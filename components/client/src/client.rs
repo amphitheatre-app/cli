@@ -17,13 +17,13 @@ use std::collections::HashMap;
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
+use ureq::Request;
 
 use super::accounts::Accounts;
 use super::actors::Actors;
 use super::errors::Error;
 use super::oauth::OAuth;
 use super::playbooks::Playbooks;
-use ureq::Request;
 
 const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "amp/";

@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::client::{Client, Endpoint, RequestOptions, Response};
-use super::errors::Error;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+
+use super::client::{Client, Endpoint, RequestOptions, Response};
+use super::errors::Error;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Actor {

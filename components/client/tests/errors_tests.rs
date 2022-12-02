@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::common::setup_mock_for;
 use assert_matches::assert_matches;
 use client::errors::Error;
 use serde_json::json;
+
+use crate::common::setup_mock_for;
 
 mod common;
 

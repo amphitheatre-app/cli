@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::PathBuf;
+
 use errors::{Context, Result};
 use serde::{Deserialize, Serialize};
-use std::path::PathBuf;
 
 const APP_NAME: &str = "amp";
 const FILE_STEM: &str = "config";

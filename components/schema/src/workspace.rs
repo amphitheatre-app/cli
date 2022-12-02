@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::character::Character;
-use crate::manifest::VirtualManifest;
+use std::collections::HashMap;
+use std::path::{Path, PathBuf};
+
 use errors::{Ok, Result};
 
-use std::{
-    collections::HashMap,
-    path::{Path, PathBuf},
-};
+use super::character::Character;
+use crate::manifest::VirtualManifest;
 
 #[derive(Debug)]
 pub struct Workspace {

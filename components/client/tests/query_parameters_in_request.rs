@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::common::setup_mock_for;
 use std::collections::HashMap;
+
+use crate::common::setup_mock_for;
 mod common;
 use client::client::{Endpoint, Filters, Paginate, RequestOptions, Sort};
 use serde::Deserialize;

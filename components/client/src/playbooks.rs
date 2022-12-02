@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use serde::{Deserialize, Serialize};
+
 use super::client::{Client, EmptyResponse, Endpoint, RequestOptions, Response};
 use super::errors::Error;
-use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playbook {

@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use super::Character;
 use serde::{Deserialize, Serialize};
+
+use super::Character;
 
 #[derive(Serialize, Deserialize, Default)]
 #[serde(rename_all = "kebab-case")]

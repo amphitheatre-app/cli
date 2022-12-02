@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::fs;
+
 use clap::Args;
 use errors::Result;
 use schema::Manifest;
-use std::fs;
 
 const FILE_NAME: &str = ".amp.toml";
 

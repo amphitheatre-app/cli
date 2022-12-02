@@ -14,8 +14,9 @@
 
 use std::fmt::Display;
 
-use super::Character;
 use serde::{Deserialize, Serialize};
+
+use super::Character;
 
 #[derive(Serialize, Deserialize, Default)]
 #[serde(rename_all = "kebab-case")]

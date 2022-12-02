@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::thread;
+use std::time::Duration;
+
 use client::client::Client;
 use client::playbooks::PlaybookPayload;
 use errors::Result;
-use std::{thread, time::Duration};
 
 pub fn run() -> Result<()> {
     // Handle signal.

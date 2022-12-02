@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::config;
 use clap::Args;
 use errors::Result;
+
+use crate::config;
 
 /// Locate the config file
 #[derive(Args, Debug)]
