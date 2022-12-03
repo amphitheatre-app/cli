@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::client::{Client, Endpoint, Response};
-use super::errors::Error;
+use super::errors::ClientError;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Account {
@@ -52,12 +52,14 @@ impl Accounts<'_> {
     /// ```no_run
     /// use client::client::Client;
     ///
-    /// let client = Client::new(String::from("AUTH_TOKEN"));
+    /// let client = Client::new(
+    ///     String::from("https://cloud.amphitheatre.app"),
+    ///     String::from("AUTH_TOKEN"),
+    /// );
     /// let response = client.accounts().me().unwrap();
     /// let account = response.data.unwrap();
-    ///
     /// ```
-    pub fn me(&self) -> Result<Response<Account>, Error> {
+    pub fn me(&self) -> Result<Response<Account>, ClientError> {
         self.client.get::<AccountEndpoint>("/me", None)
     }
 }

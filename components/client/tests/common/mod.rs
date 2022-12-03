@@ -29,7 +29,6 @@ use mockito::{mock, Mock};
 /// `fixture`: the path to the fixture inside the `api` directory
 /// `path`: the path in the server (i.e. `/me`)
 /// `method`: the HTTP method we are going to use (GET, POST, DELETE, ...)
-///
 pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock) {
     let path = format!("/v1{}", path);
     let fixture = format!("./tests/fixtures/v1/api/{}.http", fixture);
@@ -49,7 +48,7 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
         .with_body(body.unwrap())
         .create();
 
-    let mut client = Client::new(String::from("some-token"));
-    client.set_base_url(&mockito::server_url());
+    let client = Client::new(mockito::server_url(), String::from("some-token"));
+
     (client, mock)
 }

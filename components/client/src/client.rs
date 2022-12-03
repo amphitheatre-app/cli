@@ -21,7 +21,7 @@ use ureq::Request;
 
 use super::accounts::Accounts;
 use super::actors::Actors;
-use super::errors::Error;
+use super::errors::ClientError;
 use super::oauth::OAuth;
 use super::playbooks::Playbooks;
 
@@ -29,7 +29,6 @@ const VERSION: &str = "0.1.0";
 const DEFAULT_USER_AGENT: &str = "amp/";
 
 const API_VERSION: &str = "v1";
-const DEFAULT_BASE_URL: &str = "https://api.amphitheatre.app";
 
 /// Represents the Rust client for the Amphitheatre API
 ///
@@ -41,12 +40,14 @@ const DEFAULT_BASE_URL: &str = "https://api.amphitheatre.app";
 /// ```no_run
 /// use client::client::Client;
 ///
-/// let client = Client::new(String::from("AUTH_TOKEN"));
+/// let client = Client::new(
+///     String::from("https://cloud.amphitheatre.app"),
+///     String::from("AUTH_TOKEN"),
+/// );
 /// let response = client.accounts().me().unwrap();
 ///
 /// let account = response.data.unwrap();
 /// ```
-///
 pub struct Client {
     base_url: String,
     user_agent: String,
@@ -171,37 +172,22 @@ impl Client {
     ///
     /// ```no_run
     /// use client::client::Client;
-    /// let client = Client::new(String::from("AUTH_TOKEN"));
+    /// let client = Client::new(
+    ///     String::from("https://cloud.amphitheatre.app"),
+    ///     String::from("AUTH_TOKEN"),
+    /// );
     /// ```
     ///
     /// # Arguments
     ///
     /// `token`: the bearer authentication token
-    pub fn new(token: String) -> Client {
+    pub fn new(base_url: String, token: String) -> Client {
         Client {
-            base_url: String::from(DEFAULT_BASE_URL),
+            base_url,
             user_agent: DEFAULT_USER_AGENT.to_owned() + VERSION,
             auth_token: token,
             _agent: ureq::Agent::new(),
         }
-    }
-
-    /// Convenience function to change the base url in runtime (used internally
-    /// for testing).
-    ///
-    /// Note that if you want to do this you will have to declare your client mutable.
-    ///
-    /// ```no_run
-    /// use client::client::Client;
-    /// let mut client = Client::new(String::from("AUTH_TOKEN"));
-    /// client.set_base_url("https:://example.com");
-    /// ```
-    ///
-    /// # Arguments
-    ///
-    /// `url`: The url we want to change the base url to.
-    pub fn set_base_url(&mut self, url: &str) {
-        self.base_url = String::from(url);
     }
 
     /// Returns the current url (including the `API_VERSION` as part of the path).
@@ -225,7 +211,7 @@ impl Client {
         &self,
         path: &str,
         options: Option<RequestOptions>,
-    ) -> Result<Response<E::Output>, Error> {
+    ) -> Result<Response<E::Output>, ClientError> {
         self.call::<E>(self.build_get_request(&path, options))
     }
 
@@ -239,7 +225,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, Error> {
+    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
         self.call_with_payload::<E>(self.build_post_request(&path), data)
     }
 
@@ -248,7 +234,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_post(&self, path: &str) -> Result<EmptyResponse, Error> {
+    pub fn empty_post(&self, path: &str) -> Result<EmptyResponse, ClientError> {
         self.call_empty(self.build_post_request(&path))
     }
 
@@ -262,7 +248,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, Error> {
+    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
         self.call_with_payload::<E>(self.build_put_request(&path), data)
     }
 
@@ -271,7 +257,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn empty_put(&self, path: &str) -> Result<EmptyResponse, Error> {
+    pub fn empty_put(&self, path: &str) -> Result<EmptyResponse, ClientError> {
         self.call_empty(self.build_put_request(&path))
     }
 
@@ -285,7 +271,7 @@ impl Client {
         &self,
         path: &str,
         data: Value,
-    ) -> Result<Response<<E as Endpoint>::Output>, Error> {
+    ) -> Result<Response<<E as Endpoint>::Output>, ClientError> {
         self.call_with_payload::<E>(self.build_patch_request(&path), data)
     }
 
@@ -294,7 +280,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete(&self, path: &str) -> Result<EmptyResponse, Error> {
+    pub fn delete(&self, path: &str) -> Result<EmptyResponse, ClientError> {
         self.call_empty(self.build_delete_request(&path))
     }
 
@@ -306,7 +292,7 @@ impl Client {
     pub fn delete_with_response<E: Endpoint>(
         &self,
         path: &str,
-    ) -> Result<Response<E::Output>, Error> {
+    ) -> Result<Response<E::Output>, ClientError> {
         self.call::<E>(self.build_delete_request(&path))
     }
 
@@ -314,34 +300,40 @@ impl Client {
         &self,
         request: Request,
         data: Value,
-    ) -> Result<Response<E::Output>, Error> {
+    ) -> Result<Response<E::Output>, ClientError> {
         self.process_response::<E>(request.send_json(data))
     }
 
-    fn call<E: Endpoint>(&self, request: Request) -> Result<Response<E::Output>, Error> {
+    fn call<E: Endpoint>(&self, request: Request) -> Result<Response<E::Output>, ClientError> {
         self.process_response::<E>(request.call())
     }
 
     fn process_response<E: Endpoint>(
         &self,
         result: Result<ureq::Response, ureq::Error>,
-    ) -> Result<Response<E::Output>, Error> {
+    ) -> Result<Response<E::Output>, ClientError> {
         match result {
             Ok(response) => Self::build_response::<E>(response),
-            Err(ureq::Error::Status(code, response)) => Err(Error::parse_response(code, response)),
-            Err(ureq::Error::Transport(transport)) => Err(Error::parse_transport(transport)),
+            Err(ureq::Error::Status(code, response)) => {
+                Err(ClientError::parse_response(code, response))
+            }
+            Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
         }
     }
 
-    fn call_empty(&self, request: Request) -> Result<EmptyResponse, Error> {
+    fn call_empty(&self, request: Request) -> Result<EmptyResponse, ClientError> {
         match request.call() {
             Ok(response) => Self::build_empty_response(response),
-            Err(ureq::Error::Status(code, response)) => Err(Error::parse_response(code, response)),
-            Err(ureq::Error::Transport(transport)) => Err(Error::parse_transport(transport)),
+            Err(ureq::Error::Status(code, response)) => {
+                Err(ClientError::parse_response(code, response))
+            }
+            Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
         }
     }
 
-    fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, Error> {
+    fn build_response<E: Endpoint>(
+        resp: ureq::Response,
+    ) -> Result<Response<E::Output>, ClientError> {
         let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
         let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
         let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
@@ -350,13 +342,13 @@ impl Client {
 
         let json = resp
             .into_json::<Value>()
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
         let data = serde_json::from_value(json!(json.get("data")))
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
         let pagination = serde_json::from_value(json!(json.get("pagination")))
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
-        let body =
-            serde_json::from_value(json).map_err(|e| Error::Deserialization(e.to_string()))?;
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let body = serde_json::from_value(json)
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
         Ok(Response {
             rate_limit,
@@ -369,34 +361,34 @@ impl Client {
         })
     }
 
-    fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Result<String, Error> {
+    fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Result<String, ClientError> {
         match resp.header("X-RateLimit-Reset") {
             Some(header) => Ok(header.to_string()),
-            None => Err(Error::Deserialization(String::from(
+            None => Err(ClientError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Reset header",
             ))),
         }
     }
 
-    fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, Error> {
+    fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, ClientError> {
         match resp.header("X-RateLimit-Remaining") {
             Some(header) => Ok(header.to_string()),
-            None => Err(Error::Deserialization(String::from(
+            None => Err(ClientError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Remaining header",
             ))),
         }
     }
 
-    fn extract_rate_limit_limit_header(resp: &ureq::Response) -> Result<String, Error> {
+    fn extract_rate_limit_limit_header(resp: &ureq::Response) -> Result<String, ClientError> {
         match resp.header("X-RateLimit-Limit") {
             Some(header) => Ok(header.to_string()),
-            None => Err(Error::Deserialization(String::from(
+            None => Err(ClientError::Deserialization(String::from(
                 "Cannot parse the X-RateLimit-Limit header",
             ))),
         }
     }
 
-    fn build_empty_response(response: ureq::Response) -> Result<EmptyResponse, Error> {
+    fn build_empty_response(response: ureq::Response) -> Result<EmptyResponse, ClientError> {
         Ok(EmptyResponse {
             rate_limit: Self::extract_rate_limit_limit_header(&response)?,
             rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
@@ -408,24 +400,24 @@ impl Client {
     fn build_get_request(&self, path: &&str, options: Option<RequestOptions>) -> Request {
         let mut request = self
             ._agent
-            .get(&*self.url(path))
+            .get(&self.url(path))
             .set("User-Agent", &self.user_agent)
             .set("Accept", "application/json");
 
         if let Some(options) = options {
             if let Some(pagination) = options.paginate {
-                request = request.query("page", &*pagination.page.to_string());
-                request = request.query("per_page", &*pagination.per_page.to_string())
+                request = request.query("page", &pagination.page.to_string());
+                request = request.query("per_page", &pagination.per_page.to_string())
             }
 
             if let Some(filters) = options.filters {
                 for (key, value) in filters.filters {
-                    request = request.query(&*key, &*value);
+                    request = request.query(&key, &value);
                 }
             }
 
             if let Some(sort) = options.sort {
-                request = request.query("sort", &*sort.sort_by);
+                request = request.query("sort", &sort.sort_by);
             }
         }
 
@@ -484,24 +476,17 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::client::{Client, DEFAULT_BASE_URL, DEFAULT_USER_AGENT, VERSION};
+    use crate::client::{Client, DEFAULT_USER_AGENT, VERSION};
+    const BASE_URL: &str = "https://cloud.amphitheatre.app";
 
     #[test]
     fn creates_a_client() {
         let token = "some-auth-token";
-        let client = Client::new(String::from(token));
+        let client = Client::new(String::from(BASE_URL), String::from(token));
 
-        assert_eq!(client.base_url, DEFAULT_BASE_URL);
+        assert_eq!(client.base_url, BASE_URL);
         assert_eq!(client.user_agent, DEFAULT_USER_AGENT.to_owned() + VERSION);
         assert_eq!(client.auth_token, token);
-    }
-
-    #[test]
-    fn can_change_the_base_url() {
-        let mut client = Client::new(String::from("token"));
-        client.set_base_url("https://example.com");
-
-        assert_eq!(client.versioned_url(), "https://example.com/v1");
     }
 }
 

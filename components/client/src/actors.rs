@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use super::client::{Client, Endpoint, RequestOptions, Response};
-use super::errors::Error;
+use super::errors::ClientError;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Actor {
@@ -69,9 +69,9 @@ impl Actors<'_> {
         &self,
         playbook_id: u64,
         options: Option<RequestOptions>,
-    ) -> Result<Response<Vec<Actor>>, Error> {
+    ) -> Result<Response<Vec<Actor>>, ClientError> {
         let path = format!("/playbooks/{}/actors", playbook_id);
-        self.client.get::<ActorsEndpoint>(&*path, options)
+        self.client.get::<ActorsEndpoint>(&path, options)
     }
 
     /// Retrieve a actor
@@ -79,9 +79,9 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The ID of the actor we want to retrieve
-    pub fn get(&self, actor_id: u64) -> Result<Response<Actor>, Error> {
+    pub fn get(&self, actor_id: u64) -> Result<Response<Actor>, ClientError> {
         let path = format!("/actors/{}", actor_id);
-        self.client.get::<ActorEndpoint>(&*path, None)
+        self.client.get::<ActorEndpoint>(&path, None)
     }
 
     /// Retrieve the log streams of actor
@@ -99,9 +99,9 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The actor id
-    pub fn info(&self, actor_id: u64) -> Result<Response<Value>, Error> {
+    pub fn info(&self, actor_id: u64) -> Result<Response<Value>, ClientError> {
         let path = format!("/actors/{}/info", actor_id);
-        self.client.get::<ValueEndpoint>(&*path, None)
+        self.client.get::<ValueEndpoint>(&path, None)
     }
 
     /// Retrieve actor's stats
@@ -109,8 +109,8 @@ impl Actors<'_> {
     /// # Arguments
     ///
     /// `actor_id`: The actor id
-    pub fn stats(&self, actor_id: u64) -> Result<Response<Value>, Error> {
+    pub fn stats(&self, actor_id: u64) -> Result<Response<Value>, ClientError> {
         let path = format!("/actors/{}/stats", actor_id);
-        self.client.get::<ValueEndpoint>(&*path, None)
+        self.client.get::<ValueEndpoint>(&path, None)
     }
 }

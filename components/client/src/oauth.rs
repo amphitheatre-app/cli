@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::client::Client;
-use super::errors::Error;
+use super::errors::ClientError;
 
 /// Represents the payload used to exchange this information for the
 /// access token (`AccessToken`).
@@ -73,13 +73,16 @@ impl OAuth<'_> {
     /// use client::client::Client;
     /// use client::oauth::OAuthTokenPayload;
     ///
-    /// let client = Client::new(String::from("AUTH_TOKEN"));
+    /// let client = Client::new(
+    ///     String::from("https://cloud.amphitheatre.app"),
+    ///     String::from("AUTH_TOKEN"),
+    /// );
     /// let payload = OAuthTokenPayload {
     ///     client_id: "id".to_string(),
     ///     client_secret: "secret".to_string(),
     ///     code: "code".to_string(),
     ///     redirect_uri: "/redirect_uri".to_string(),
-    ///     state: "state".to_string()
+    ///     state: "state".to_string(),
     /// };
     ///
     /// let access_token = client.oauth().exchange_authorization_for_token(payload);
@@ -91,7 +94,7 @@ impl OAuth<'_> {
     pub fn exchange_authorization_for_token(
         &self,
         payload: OAuthTokenPayload,
-    ) -> Result<AccessToken, Error> {
+    ) -> Result<AccessToken, ClientError> {
         let path = "/oauth/access_token";
         let params = OAuthTokenParams {
             grant_type: "authorization_code".to_string(),
@@ -102,18 +105,18 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let value =
-            serde_json::to_value(params).map_err(|e| Error::Deserialization(e.to_string()))?;
+        let value = serde_json::to_value(params)
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
         let response = self
             .client
             ._agent
-            .post(&*self.client.url(path))
+            .post(&self.client.url(path))
             .send_json(value)
-            .map_err(|e| Error::Deserialization(e.to_string()))?;
+            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
         response
             .into_json::<AccessToken>()
-            .map_err(|e| Error::Deserialization(e.to_string()))
+            .map_err(|e| ClientError::Deserialization(e.to_string()))
     }
 }

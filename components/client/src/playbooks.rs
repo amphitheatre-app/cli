@@ -15,7 +15,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::client::{Client, EmptyResponse, Endpoint, RequestOptions, Response};
-use super::errors::Error;
+use super::errors::ClientError;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Playbook {
@@ -67,7 +67,10 @@ impl Playbooks<'_> {
     ///
     /// `options`: The `RequestOptions`
     ///             - Sort: `id`, `label`, `email`
-    pub fn list(&self, options: Option<RequestOptions>) -> Result<Response<Vec<Playbook>>, Error> {
+    pub fn list(
+        &self,
+        options: Option<RequestOptions>,
+    ) -> Result<Response<Vec<Playbook>>, ClientError> {
         self.client.get::<PlaybooksEndpoint>("/playbooks", options)
     }
 
@@ -77,10 +80,10 @@ impl Playbooks<'_> {
     ///
     /// `payload`: the `PlaybookPayload` with the information needed to create
     /// the playbook
-    pub fn create(&self, payload: PlaybookPayload) -> Result<Response<Playbook>, Error> {
+    pub fn create(&self, payload: PlaybookPayload) -> Result<Response<Playbook>, ClientError> {
         match serde_json::to_value(payload) {
             Ok(json) => self.client.post::<PlaybookEndpoint>("/playbooks", json),
-            Err(_) => Err(Error::Deserialization(String::from(
+            Err(_) => Err(ClientError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
         }
@@ -91,9 +94,9 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The ID of the playbook we want to retrieve
-    pub fn get(&self, playbook_id: u64) -> Result<Response<Playbook>, Error> {
+    pub fn get(&self, playbook_id: u64) -> Result<Response<Playbook>, ClientError> {
         let path = format!("/playbooks/{}", playbook_id);
-        self.client.get::<PlaybookEndpoint>(&*path, None)
+        self.client.get::<PlaybookEndpoint>(&path, None)
     }
 
     /// Update a playbook
@@ -106,12 +109,12 @@ impl Playbooks<'_> {
         &self,
         playbook_id: u64,
         payload: PlaybookPayload,
-    ) -> Result<Response<Playbook>, Error> {
+    ) -> Result<Response<Playbook>, ClientError> {
         let path = format!("/playbooks/{}", playbook_id);
 
         match serde_json::to_value(payload) {
-            Ok(json) => self.client.patch::<PlaybookEndpoint>(&*path, json),
-            Err(_) => Err(Error::Deserialization(String::from(
+            Ok(json) => self.client.patch::<PlaybookEndpoint>(&path, json),
+            Err(_) => Err(ClientError::Deserialization(String::from(
                 "Cannot deserialize json payload",
             ))),
         }
@@ -122,9 +125,9 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn delete(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
+    pub fn delete(&self, playbook_id: u64) -> Result<EmptyResponse, ClientError> {
         let path = format!("/playbooks/{}", playbook_id);
-        self.client.delete(&*path)
+        self.client.delete(&path)
     }
 
     /// Retrieve the event streams of playbook
@@ -142,9 +145,9 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn start(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
+    pub fn start(&self, playbook_id: u64) -> Result<EmptyResponse, ClientError> {
         let path = format!("/playbooks/{}/actions/start", playbook_id);
-        self.client.empty_post(&*path)
+        self.client.empty_post(&path)
     }
 
     /// Stop a playbook
@@ -152,8 +155,8 @@ impl Playbooks<'_> {
     /// # Arguments
     ///
     /// `playbook_id`: The playbook id
-    pub fn stop(&self, playbook_id: u64) -> Result<EmptyResponse, Error> {
+    pub fn stop(&self, playbook_id: u64) -> Result<EmptyResponse, ClientError> {
         let path = format!("/playbooks/{}/actions/stop", playbook_id);
-        self.client.empty_post(&*path)
+        self.client.empty_post(&path)
     }
 }

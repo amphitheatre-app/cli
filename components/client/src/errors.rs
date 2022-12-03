@@ -19,7 +19,7 @@ use ureq::{Response, Transport};
 
 /// Represents the possible errors thrown while interacting with the Amphitheatre API
 #[derive(Error, Deserialize, Serialize, Debug, PartialEq, Eq)]
-pub enum Error {
+pub enum ClientError {
     #[error("Authentication failed")]
     Unauthorized,
 
@@ -60,8 +60,8 @@ pub enum Error {
     Deserialization(String),
 }
 
-impl Error {
-    pub fn parse_response(code: u16, response: Response) -> Error {
+impl ClientError {
+    pub fn parse_response(code: u16, response: Response) -> ClientError {
         match code {
             400 => Self::bad_request(response),
             401 => Self::Unauthorized,
@@ -80,11 +80,11 @@ impl Error {
         }
     }
 
-    pub fn parse_transport(transport: Transport) -> Error {
+    pub fn parse_transport(transport: Transport) -> ClientError {
         Self::Transport(transport.to_string(), transport.kind().to_string())
     }
 
-    fn bad_request(response: Response) -> Error {
+    fn bad_request(response: Response) -> ClientError {
         match Self::response_to_json(response) {
             Ok(json) => Self::BadRequest {
                 message: Self::message_in(&json),
@@ -94,21 +94,21 @@ impl Error {
         }
     }
 
-    fn gateway_timeout(response: Response) -> Error {
+    fn gateway_timeout(response: Response) -> ClientError {
         match Self::response_to_json(response) {
             Ok(json) => Self::GatewayTimeout(Self::message_in(&json)),
             Err(error) => error,
         }
     }
 
-    fn not_found(response: Response) -> Error {
+    fn not_found(response: Response) -> ClientError {
         match Self::response_to_json(response) {
             Ok(json) => Self::NotFound(Self::message_in(&json)),
             Err(error) => error,
         }
     }
 
-    fn precondition_required(response: Response) -> Error {
+    fn precondition_required(response: Response) -> ClientError {
         match Self::response_to_json(response) {
             Ok(json) => Self::PreconditionRequired(Self::message_in(&json)),
             Err(error) => error,
@@ -122,10 +122,10 @@ impl Error {
         }
     }
 
-    fn response_to_json(response: Response) -> Result<Value, Error> {
+    fn response_to_json(response: Response) -> Result<Value, ClientError> {
         match response.into_json::<Value>() {
             Ok(value) => Ok(value),
-            Err(error) => Err(Error::Deserialization(error.to_string())),
+            Err(error) => Err(ClientError::Deserialization(error.to_string())),
         }
     }
 }
