@@ -19,7 +19,7 @@ client = {path = "components/client"}
 errors = {path = "components/errors"}
 schema = {path = "components/schema"}
 
-clap = {version = "4.0.26", features = ["derive"]}
+clap = {version = "4.0.26", features = ["derive", "env"]}
 clap-verbosity-flag = "2.0.0"
 clap_complete = "4.0.5"
 ctrlc = "3.2.3"

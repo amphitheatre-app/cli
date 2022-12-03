@@ -24,7 +24,7 @@ use errors::Result;
 #[command(
     arg_required_else_help = true,
     disable_help_subcommand = false,
-    after_help = AFTER_HELP_STRING
+    after_help = AFTER_HELP_STRING,
 )]
 pub struct Cli {
     #[clap(flatten)]

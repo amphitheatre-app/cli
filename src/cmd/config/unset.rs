@@ -22,11 +22,11 @@ pub struct Cli {
     key: String,
 
     /// Path to Amphitheatre config
-    #[arg(short, long, default_value = "~/.amp/config")]
+    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
     config: Option<String>,
 
     /// Set value for global config
-    #[arg(short, long)]
+    #[arg(short, long, env = "AMP_GLOBAL")]
     global: bool,
 }
 

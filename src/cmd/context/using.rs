@@ -20,7 +20,7 @@ use errors::Result;
 #[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
 pub struct Cli {
     /// File for global configurations
-    #[arg(short, long, default_value = "~/.amp/config")]
+    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
     config: Option<String>,
 
     url: Option<String>,

@@ -20,23 +20,23 @@ use errors::Result;
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user
-    #[arg(long, action = clap::ArgAction::Set, default_value = "true")]
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
 
     /// Path or URL to the Amphitheatre config file
-    #[arg(short, long, default_value = ".amp.toml")]
+    #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
     filename: Option<String>,
 
     /// Show the build logs and output
-    #[arg(long, action = clap::ArgAction::SetTrue)]
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_LOUD")]
     loud: bool,
 
     /// File to write the changed config (instead of standard output)
-    #[arg(short, long)]
+    #[arg(short, long, env = "AMP_OUTPUT")]
     output: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
-    #[arg(short, long, default_value = "[]")]
+    #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
     profile: Option<Vec<String>>,
 }
 

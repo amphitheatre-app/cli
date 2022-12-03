@@ -20,19 +20,19 @@ use errors::Result;
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
     /// Allow user prompts for more information
-    #[arg(long, action = clap::ArgAction::SetTrue)]
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_INTERACTIVE")]
     interactive: bool,
 
     /// Print timestamps in logs
-    #[arg(long, action = clap::ArgAction::SetTrue)]
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TIMESTAMPS")]
     timestamps: bool,
 
     /// Check for a more recent version of Amphitheatre
-    #[arg(long, action = clap::ArgAction::SetTrue)]
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_UPDATE_CHECK")]
     update_check: bool,
 
     /// Log level: one of [panic fatal error warning info debug trace]
-    #[arg(long, default_value = "warning")]
+    #[arg(long, default_value = "warning", env = "AMP_VERBOSITY")]
     verbosity: String,
 }
 
