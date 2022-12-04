@@ -69,7 +69,7 @@ pub struct Response<T> {
     pub rate_limit_remaining: String,
     /// The time at which the current rate limit window in [Unix
     /// time](https://en.wikipedia.org/wiki/Unix_time) format.
-    pub rate_limit_reset: String,
+    pub rate_limit_reset: Option<String>,
     /// The HTTP Status Code
     pub status: u16,
     /// The object or a Vec<T> objects (the type `T` will depend on the endpoint).
@@ -116,7 +116,7 @@ pub struct EmptyResponse {
     /// The number of requests remaining in the current rate limit window.
     pub rate_limit_remaining: String,
     /// The time at which the current rate limit window in [Unix time](https://en.wikipedia.org/wiki/Unix_time) format.
-    pub rate_limit_reset: String,
+    pub rate_limit_reset: Option<String>,
     /// The HTTP Status Code
     pub status: u16,
 }
@@ -336,7 +336,7 @@ impl Client {
     ) -> Result<Response<E::Output>, ClientError> {
         let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
         let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
-        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp)?;
+        let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp);
 
         let status = resp.status();
 
@@ -361,13 +361,9 @@ impl Client {
         })
     }
 
-    fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("x-ratelimit-after") {
-            Some(header) => Ok(header.to_string()),
-            None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the x-ratelimit-after header",
-            ))),
-        }
+    fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Option<String> {
+        resp.header("x-ratelimit-after")
+            .map(|header| header.to_string())
     }
 
     fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, ClientError> {
@@ -392,7 +388,7 @@ impl Client {
         Ok(EmptyResponse {
             rate_limit: Self::extract_rate_limit_limit_header(&response)?,
             rate_limit_remaining: Self::extract_rate_limit_remaining_header(&response)?,
-            rate_limit_reset: Self::extract_rate_limit_reset_header(&response)?,
+            rate_limit_reset: Self::extract_rate_limit_reset_header(&response),
             status: response.status(),
         })
     }
