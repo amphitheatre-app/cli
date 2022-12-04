@@ -30,7 +30,7 @@ pub fn run() -> Result<()> {
 
     // Create playbook from this Character
     let client = Client::new(
-        String::from("http://127.0.0.1:8000"),
+        String::from("http://127.0.0.1:3000"),
         String::from("AUTH_TOKEN"),
     );
     let payload = PlaybookPayload {

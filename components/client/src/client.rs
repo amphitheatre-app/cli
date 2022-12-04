@@ -362,28 +362,28 @@ impl Client {
     }
 
     fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("X-RateLimit-Reset") {
+        match resp.header("x-ratelimit-after") {
             Some(header) => Ok(header.to_string()),
             None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the X-RateLimit-Reset header",
+                "Cannot parse the x-ratelimit-after header",
             ))),
         }
     }
 
     fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("X-RateLimit-Remaining") {
+        match resp.header("x-ratelimit-remaining") {
             Some(header) => Ok(header.to_string()),
             None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the X-RateLimit-Remaining header",
+                "Cannot parse the x-ratelimit-remaining header",
             ))),
         }
     }
 
     fn extract_rate_limit_limit_header(resp: &ureq::Response) -> Result<String, ClientError> {
-        match resp.header("X-RateLimit-Limit") {
+        match resp.header("x-ratelimit-limit") {
             Some(header) => Ok(header.to_string()),
             None => Err(ClientError::Deserialization(String::from(
-                "Cannot parse the X-RateLimit-Limit header",
+                "Cannot parse the x-ratelimit-limit header",
             ))),
         }
     }

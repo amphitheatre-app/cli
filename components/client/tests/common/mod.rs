@@ -41,9 +41,9 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
     let body = lines.last();
 
     let mock = mock(method, path.as_str())
-        .with_header("X-RateLimit-Limit", "2")
-        .with_header("X-RateLimit-Remaining", "2")
-        .with_header("X-RateLimit-Reset", "never")
+        .with_header("x-ratelimit-limit", "2")
+        .with_header("x-ratelimit-remaining", "2")
+        .with_header("x-ratelimit-after", "never")
         .with_status(status.parse().unwrap())
         .with_body(body.unwrap())
         .create();
