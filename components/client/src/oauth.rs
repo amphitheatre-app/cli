@@ -105,8 +105,7 @@ impl OAuth<'_> {
             state: payload.state,
         };
 
-        let value = serde_json::to_value(params)
-            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let value = serde_json::to_value(params).map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
         let response = self
             .client

@@ -67,10 +67,7 @@ impl Playbooks<'_> {
     ///
     /// `options`: The `RequestOptions`
     ///             - Sort: `id`, `label`, `email`
-    pub fn list(
-        &self,
-        options: Option<RequestOptions>,
-    ) -> Result<Response<Vec<Playbook>>, ClientError> {
+    pub fn list(&self, options: Option<RequestOptions>) -> Result<Response<Vec<Playbook>>, ClientError> {
         self.client.get::<PlaybooksEndpoint>("/playbooks", options)
     }
 

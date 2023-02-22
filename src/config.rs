@@ -32,8 +32,7 @@ impl Default for Config {
 }
 
 pub fn path() -> Result<PathBuf> {
-    confy::get_configuration_file_path(APP_NAME, FILE_STEM)
-        .with_context(|| "unable to find the config file")
+    confy::get_configuration_file_path(APP_NAME, FILE_STEM).with_context(|| "unable to find the config file")
 }
 
 pub fn load() -> Result<Config> {

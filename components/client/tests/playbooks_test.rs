@@ -94,11 +94,7 @@ fn update_playbook_test() {
 
 #[test]
 fn delete_playbook_test() {
-    let setup = setup_mock_for(
-        "/playbooks/1",
-        "playbooks/delete-playbook-success",
-        "DELETE",
-    );
+    let setup = setup_mock_for("/playbooks/1", "playbooks/delete-playbook-success", "DELETE");
     let client = setup.0;
     let playbook_id = 1;
 

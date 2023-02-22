@@ -33,8 +33,7 @@ pub fn setup_mock_for(path: &str, fixture: &str, method: &str) -> (Client, Mock)
     let path = format!("/v1{}", path);
     let fixture = format!("./tests/fixtures/v1/api/{}.http", fixture);
 
-    let content =
-        fs::read_to_string(fixture.as_str()).expect("Something went wrong: Couldn't read the file");
+    let content = fs::read_to_string(fixture.as_str()).expect("Something went wrong: Couldn't read the file");
 
     let lines = content.lines();
     let status = &content[9..12];

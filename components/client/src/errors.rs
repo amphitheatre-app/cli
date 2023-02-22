@@ -73,10 +73,7 @@ impl ClientError {
             502 => Self::BadGateway,
             503 => Self::ServiceUnavailable,
             504 => Self::gateway_timeout(response),
-            _ => Self::Transport(
-                response.status().to_string(),
-                response.status_text().to_string(),
-            ),
+            _ => Self::Transport(response.status().to_string(), response.status_text().to_string()),
         }
     }
 

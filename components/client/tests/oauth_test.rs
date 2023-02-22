@@ -38,10 +38,7 @@ fn exchange_authorization_for_token_test() {
         }
     };
 
-    assert_eq!(
-        "zKQ7OLqF5N1gylcJweA9WodA000BUNJD",
-        access_token.access_token
-    );
+    assert_eq!("zKQ7OLqF5N1gylcJweA9WodA000BUNJD", access_token.access_token);
     assert_eq!("Bearer", access_token.token_type);
     assert_eq!(None, access_token.scope);
     assert_eq!(1, access_token.account_id);

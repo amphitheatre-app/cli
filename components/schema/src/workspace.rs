@@ -114,9 +114,7 @@ impl Workspace {
     /// Returns the path of the `.amp.toml` which is the root of this
     /// workspace.
     pub fn root_manifest(&self) -> &Path {
-        self.root_manifest
-            .as_ref()
-            .unwrap_or(&self.current_manifest)
+        self.root_manifest.as_ref().unwrap_or(&self.current_manifest)
     }
 
     /// Returns an iterator over all characters in this workspace

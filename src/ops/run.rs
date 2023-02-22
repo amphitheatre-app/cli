@@ -29,10 +29,7 @@ pub fn run() -> Result<()> {
     // Validate
 
     // Create playbook from this Character
-    let client = Client::new(
-        String::from("http://127.0.0.1:3000"),
-        String::from("AUTH_TOKEN"),
-    );
+    let client = Client::new(String::from("http://127.0.0.1:3000"), String::from("AUTH_TOKEN"));
     let payload = PlaybookPayload {
         title: "test".to_string(),
         description: "".to_string(),
@@ -54,10 +51,7 @@ pub fn run() -> Result<()> {
 
     // Run
     if let Err(e) = client.playbooks().start(playbook.id) {
-        eprintln!(
-            "Error: Could not start playbook #{} ({})",
-            &playbook.title, e
-        );
+        eprintln!("Error: Could not start playbook #{} ({})", &playbook.title, e);
         std::process::exit(1);
     }
 

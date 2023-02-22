@@ -25,12 +25,7 @@ fn list_actors_test() {
     );
     let client = setup.0;
 
-    let actors = client
-        .actors()
-        .list(playbook_id, None)
-        .unwrap()
-        .data
-        .unwrap();
+    let actors = client.actors().list(playbook_id, None).unwrap().data.unwrap();
 
     assert_eq!(2, actors.len());
 
@@ -78,7 +73,10 @@ fn get_actor_info_test() {
     let json = client.actors().info(actor_id).unwrap().data.unwrap();
 
     assert_eq!("RdqNLMXRiRsHJhmxKurR", json["environments"]["K3S_TOKEN"]);
-    assert_eq!("/var/lib/docker/volumes/f64c2f2cf81cfde89879f2a17924b31bd2f2e6a6a738f7df949bf6bd57102d25/_data", json["mounts"]["/VAR/LOG"]);
+    assert_eq!(
+        "/var/lib/docker/volumes/f64c2f2cf81cfde89879f2a17924b31bd2f2e6a6a738f7df949bf6bd57102d25/_data",
+        json["mounts"]["/VAR/LOG"]
+    );
     assert_eq!("0.0.0.0:42397", json["port"]["6443/tcp"]);
 }
 

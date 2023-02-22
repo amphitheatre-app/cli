@@ -289,10 +289,7 @@ impl Client {
     /// # Arguments
     ///
     /// `path`: the path to the endpoint
-    pub fn delete_with_response<E: Endpoint>(
-        &self,
-        path: &str,
-    ) -> Result<Response<E::Output>, ClientError> {
+    pub fn delete_with_response<E: Endpoint>(&self, path: &str) -> Result<Response<E::Output>, ClientError> {
         self.call::<E>(self.build_delete_request(&path))
     }
 
@@ -314,9 +311,7 @@ impl Client {
     ) -> Result<Response<E::Output>, ClientError> {
         match result {
             Ok(response) => Self::build_response::<E>(response),
-            Err(ureq::Error::Status(code, response)) => {
-                Err(ClientError::parse_response(code, response))
-            }
+            Err(ureq::Error::Status(code, response)) => Err(ClientError::parse_response(code, response)),
             Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
         }
     }
@@ -324,16 +319,12 @@ impl Client {
     fn call_empty(&self, request: Request) -> Result<EmptyResponse, ClientError> {
         match request.call() {
             Ok(response) => Self::build_empty_response(response),
-            Err(ureq::Error::Status(code, response)) => {
-                Err(ClientError::parse_response(code, response))
-            }
+            Err(ureq::Error::Status(code, response)) => Err(ClientError::parse_response(code, response)),
             Err(ureq::Error::Transport(transport)) => Err(ClientError::parse_transport(transport)),
         }
     }
 
-    fn build_response<E: Endpoint>(
-        resp: ureq::Response,
-    ) -> Result<Response<E::Output>, ClientError> {
+    fn build_response<E: Endpoint>(resp: ureq::Response) -> Result<Response<E::Output>, ClientError> {
         let rate_limit = Self::extract_rate_limit_limit_header(&resp)?;
         let rate_limit_remaining = Self::extract_rate_limit_remaining_header(&resp)?;
         let rate_limit_reset = Self::extract_rate_limit_reset_header(&resp);
@@ -347,8 +338,7 @@ impl Client {
             .map_err(|e| ClientError::Deserialization(e.to_string()))?;
         let pagination = serde_json::from_value(json!(json.get("pagination")))
             .map_err(|e| ClientError::Deserialization(e.to_string()))?;
-        let body = serde_json::from_value(json)
-            .map_err(|e| ClientError::Deserialization(e.to_string()))?;
+        let body = serde_json::from_value(json).map_err(|e| ClientError::Deserialization(e.to_string()))?;
 
         Ok(Response {
             rate_limit,
@@ -362,8 +352,7 @@ impl Client {
     }
 
     fn extract_rate_limit_reset_header(resp: &ureq::Response) -> Option<String> {
-        resp.header("x-ratelimit-after")
-            .map(|header| header.to_string())
+        resp.header("x-ratelimit-after").map(|header| header.to_string())
     }
 
     fn extract_rate_limit_remaining_header(resp: &ureq::Response) -> Result<String, ClientError> {
