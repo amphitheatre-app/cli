@@ -16,7 +16,7 @@ use serde::{Deserialize, Serialize};
 
 use super::Character;
 
-#[derive(Serialize, Deserialize, Default)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Manifest {
     pub character: Character,

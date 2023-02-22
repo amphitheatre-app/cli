@@ -13,6 +13,7 @@
 // limitations under the License.
 
 use client::playbooks::PlaybookPayload;
+use schema::Manifest;
 
 use crate::common::setup_mock_for;
 mod common;
@@ -43,7 +44,7 @@ fn create_playbook_test() {
     let payload = PlaybookPayload {
         title: String::from("Default"),
         description: String::from("First"),
-        lead: String::from("https://github.com/amphitheatre-app/amp-example-go"),
+        lead: Manifest::default(),
     };
 
     let playbook = client.playbooks().create(payload).unwrap().data.unwrap();
@@ -77,7 +78,7 @@ fn update_playbook_test() {
     let payload = PlaybookPayload {
         title: String::from("Default"),
         description: String::from("First"),
-        lead: String::from("https://github.com/amphitheatre-app/amp-example-go"),
+        lead: Manifest::default(),
     };
 
     let playbook = client

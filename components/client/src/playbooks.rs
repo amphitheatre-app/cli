@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use schema::Manifest;
 use serde::{Deserialize, Serialize};
 
 use super::client::{Client, EmptyResponse, Endpoint, RequestOptions, Response};
@@ -38,7 +39,7 @@ pub struct PlaybookPayload {
     /// The description of the playbook
     pub description: String,
     /// The lead character url of the playbook
-    pub lead: String,
+    pub lead: Manifest,
 }
 
 struct PlaybookEndpoint;

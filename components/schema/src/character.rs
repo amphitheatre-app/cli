@@ -16,37 +16,27 @@ use std::fmt;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Default, Clone)]
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct Character {
     pub name: String,
-    pub version: String,
-    pub authors: Vec<String>,
-    pub description: String,
-    pub readme: String,
-    pub homepage: String,
+    pub version: Option<String>,
+    pub authors: Option<Vec<String>>,
+    pub description: Option<String>,
+    pub readme: Option<String>,
+    pub homepage: Option<String>,
     pub repository: String,
-    pub license: String,
-    pub license_file: String,
-    pub keywords: Vec<String>,
-    pub categories: Vec<String>,
-    pub exclude: Vec<String>,
-    pub include: Vec<String>,
-    pub publish: Vec<String>,
+    pub license: Option<String>,
+    pub license_file: Option<String>,
+    pub keywords: Option<Vec<String>>,
+    pub categories: Option<Vec<String>>,
+    pub exclude: Option<Vec<String>>,
+    pub include: Option<Vec<String>>,
+    pub publish: Option<Vec<String>>,
 }
 
 impl fmt::Display for Character {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} {}", self.name, self.version)
-    }
-}
-
-impl fmt::Debug for Character {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("Character")
-            .field("name", &self.name)
-            .field("version", &self.version)
-            .field("..", &"..")
-            .finish()
+        write!(f, "{} {}", self.name, self.repository)
     }
 }

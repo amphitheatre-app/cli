@@ -18,6 +18,8 @@ use std::time::Duration;
 use client::client::Client;
 use client::playbooks::PlaybookPayload;
 use errors::Result;
+use filesystem::finder::Finder;
+use schema::Manifest;
 
 pub fn run() -> Result<()> {
     // Handle signal.
@@ -29,12 +31,20 @@ pub fn run() -> Result<()> {
     // Validate
 
     // Create playbook from this Character
-    let client = Client::new(String::from("http://127.0.0.1:3000"), String::from("AUTH_TOKEN"));
+    let path = Finder::new()
+        .find()
+        .expect("Amphitheatre config file .amp.yaml not found, run `amp init` to generate");
+    let contents = std::fs::read_to_string(path)?;
+    let manifest: Manifest = toml::from_str(&contents)?;
+
     let payload = PlaybookPayload {
         title: "test".to_string(),
         description: "".to_string(),
-        lead: "https://github.com/amphitheatre-app/amp-example-go".to_string(),
+        lead: manifest,
     };
+    println!("payload: {:#?}", &payload);
+
+    let client = Client::new(String::from("http://localhost:3000"), String::from("AUTH_TOKEN"));
     let response = client.playbooks().create(payload);
     if let Err(e) = response {
         eprintln!("Error: Could not create the playbook ({})", e);
