@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use amp_common::schema::Manifest;
 use client::playbooks::PlaybookPayload;
-use schema::Manifest;
 
 use crate::common::setup_mock_for;
 mod common;

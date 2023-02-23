@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use schema::Manifest;
+use amp_common::schema::Manifest;
 use serde::{Deserialize, Serialize};
 
 use super::client::{Client, EmptyResponse, Endpoint, RequestOptions, Response};

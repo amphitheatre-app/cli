@@ -14,8 +14,8 @@
 
 use std::fs;
 
+use amp_common::schema::Manifest;
 use clap::Args;
-use schema::Manifest;
 
 use crate::errors::Result;
 
