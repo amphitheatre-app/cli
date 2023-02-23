@@ -15,10 +15,10 @@
 use std::thread;
 use std::time::Duration;
 
+use amp_common::filesystem::Finder;
 use client::client::Client;
 use client::playbooks::PlaybookPayload;
 use errors::Result;
-use filesystem::finder::Finder;
 use schema::Manifest;
 
 pub fn run() -> Result<()> {

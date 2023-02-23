@@ -15,9 +15,9 @@ readme = "README.md"
 members = ["components/*"]
 
 [dependencies]
+amp-common = { git = "https://github.com/amphitheatre-app/common" }
 client = {path = "components/client"}
 errors = {path = "components/errors"}
-filesystem = { path = "components/filesystem" }
 schema = {path = "components/schema"}
 
 clap = {version = "4.0.26", features = ["derive", "env"]}
