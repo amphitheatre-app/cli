@@ -11,14 +11,10 @@ readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[workspace]
-members = ["components/*"]
-
 [dependencies]
 anyhow = "1.0.66"
+amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust" }
 amp-common = { git = "https://github.com/amphitheatre-app/common" }
-client = {path = "components/client"}
-
 clap = {version = "4.0.26", features = ["derive", "env"]}
 clap-verbosity-flag = "2.0.0"
 clap_complete = "4.0.5"

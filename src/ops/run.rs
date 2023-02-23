@@ -15,10 +15,10 @@
 use std::thread;
 use std::time::Duration;
 
+use amp_client::client::Client;
+use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::Manifest;
-use client::client::Client;
-use client::playbooks::PlaybookPayload;
 
 use crate::errors::Result;
 
