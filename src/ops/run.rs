@@ -18,8 +18,9 @@ use std::time::Duration;
 use amp_common::filesystem::Finder;
 use client::client::Client;
 use client::playbooks::PlaybookPayload;
-use errors::Result;
 use schema::Manifest;
+
+use crate::errors::Result;
 
 pub fn run() -> Result<()> {
     // Handle signal.

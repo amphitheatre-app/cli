@@ -15,8 +15,9 @@
 use std::fs;
 
 use clap::Args;
-use errors::Result;
 use schema::Manifest;
+
+use crate::errors::Result;
 
 const FILE_NAME: &str = ".amp.toml";
 

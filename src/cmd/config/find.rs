@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
 
 use crate::config;
+use crate::errors::Result;
 
 /// Locate the config file
 #[derive(Args, Debug)]

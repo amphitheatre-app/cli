@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::{Args, Subcommand};
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)
 #[derive(Args, Debug)]

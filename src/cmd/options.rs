@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Output a list of global command-line options (applies to all commands)
 #[derive(Args, Debug)]

@@ -14,8 +14,9 @@
 
 use std::path::PathBuf;
 
-use errors::{Context, Result};
 use serde::{Deserialize, Serialize};
+
+use crate::errors::{Context, Result};
 
 const APP_NAME: &str = "amp";
 const FILE_STEM: &str = "config";

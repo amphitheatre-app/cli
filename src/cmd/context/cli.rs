@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::{Args, Subcommand};
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Configure access to multiple clusters
 #[derive(Args, Debug)]

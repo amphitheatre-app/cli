@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Perform all image builds, and output rendered Kubernetes manifests
 #[derive(Args, Debug)]

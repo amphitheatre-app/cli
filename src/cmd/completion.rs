@@ -16,9 +16,9 @@ use std::io;
 
 use clap::{Args, CommandFactory};
 use clap_complete::{generate, Shell};
-use errors::Result;
 
 use crate::cmd::cli::Cli as RootCli;
+use crate::errors::Result;
 
 /// Display the completion file for a given shell
 #[derive(Args, Debug)]

@@ -15,9 +15,8 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
-use errors::{Ok, Result};
-
 use super::character::Character;
+use crate::errors::{format_err, Ok, Result};
 use crate::manifest::VirtualManifest;
 
 #[derive(Debug)]
@@ -86,7 +85,7 @@ impl Workspace {
     /// indicating that something else should be passed.
     pub fn current(&self) -> Result<&Character> {
         let character = self.current_opt().ok_or_else(|| {
-            errors::format_err!(
+            format_err!(
                 "manifest path `{}` is a virtual manifest, but this \
                  command requires running against an actual character in \
                  this workspace",

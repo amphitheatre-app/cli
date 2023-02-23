@@ -17,7 +17,8 @@ pub const AFTER_HELP_STRING: &str =
 
 use clap::{Parser, Subcommand};
 use clap_verbosity_flag::{InfoLevel, Verbosity};
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Amphitheatre's offcial command line tool
 #[derive(Parser, Debug)]

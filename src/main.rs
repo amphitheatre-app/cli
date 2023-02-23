@@ -14,6 +14,7 @@
 
 #[allow(unused_variables)]
 #[allow(unused_macros)]
+#[allow(dead_code)]
 #[macro_use]
 mod macros;
 mod app;
@@ -21,6 +22,10 @@ mod cmd;
 mod config;
 mod ops;
 mod platform;
+
+pub mod errors {
+    pub use anyhow::*;
+}
 
 use clap::Parser;
 use errors::Result;

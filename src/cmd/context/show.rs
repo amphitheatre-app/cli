@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Print the current context
 #[derive(Args, Debug)]

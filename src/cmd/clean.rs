@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Delete any resources deployed by Amphitheatre
 #[derive(Args, Debug)]

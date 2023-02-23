@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use clap::Args;
-use errors::Result;
+
+use crate::errors::Result;
 
 /// Run a diagnostic on Amphitheatre
 #[derive(Args, Debug)]
