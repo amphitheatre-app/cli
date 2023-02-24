@@ -39,9 +39,9 @@ pub fn run() -> Result<()> {
     let manifest: Manifest = toml::from_str(&contents)?;
 
     let payload = PlaybookPayload {
-        title: "test".to_string(),
+        title: "Untitled".to_string(),
         description: "".to_string(),
-        lead: manifest,
+        manifest,
     };
     println!("payload: {:#?}", &payload);
 
