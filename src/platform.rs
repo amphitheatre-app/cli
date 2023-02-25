@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#[allow(dead_code)]
 pub fn canonicalize_path(path: &String) -> String {
     match dunce::canonicalize(path) {
         Ok(p) => p.display().to_string(),

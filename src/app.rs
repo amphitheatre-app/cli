@@ -25,6 +25,7 @@ pub fn verbosity() -> &'static LevelFilter {
     VERBOSITY.get().expect("Verbosity is not initialized")
 }
 
+#[allow(dead_code)]
 pub fn config() -> &'static Config {
     CONFIG.get().expect("config is not initialized")
 }

@@ -14,7 +14,6 @@
 
 #[allow(unused_variables)]
 #[allow(unused_macros)]
-#[allow(dead_code)]
 #[macro_use]
 mod macros;
 mod app;

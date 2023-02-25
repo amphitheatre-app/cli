@@ -40,6 +40,7 @@ pub fn load() -> Result<Config> {
     confy::load(APP_NAME, FILE_STEM).with_context(|| "unable to load config")
 }
 
+#[allow(dead_code)]
 pub fn save(config: Config) -> Result<()> {
     confy::store(APP_NAME, FILE_STEM, config).with_context(|| "unable to save config")
 }

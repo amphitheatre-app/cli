@@ -32,16 +32,14 @@ pub fn run() -> Result<()> {
     // Validate
 
     // Create playbook from this Character
-    let path = Finder::new()
-        .find()
-        .expect("Amphitheatre config file .amp.yaml not found, run `amp init` to generate");
+    let path = Finder::new().find().expect("Config file .amp.toml not found");
     let contents = std::fs::read_to_string(path)?;
     let manifest: Manifest = toml::from_str(&contents)?;
 
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        manifest,
+        protagonist: manifest,
     };
     println!("payload: {:#?}", &payload);
 
