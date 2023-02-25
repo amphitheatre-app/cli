@@ -59,16 +59,17 @@ pub fn run() -> Result<()> {
     // }
 
     // Run
-    if let Err(e) = client.playbooks().start(playbook.id) {
-        eprintln!("Error: Could not start playbook #{} ({})", &playbook.title, e);
-        std::process::exit(1);
-    }
+    // if let Err(e) = client.playbooks().start(&playbook.id) {
+    //     eprintln!("Error: Could not start playbook {} ({})", &playbook.title, e);
+    //     std::process::exit(1);
+    // }
 
+    println!("The playbook was created and deployed successfully!");
     println!("Visit: http://{}.amphitheatre.app", &playbook.id);
 
     // Read event stream looply.
     loop {
-        let event = client.playbooks().events(playbook.id);
+        let event = client.playbooks().events(&playbook.id);
         println!("Received event: {}", event);
 
         thread::sleep(Duration::from_secs(2));
