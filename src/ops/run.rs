@@ -43,7 +43,7 @@ pub fn run() -> Result<()> {
     };
     println!("payload: {:#?}", &payload);
 
-    let client = Client::new(String::from("http://localhost:3000"), String::from("AUTH_TOKEN"));
+    let client = Client::new("http://localhost:3000", "AUTH_TOKEN");
     let response = client.playbooks().create(payload);
     if let Err(e) = response {
         eprintln!("Error: Could not create the playbook ({})", e);
