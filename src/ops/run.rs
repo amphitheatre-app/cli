@@ -43,14 +43,8 @@ pub fn run() -> Result<()> {
     };
     println!("payload: {:#?}", &payload);
 
-    let client = Client::new("http://localhost:3000", "AUTH_TOKEN");
-    let response = client.playbooks().create(payload);
-    if let Err(e) = response {
-        eprintln!("Error: Could not create the playbook ({})", e);
-        std::process::exit(1);
-    }
-
-    let playbook = response.unwrap().data.unwrap();
+    let client = Client::new("http://localhost:3000/v1", None);
+    let playbook = client.playbooks().create(payload)?;
 
     // // Sync the source to remote Dev Container
     // if let Err(e) = sync(".".to_string(), src(&playbook.lead())) {
