@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::thread;
-use std::time::Duration;
-
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
-use amp_common::schema::Manifest;
+use amp_common::schema::{Manifest, Source};
 
 use crate::errors::Result;
 
@@ -39,7 +36,7 @@ pub fn run() -> Result<()> {
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        protagonist: manifest,
+        preface: Source::new(manifest.character.repository),
     };
     println!("payload: {:#?}", &payload);
 
@@ -62,10 +59,12 @@ pub fn run() -> Result<()> {
     println!("Visit: http://{}.amphitheatre.app", &playbook.id);
 
     // Read event stream looply.
-    loop {
-        let event = client.playbooks().events(&playbook.id);
-        println!("Received event: {}", event);
+    // loop {
+    //     let event = client.playbooks().events(&playbook.id);
+    //     println!("Received event: {}", event);
 
-        thread::sleep(Duration::from_secs(2));
-    }
+    //     thread::sleep(Duration::from_secs(2));
+    // }
+
+    Ok(())
 }
