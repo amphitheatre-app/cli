@@ -38,7 +38,6 @@ pub fn run() -> Result<()> {
         description: "".to_string(),
         preface: Source::new(manifest.character.repository),
     };
-    println!("payload: {:#?}", &payload);
 
     let client = Client::new("http://localhost:3000/v1", None);
     let playbook = client.playbooks().create(payload)?;
