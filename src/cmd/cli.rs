@@ -33,6 +33,22 @@ pub struct Cli {
 
     #[command(subcommand)]
     command: Commands,
+
+    /// Allow user prompts for more information
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_INTERACTIVE", global=true)]
+    interactive: bool,
+
+    /// Print timestamps in logs
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TIMESTAMPS", global=true)]
+    timestamps: bool,
+
+    /// Check for a more recent version of Amphitheatre
+    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_UPDATE_CHECK", global=true)]
+    update_check: bool,
+
+    /// Log level: one of [panic fatal error warning info debug trace]
+    #[arg(long, default_value = "warning", env = "AMP_VERBOSITY", global = true)]
+    verbosity: String,
 }
 
 #[derive(Subcommand, Debug)]
