@@ -13,6 +13,21 @@ Kubernetes and your code.
 Docs are available at https://docs.amphitheatre.app/cli/ - we are still working
 on refining it and contributions are welcome!
 
+## Installation
+
+Binaries for Windows, Linux and macOS are available [from Github](https://github.com/amphitheatre-app/cli/releases/latest).
+
+Compiling from this repository also works similarly:
+
+```
+git clone https://github.com/amphitheatre-app/cli.git
+cd cli
+cargo build --release
+```
+
+Compilation will probably take a few minutes depending on your machine.
+The binary will end up in `./target/release/amp`.
+
 ## Contributing
 
 If anything feels off, or if you feel that some functionality is missing, please
