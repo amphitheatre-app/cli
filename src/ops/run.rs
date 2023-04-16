@@ -39,7 +39,7 @@ pub fn run() -> Result<()> {
         preface: Source::new(manifest.character.repository),
     };
 
-    let client = Client::new("http://localhost:3000/v1", None);
+    let client = Client::new("http://localhost:8170/v1", None);
     let playbook = client.playbooks().create(payload)?;
 
     // // Sync the source to remote Dev Container
