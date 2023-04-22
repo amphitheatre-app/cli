@@ -65,10 +65,7 @@ impl Cli {
             std::process::exit(1);
         }
 
-        println!(
-            "Created the character: {}. See more definitions at `.amp.toml`",
-            name
-        );
+        println!("Created the character: {}. See more definitions at `.amp.toml`", name);
 
         Ok(())
     }
