@@ -20,11 +20,7 @@ use crate::errors::Result;
 /// List all available contexts
 #[derive(Args, Debug)]
 #[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
-pub struct Cli {
-    /// File for global configurations
-    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
-    config: Option<String>,
-}
+pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
