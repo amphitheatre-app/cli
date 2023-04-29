@@ -14,6 +14,7 @@
 
 use clap::Args;
 
+use crate::app;
 use crate::errors::Result;
 
 /// Print the current context
@@ -27,6 +28,10 @@ pub struct Cli {
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
+        if let Some(ctx) = &app::contexts().current {
+            display!("{:#?}", ctx);
+        }
+
         Ok(())
     }
 }
