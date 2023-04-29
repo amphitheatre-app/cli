@@ -24,10 +24,6 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
 
-    /// File for global configurations
-    #[arg(short, long, default_value = "~/.amp/config", env = "AMP_CONFIG")]
-    config: Option<String>,
-
     /// If true, amp will skip yes/no confirmation from the user and default to yes
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_DRY_RUN")]
     dry_run: bool,

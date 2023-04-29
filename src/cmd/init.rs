@@ -29,10 +29,6 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
 
-    /// File for global configurations
-    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
-    config: Option<String>,
-
     /// File to write generated manifests to
     #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
     filename: Option<String>,

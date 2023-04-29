@@ -16,7 +16,7 @@ use clap::{Args, Subcommand};
 
 use crate::errors::Result;
 
-/// Interact with the global Amphitheatre config file (defaults to $HOME/.amp/config)
+/// Interact with the global Amphitheatre config file
 #[derive(Args, Debug)]
 #[command(after_help = crate::cmd::cli::AFTER_HELP_STRING)]
 pub struct Cli {

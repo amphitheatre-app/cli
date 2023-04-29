@@ -23,10 +23,6 @@ pub struct Cli {
     /// Show values for all configs
     #[arg(short, long, env = "AMP_ALL")]
     all: bool,
-
-    /// Path to Amphitheatre config
-    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
-    config: Option<String>,
 }
 
 impl Cli {

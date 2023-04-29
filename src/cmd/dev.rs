@@ -44,10 +44,6 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_CLEANUP")]
     cleanup: bool,
 
-    /// File for global configurations
-    #[arg(short, long, default_value = "$~/.amp/config", env = "AMP_CONFIG")]
-    config: Option<String>,
-
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
     filename: Option<String>,
