@@ -14,6 +14,7 @@
 
 use clap::Args;
 
+use crate::app;
 use crate::errors::Result;
 
 /// List all available contexts
@@ -27,6 +28,10 @@ pub struct Cli {
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
+        for ctx in app::contexts().contexts.iter() {
+            display!("{:#?}", ctx);
+        }
+
         Ok(())
     }
 }
