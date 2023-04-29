@@ -19,6 +19,7 @@ mod macros;
 mod app;
 mod cmd;
 mod config;
+mod context;
 mod ops;
 mod platform;
 
@@ -35,6 +36,7 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     app::set_global_verbosity(cli.verbose.log_level_filter());
     app::set_global_config(config::load()?);
+    app::set_global_contexts(context::load()?);
 
     cli.exec()
 }
