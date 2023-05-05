@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,10 +13,12 @@
 // limitations under the License.
 
 use std::fs;
+use std::sync::Arc;
 
 use amp_common::schema::Manifest;
 use clap::Args;
 
+use crate::context::Context;
 use crate::errors::Result;
 
 const FILE_NAME: &str = ".amp.toml";
@@ -43,7 +45,7 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub fn exec(&self) -> Result<()> {
+    pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
         let path = std::env::current_dir().unwrap();
 
         let name = self

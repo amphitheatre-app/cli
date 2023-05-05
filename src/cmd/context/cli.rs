@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::Arc;
+
 use clap::{Args, Subcommand};
 
+use crate::context::Context;
 use crate::errors::Result;
 
 /// Configure access to multiple clusters
@@ -33,12 +36,12 @@ enum Commands {
 }
 
 impl Cli {
-    pub fn exec(&self) -> Result<()> {
+    pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         match &self.command {
-            Commands::Show(cli) => cli.exec(),
-            Commands::List(cli) => cli.exec(),
-            Commands::Use(cli) => cli.exec(),
-            Commands::Delete(cli) => cli.exec(),
+            Commands::Show(cli) => cli.exec(ctx).await,
+            Commands::List(cli) => cli.exec(ctx).await,
+            Commands::Use(cli) => cli.exec(ctx).await,
+            Commands::Delete(cli) => cli.exec(ctx).await,
         }
     }
 }

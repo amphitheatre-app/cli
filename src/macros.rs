@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,17 +37,17 @@ macro_rules! critical {
 macro_rules! define_display_macro {
     ($name:ident, $level:ident, $style:ident, $d:tt) => {
         macro_rules! $name {
-                            ($d($d arg:tt)*) => {{
-                                use owo_colors::OwoColorize;
-                                if log::Level::$level <= *$crate::app::verbosity() {
-                                    eprintln!(
-                                        "{}",
-                                        format!($d($d arg)*)
-                                            .if_supports_color(owo_colors::Stream::Stderr, |text| text.$style())
-                                    );
+                                    ($d($d arg:tt)*) => {{
+                                        use owo_colors::OwoColorize;
+                                        if log::Level::$level <= *$crate::app::verbosity() {
+                                            eprintln!(
+                                                "{}",
+                                                format!($d($d arg)*)
+                                                    .if_supports_color(owo_colors::Stream::Stderr, |text| text.$style())
+                                            );
+                                        }
+                                    }};
                                 }
-                            }};
-                        }
     };
 }
 

@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::Arc;
+
 use clap::{Parser, Subcommand};
 use clap_verbosity_flag::{InfoLevel, Verbosity};
 
+use crate::context::Context;
 use crate::errors::Result;
 
 pub const AFTER_HELP_STRING: &str =
@@ -75,21 +78,21 @@ enum Commands {
 }
 
 impl Cli {
-    pub fn exec(&self) -> Result<()> {
+    pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         match &self.command {
-            Commands::Clean(cli) => cli.exec(),
-            Commands::Context(cli) => cli.exec(),
+            Commands::Clean(cli) => cli.exec(ctx).await,
+            Commands::Context(cli) => cli.exec(ctx).await,
             Commands::Completion(cli) => cli.exec(),
-            Commands::Config(cli) => cli.exec(),
-            Commands::Debug(cli) => cli.exec(),
-            Commands::Deploy(cli) => cli.exec(),
-            Commands::Dev(cli) => cli.exec(),
-            Commands::Diagnose(cli) => cli.exec(),
-            Commands::Init(cli) => cli.exec(),
+            Commands::Config(cli) => cli.exec(ctx).await,
+            Commands::Debug(cli) => cli.exec(ctx).await,
+            Commands::Deploy(cli) => cli.exec(ctx).await,
+            Commands::Dev(cli) => cli.exec(ctx).await,
+            Commands::Diagnose(cli) => cli.exec(ctx).await,
+            Commands::Init(cli) => cli.exec(ctx).await,
             Commands::Options(cli) => cli.exec(),
-            Commands::Render(cli) => cli.exec(),
-            Commands::Run(cli) => cli.exec(),
-            Commands::Test(cli) => cli.exec(),
+            Commands::Render(cli) => cli.exec(ctx).await,
+            Commands::Run(cli) => cli.exec(ctx).await,
+            Commands::Test(cli) => cli.exec(ctx).await,
             Commands::Version(cli) => cli.exec(),
         }
     }

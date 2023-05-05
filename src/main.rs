@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,9 +16,7 @@
 #[allow(unused_macros)]
 #[macro_use]
 mod macros;
-mod app;
 mod cmd;
-mod config;
 mod context;
 mod ops;
 mod platform;
@@ -27,16 +25,17 @@ pub mod errors {
     pub use anyhow::*;
 }
 
+use std::sync::Arc;
+
 use clap::Parser;
+use context::Context;
 use errors::Result;
 
 use crate::cmd::cli::Cli;
 
-fn main() -> Result<()> {
-    let cli = Cli::parse();
-    app::set_global_verbosity(cli.verbose.log_level_filter());
-    app::set_global_config(config::load()?);
-    app::set_global_contexts(context::load()?);
-
-    cli.exec()
+#[tokio::main]
+async fn main() -> Result<()> {
+    let ctx = Arc::new(Context::init().await?);
+    Cli::parse().exec(ctx).await?;
+    Ok(())
 }

@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::Arc;
+
+use amp_common::config::Configuration;
 use clap::Args;
 
+use crate::context::Context;
 use crate::errors::Result;
 
 /// Delete a context
@@ -24,7 +28,18 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub fn exec(&self) -> Result<()> {
+    // delete the context and save the contexts
+    pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
+        let mut configuration = ctx.configuration.write().await;
+
+        if let Some(context) = configuration.context.as_mut() {
+            context.delete(&self.name)?;
+        } else {
+            return Err(anyhow::anyhow!("No context found"));
+        }
+
+        configuration.save(Configuration::path()?)?;
+
         Ok(())
     }
 }

@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::Arc;
+
 use clap::Args;
 
+use crate::context::Context;
 use crate::errors::Result;
 
 /// Delete any resources deployed by Amphitheatre
@@ -34,7 +37,7 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub fn exec(&self) -> Result<()> {
+    pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
         Ok(())
     }
 }

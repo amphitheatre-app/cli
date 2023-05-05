@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::sync::Arc;
+
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::{Manifest, Source};
 
-use crate::app;
+use crate::context::Context;
 use crate::errors::Result;
 
-pub fn run() -> Result<()> {
+pub async fn run(ctx: Arc<Context>) -> Result<()> {
     // Handle signal.
     ctrlc::set_handler(|| {
         std::process::exit(0);
     })
     .expect("Error setting Ctrl-C handler");
+
+    let configuration = ctx.configuration.read().await;
+    if configuration.context.is_none() {
+        eprintln!("Error: No context found.");
+        std::process::exit(1);
+    }
+
+    let context = configuration.context.as_ref().unwrap();
+    if context.current().is_none() {
+        eprintln!("Error: No current context found.");
+        std::process::exit(1);
+    }
 
     // Validate
 
@@ -40,8 +54,8 @@ pub fn run() -> Result<()> {
         preface: Source::new(manifest.character.repository),
     };
 
-    let context = app::contexts().current().expect("No context found.");
-    let client = Client::new(&format!("{}/v1", context.url), Some(context.token.clone()));
+    let context = context.current().unwrap();
+    let client = Client::new(&format!("{}/v1", &context.server), context.token.clone());
 
     let playbook = client.playbooks().create(payload)?;
 

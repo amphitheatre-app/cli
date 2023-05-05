@@ -1,4 +1,4 @@
-// Copyrgiht 2023 The Amphitheatre Authors.
+// Copyright 2023 The Amphitheatre Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,43 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use serde::{Deserialize, Serialize};
+use amp_common::config::Configuration;
+use anyhow::Result;
+use tokio::sync::RwLock;
 
-use crate::errors::{Context as _, Result};
-
-const APP_NAME: &str = "amp";
-const FILE_STEM: &str = "contexts";
-
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct Context {
-    pub name: String,
-    pub url: String,
-    pub token: String,
+    pub configuration: RwLock<Configuration>,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
-pub struct ContextConfiguration {
-    current: Option<Context>,
-    contexts: Vec<Context>,
-}
-impl ContextConfiguration {
-    pub fn current(&self) -> Option<&Context> {
-        self.current.as_ref()
+impl Context {
+    pub async fn init() -> Result<Context> {
+        let configuration = Configuration::load(Configuration::path()?).expect("Could not load configuration");
+        Ok(Context {
+            configuration: RwLock::new(configuration),
+        })
     }
-}
-
-// impl iter method for ContextConfiguration
-impl ContextConfiguration {
-    pub fn iter(&self) -> impl Iterator<Item = &Context> {
-        self.contexts.iter()
-    }
-}
-
-pub fn load() -> Result<ContextConfiguration> {
-    confy::load(APP_NAME, FILE_STEM).with_context(|| "unable to load context configuration")
-}
-
-#[allow(dead_code)]
-pub fn save(config: ContextConfiguration) -> Result<()> {
-    confy::store(APP_NAME, FILE_STEM, config).with_context(|| "unable to save context configuration")
 }
