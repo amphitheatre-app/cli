@@ -17,6 +17,7 @@ use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::{Manifest, Source};
 
+use crate::app;
 use crate::errors::Result;
 
 pub fn run() -> Result<()> {
@@ -39,7 +40,9 @@ pub fn run() -> Result<()> {
         preface: Source::new(manifest.character.repository),
     };
 
-    let client = Client::new("http://localhost:8170/v1", None);
+    let context = app::contexts().current().expect("No context found.");
+    let client = Client::new(&format!("{}/v1", context.url), Some(context.token.clone()));
+
     let playbook = client.playbooks().create(payload)?;
 
     // // Sync the source to remote Dev Container

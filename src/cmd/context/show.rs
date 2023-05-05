@@ -24,7 +24,7 @@ pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        if let Some(ctx) = &app::contexts().current {
+        if let Some(ctx) = app::contexts().current() {
             display!("{:#?}", ctx);
         }
 

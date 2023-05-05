@@ -24,7 +24,7 @@ pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        for ctx in app::contexts().contexts.iter() {
+        for ctx in app::contexts().iter() {
             display!("{:#?}", ctx);
         }
 

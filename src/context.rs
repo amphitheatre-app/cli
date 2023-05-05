@@ -28,8 +28,20 @@ pub struct Context {
 
 #[derive(Default, Debug, Deserialize, Serialize)]
 pub struct ContextConfiguration {
-    pub current: Option<Context>,
-    pub contexts: Vec<Context>,
+    current: Option<Context>,
+    contexts: Vec<Context>,
+}
+impl ContextConfiguration {
+    pub fn current(&self) -> Option<&Context> {
+        self.current.as_ref()
+    }
+}
+
+// impl iter method for ContextConfiguration
+impl ContextConfiguration {
+    pub fn iter(&self) -> impl Iterator<Item = &Context> {
+        self.contexts.iter()
+    }
 }
 
 pub fn load() -> Result<ContextConfiguration> {
