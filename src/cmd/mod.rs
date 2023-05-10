@@ -22,6 +22,7 @@ pub mod deploy;
 pub mod dev;
 pub mod diagnose;
 pub mod init;
+pub mod list;
 pub mod options;
 pub mod render;
 pub mod run;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use amp_common::config::Configuration;
+use amp_common::config::{Cluster, Configuration};
 use anyhow::Result;
 use tokio::sync::RwLock;
 
@@ -26,5 +26,17 @@ impl Context {
         Ok(Context {
             configuration: RwLock::new(configuration),
         })
+    }
+
+    /// Get the current context from the configuration
+    pub async fn context(&self) -> Result<Cluster> {
+        let configuration = self.configuration.read().await;
+        if let Some(context) = &configuration.context {
+            if let Some(current) = context.current() {
+                return Ok(current.to_owned());
+            }
+        }
+
+        anyhow::bail!("No current context found")
     }
 }
