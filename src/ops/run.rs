@@ -23,26 +23,6 @@ use crate::context::Context;
 use crate::errors::Result;
 
 pub async fn run(ctx: Arc<Context>) -> Result<()> {
-    // Handle signal.
-    ctrlc::set_handler(|| {
-        std::process::exit(0);
-    })
-    .expect("Error setting Ctrl-C handler");
-
-    let configuration = ctx.configuration.read().await;
-    if configuration.context.is_none() {
-        eprintln!("Error: No context found.");
-        std::process::exit(1);
-    }
-
-    let context = configuration.context.as_ref().unwrap();
-    if context.current().is_none() {
-        eprintln!("Error: No current context found.");
-        std::process::exit(1);
-    }
-
-    // Validate
-
     // Create playbook from this Character
     let path = Finder::new().find().expect("Config file .amp.toml not found");
     let contents = std::fs::read_to_string(path)?;
@@ -54,8 +34,8 @@ pub async fn run(ctx: Arc<Context>) -> Result<()> {
         preface: Source::new(manifest.character.repository),
     };
 
-    let context = context.current().unwrap();
-    let client = Client::new(&format!("{}/v1", &context.server), context.token.clone());
+    let context = ctx.context().await?;
+    let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
     let playbook = client.playbooks().create(payload)?;
 
@@ -72,7 +52,7 @@ pub async fn run(ctx: Arc<Context>) -> Result<()> {
     // }
 
     println!("The playbook was created and deployed successfully!");
-    println!("Visit: http://{}.amphitheatre.app", &playbook.id);
+    display!("{:#?}", playbook);
 
     // Read event stream looply.
     // loop {

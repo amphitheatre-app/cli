@@ -64,6 +64,12 @@ pub struct Cli {
 
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
+        // Handle signal.
+        ctrlc::set_handler(|| {
+            std::process::exit(0);
+        })
+        .expect("Error setting Ctrl-C handler");
+
         ops::run(ctx).await
     }
 }
