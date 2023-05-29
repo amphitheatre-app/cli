@@ -14,15 +14,19 @@
 
 use std::sync::Arc;
 
+use amp_client::client::Client;
 use clap::Args;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{anyhow, Result};
 
 /// Delete any resources deployed by Amphitheatre
 #[derive(Args, Debug)]
 #[command(after_help = super::cli::AFTER_HELP_STRING)]
 pub struct Cli {
+    /// The ID of the playbook to delete
+    id: String,
+
     /// If true, amp will skip yes/no confirmation from the user
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
@@ -37,7 +41,15 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
+    pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
+        let context = ctx.context().await?;
+        let client = Client::new(&format!("{}/v1", &context.server), context.token);
+
+        let status = client.playbooks().delete(&self.id)?;
+        if status != 200 {
+            return Err(anyhow!("Failed to delete playbook"));
+        }
+
         Ok(())
     }
 }
