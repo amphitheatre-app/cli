@@ -17,22 +17,21 @@ use std::sync::Arc;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
-use amp_common::schema::{EitherCharacter, GitReference, Manifest};
+use amp_common::schema::EitherCharacter::Manifest;
 
 use crate::context::Context;
 use crate::errors::Result;
 
-pub async fn run(ctx: Arc<Context>) -> Result<()> {
+pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // Create playbook from this Character
     let path = Finder::new().find().expect("Config file .amp.toml not found");
-    let contents = std::fs::read_to_string(path)?;
-    let manifest: Manifest = toml::from_str(&contents)?;
+    let content = std::fs::read_to_string(path)?;
 
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: EitherCharacter::Git(GitReference::new(manifest.repository)),
-        live: false,
+        preface: Manifest(content),
+        live: true,
     };
     display!("{:#?}", payload);
 
@@ -40,29 +39,8 @@ pub async fn run(ctx: Arc<Context>) -> Result<()> {
     let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
     let playbook = client.playbooks().create(payload)?;
-
-    // // Sync the source to remote Dev Container
-    // if let Err(e) = sync(".".to_string(), src(&playbook.lead())) {
-    //     eprintln!("Error: Could not sync the sources ({})", e);
-    //     std::process::exit(1);
-    // }
-
-    // Run
-    // if let Err(e) = client.playbooks().start(&playbook.id) {
-    //     eprintln!("Error: Could not start playbook {} ({})", &playbook.title, e);
-    //     std::process::exit(1);
-    // }
-
     println!("The playbook was created and deployed successfully!");
     display!("{:#?}", playbook);
-
-    // Read event stream looply.
-    // loop {
-    //     let event = client.playbooks().events(&playbook.id);
-    //     println!("Received event: {}", event);
-
-    //     thread::sleep(Duration::from_secs(2));
-    // }
 
     Ok(())
 }

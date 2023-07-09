@@ -71,8 +71,10 @@ impl Cli {
 
 fn create(name: &str) -> Result<()> {
     // Init and fill the Manifest fields.
-    let mut manifest = Manifest::default();
-    manifest.character.name = String::from(name);
+    let manifest = Manifest {
+        name: String::from(name),
+        ..Default::default()
+    };
 
     // Convert the Manifest to a TOML String.
     let serialized = toml::to_string(&manifest).expect("Could not encode TOML value");

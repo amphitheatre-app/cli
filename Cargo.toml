@@ -13,8 +13,8 @@ readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.66"
-amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust" }
-amp-common = { git = "https://github.com/amphitheatre-app/common" }
+amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust", tag="v0.1.0" }
+amp-common = { git = "https://github.com/amphitheatre-app/common", tag="v0.2.1" }
 clap = {version = "4.0.26", features = ["derive", "env"]}
 clap-verbosity-flag = "2.0.0"
 clap_complete = "4.0.5"

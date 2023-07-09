@@ -18,6 +18,7 @@ use clap::Args;
 
 use crate::context::Context;
 use crate::errors::Result;
+use crate::ops;
 
 /// Run a pipeline in development mode
 #[derive(Args, Debug)]
@@ -79,7 +80,13 @@ pub struct Cli {
 }
 
 impl Cli {
-    pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
-        Ok(())
+    pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
+        // Handle signal.
+        ctrlc::set_handler(|| {
+            std::process::exit(0);
+        })
+        .expect("Error setting Ctrl-C handler");
+
+        ops::dev(ctx).await
     }
 }
