@@ -13,8 +13,9 @@
 // limitations under the License.
 
 use amp_common::config::{Cluster, Configuration};
-use anyhow::Result;
 use tokio::sync::RwLock;
+
+use crate::errors::{Errors, Result};
 
 pub struct Context {
     pub configuration: RwLock<Configuration>,
@@ -22,7 +23,9 @@ pub struct Context {
 
 impl Context {
     pub async fn init() -> Result<Context> {
-        let configuration = Configuration::load(Configuration::path()?).expect("Could not load configuration");
+        let path = Configuration::path().map_err(Errors::InvalidConfigPath)?;
+        let configuration = Configuration::load(path).map_err(Errors::FailedLoadConfiguration)?;
+
         Ok(Context {
             configuration: RwLock::new(configuration),
         })
@@ -37,6 +40,6 @@ impl Context {
             }
         }
 
-        anyhow::bail!("No current context found")
+        Err(Errors::NotFoundCurrentContext)
     }
 }

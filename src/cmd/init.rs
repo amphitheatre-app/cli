@@ -16,13 +16,12 @@ use std::fs;
 use std::sync::Arc;
 
 use amp_common::schema::Manifest;
-use anyhow::anyhow;
 use clap::Args;
 use log::info;
 use tracing::error;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 
 const FILE_NAME: &str = ".amp.toml";
 
@@ -80,8 +79,8 @@ fn create(name: &str) -> Result<()> {
     };
 
     // Convert the Manifest to a TOML String.
-    let serialized = toml::to_string(&manifest).map_err(|_| anyhow!("Could not encode TOML value"))?;
-    fs::write(FILE_NAME, serialized).map_err(|_| anyhow!("Could not write to file!"))?;
+    let serialized = toml::to_string(&manifest).map_err(Errors::TomlSerializeError)?;
+    fs::write(FILE_NAME, serialized).map_err(Errors::FailedSaveManifest)?;
 
     Ok(())
 }

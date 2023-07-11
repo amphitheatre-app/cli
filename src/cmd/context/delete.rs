@@ -18,7 +18,7 @@ use amp_common::config::Configuration;
 use clap::Args;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 
 /// Delete a context
 #[derive(Args, Debug)]
@@ -33,12 +33,14 @@ impl Cli {
         let mut configuration = ctx.configuration.write().await;
 
         if let Some(context) = configuration.context.as_mut() {
-            context.delete(&self.name)?;
+            context.delete(&self.name).map_err(Errors::FailedDeleteContext)?
         } else {
-            return Err(anyhow::anyhow!("No context found"));
+            return Err(Errors::NotFoundContext(self.name.clone()));
         }
 
-        configuration.save(Configuration::path()?)?;
+        configuration
+            .save(Configuration::path().map_err(Errors::InvalidConfigPath)?)
+            .map_err(Errors::FailedSaveConfiguration)?;
 
         Ok(())
     }

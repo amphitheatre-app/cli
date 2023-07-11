@@ -31,7 +31,7 @@ dependencies = [
 
 [[package]]
 name = "amp"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "amp-client",
  "amp-common",
@@ -47,6 +47,7 @@ dependencies = [
  "owo-colors",
  "serde",
  "serde_json",
+ "thiserror",
  "tokio",
  "toml 0.5.11",
  "tracing",

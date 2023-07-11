@@ -18,7 +18,7 @@ use amp_common::config::Configuration;
 use clap::Args;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 
 /// Locate the config file
 #[derive(Args, Debug)]
@@ -27,7 +27,10 @@ pub struct Cli {}
 
 impl Cli {
     pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
-        let path = Configuration::path()?.display().to_string();
+        let path = Configuration::path()
+            .map_err(Errors::InvalidConfigPath)?
+            .display()
+            .to_string();
         println!("{}", path.replace(' ', r"\ "));
 
         Ok(())

@@ -12,18 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#[allow(unused_variables)]
-#[allow(unused_macros)]
-#[macro_use]
-// mod macros;
 mod cmd;
 mod context;
+mod errors;
 mod ops;
 mod platform;
-
-pub mod errors {
-    pub use anyhow::*;
-}
 
 use std::sync::Arc;
 

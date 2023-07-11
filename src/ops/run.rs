@@ -22,7 +22,7 @@ use amp_common::schema::GitReference;
 use tracing::{debug, info};
 
 use crate::context::Context;
-use crate::errors::{anyhow, Result};
+use crate::errors::{Errors, Result};
 
 pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()> {
     let payload: PlaybookPayload;
@@ -39,7 +39,7 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     let context = ctx.context().await?;
     let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
-    let playbook = client.playbooks().create(payload)?;
+    let playbook = client.playbooks().create(payload).map_err(Errors::ClientError);
     info!("The playbook was created and deployed successfully!");
     debug!("{:#?}", playbook);
 
@@ -59,7 +59,7 @@ fn create_playbook_from_git(repository: &str) -> Result<PlaybookPayload> {
 
 /// Create playbook from manifest file
 fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
-    let content = std::fs::read_to_string(filename)?;
+    let content = std::fs::read_to_string(filename).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
@@ -71,11 +71,8 @@ fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
 
 /// Create playbook from localy
 fn create_playbook_from_localy() -> Result<PlaybookPayload> {
-    let path = Finder::new()
-        .find()
-        .map_err(|_| anyhow!("Could not find `.amp.toml` in current directory or any parent directory"))?;
-
-    let content = std::fs::read_to_string(path)?;
+    let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
+    let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),

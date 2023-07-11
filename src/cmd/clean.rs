@@ -18,7 +18,7 @@ use amp_client::client::Client;
 use clap::Args;
 
 use crate::context::Context;
-use crate::errors::{anyhow, Result};
+use crate::errors::{Errors, Result};
 
 /// Delete any resources deployed by Amphitheatre
 #[derive(Args, Debug)]
@@ -41,9 +41,9 @@ impl Cli {
         let context = ctx.context().await?;
         let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
-        let status = client.playbooks().delete(&self.id)?;
+        let status = client.playbooks().delete(&self.id).map_err(Errors::ClientError)?;
         if status != 200 {
-            return Err(anyhow!("Failed to delete playbook"));
+            return Err(Errors::FailedDeletePlaybook(self.id.clone()));
         }
 
         Ok(())
