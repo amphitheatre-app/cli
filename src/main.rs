@@ -17,6 +17,7 @@ mod context;
 mod errors;
 mod ops;
 mod platform;
+mod utils;
 
 use std::sync::Arc;
 

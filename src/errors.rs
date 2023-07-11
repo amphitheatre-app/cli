@@ -55,4 +55,7 @@ pub enum Errors {
 
     #[error("Failed to save manifest: {0}")]
     FailedSaveManifest(std::io::Error),
+
+    #[error("Invalid manifest: {0}")]
+    InvalidManifest(String),
 }

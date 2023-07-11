@@ -22,11 +22,12 @@ use tracing::{debug, info};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
+use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // Create playbook from this Character
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
-    let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
+    let content = utils::read_manifest(&path)?;
 
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),

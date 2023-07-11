@@ -23,6 +23,7 @@ use tracing::{debug, info};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
+use crate::utils;
 
 pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()> {
     let payload: PlaybookPayload;
@@ -59,7 +60,7 @@ fn create_playbook_from_git(repository: &str) -> Result<PlaybookPayload> {
 
 /// Create playbook from manifest file
 fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
-    let content = std::fs::read_to_string(filename).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
+    let content = utils::read_manifest(filename)?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
@@ -72,7 +73,7 @@ fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
 /// Create playbook from localy
 fn create_playbook_from_localy() -> Result<PlaybookPayload> {
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
-    let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
+    let content = utils::read_manifest(path)?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
