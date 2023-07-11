@@ -34,11 +34,15 @@ pub struct Cli {
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
-    filename: Option<String>,
+    pub filename: Option<String>,
 
     /// Recreate Kubernetes resources if necessary for deployment, warning: might cause downtime!
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
     force: bool,
+
+    /// The URL of the remote git repository for your character where you want to run
+    #[arg(long, env = "AMP_GIT")]
+    pub git: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
@@ -57,6 +61,6 @@ impl Cli {
         })
         .expect("Error setting Ctrl-C handler");
 
-        ops::run(ctx).await
+        ops::run(ctx, self).await
     }
 }
