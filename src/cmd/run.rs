@@ -33,7 +33,7 @@ pub struct Cli {
     cleanup: bool,
 
     /// Path or URL to the Amphitheatre config file
-    #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
+    #[arg(short, long, env = "AMP_FILENAME")]
     pub filename: Option<String>,
 
     /// Recreate Kubernetes resources if necessary for deployment, warning: might cause downtime!

@@ -15,7 +15,7 @@
 #[allow(unused_variables)]
 #[allow(unused_macros)]
 #[macro_use]
-mod macros;
+// mod macros;
 mod cmd;
 mod context;
 mod ops;
@@ -30,12 +30,31 @@ use std::sync::Arc;
 use clap::Parser;
 use context::Context;
 use errors::Result;
+use tracing::error;
+use tracing::metadata::LevelFilter;
+use tracing_subscriber::EnvFilter;
 
 use crate::cmd::cli::Cli;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    let filter = EnvFilter::builder()
+        .with_default_directive(LevelFilter::TRACE.into())
+        .from_env_lossy();
+    tracing_subscriber::fmt()
+        .without_time()
+        .with_target(false)
+        .with_env_filter(filter)
+        .init();
+
     let ctx = Arc::new(Context::init().await?);
-    Cli::parse().exec(ctx).await?;
+    match Cli::parse().exec(ctx).await {
+        Ok(_) => {}
+        Err(err) => {
+            error!("{:#}", err);
+            std::process::exit(1);
+        }
+    }
+
     Ok(())
 }

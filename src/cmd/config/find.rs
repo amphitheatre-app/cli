@@ -28,7 +28,7 @@ pub struct Cli {}
 impl Cli {
     pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
         let path = Configuration::path()?.display().to_string();
-        display!("{}", path.replace(' ', r"\ "));
+        println!("{}", path.replace(' ', r"\ "));
 
         Ok(())
     }

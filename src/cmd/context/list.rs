@@ -29,7 +29,7 @@ impl Cli {
         let configuration = ctx.configuration.read().await;
 
         for ctx in configuration.context.iter() {
-            display!("{:#?}", ctx);
+            println!("{:#?}", ctx);
         }
 
         Ok(())

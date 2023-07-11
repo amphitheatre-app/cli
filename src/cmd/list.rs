@@ -48,7 +48,7 @@ impl Cli {
 
         // print the title of each playbook
         for playbook in playbooks {
-            display!("{:#?}", playbook);
+            println!("{:#?}", playbook);
         }
 
         Ok(())

@@ -18,13 +18,17 @@ use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::EitherCharacter::Manifest;
+use tracing::{debug, info};
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{anyhow, Result};
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // Create playbook from this Character
-    let path = Finder::new().find().expect("Config file .amp.toml not found");
+    let path = Finder::new()
+        .find()
+        .map_err(|_| anyhow!("Could not find `.amp.toml` in current directory or any parent directory"))?;
+
     let content = std::fs::read_to_string(path)?;
 
     let payload = PlaybookPayload {
@@ -33,14 +37,14 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
         preface: Manifest(content),
         live: true,
     };
-    display!("{:#?}", payload);
+    debug!("{:#?}", payload);
 
     let context = ctx.context().await?;
     let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
     let playbook = client.playbooks().create(payload)?;
-    println!("The playbook was created and deployed successfully!");
-    display!("{:#?}", playbook);
+    info!("The playbook was created and deployed successfully!");
+    debug!("{:#?}", playbook);
 
     Ok(())
 }

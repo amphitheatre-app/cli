@@ -28,7 +28,7 @@ impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let configuration = ctx.configuration.read().await;
         if let Some(context) = &configuration.context {
-            display!("{:#?}", context.current());
+            println!("{:#?}", context.current());
         }
 
         Ok(())

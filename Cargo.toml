@@ -1,7 +1,7 @@
 [package]
 name = "amp"
 description = "Amphitheatre's official command line tool"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "Apache-2.0"
 homepage = "https://amphitheatre.app"
@@ -23,6 +23,8 @@ log = "0.4.17"
 once_cell = "1.16.0"
 owo-colors = {version = "3.5.0", features = ["supports-colors"]}
 tokio = { version = "1.22.0", features = ["full"] }
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
 toml = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.89"

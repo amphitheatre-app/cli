@@ -23,7 +23,7 @@ pub struct Cli {}
 
 impl Cli {
     pub fn exec(&self) -> Result<()> {
-        display!("amp 0.1.0");
+        println!("amp {}", env!("CARGO_PKG_VERSION"));
         Ok(())
     }
 }
