@@ -43,7 +43,6 @@ impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let context = ctx.context().await?;
         let client = Client::new(&format!("{}/v1", &context.server), context.token);
-
         let playbooks = client.playbooks().list(None)?;
 
         // print the title of each playbook

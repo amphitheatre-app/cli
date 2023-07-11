@@ -34,10 +34,6 @@ pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user and default to yes
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_DRY_RUN")]
     dry_run: bool,
-
-    /// Path or URL to the Amphitheatre config file
-    #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
-    filename: Option<String>,
 }
 
 impl Cli {

@@ -28,7 +28,7 @@ pub struct Cli {
     assume_yes: bool,
 
     /// Path or URL to the Amphitheatre config file
-    #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
+    #[arg(short, long, env = "AMP_FILENAME")]
     filename: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)

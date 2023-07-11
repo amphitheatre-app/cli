@@ -16,7 +16,10 @@ use std::fs;
 use std::sync::Arc;
 
 use amp_common::schema::Manifest;
+use anyhow::anyhow;
 use clap::Args;
+use log::info;
+use tracing::error;
 
 use crate::context::Context;
 use crate::errors::Result;
@@ -54,16 +57,16 @@ impl Cli {
             .unwrap_or_else(|| path.file_name().unwrap().to_str().unwrap());
 
         if !self.force && path.join(FILE_NAME).exists() {
-            println!("`amp init` cannot be run on existing Amphitheatre character");
+            error!("`amp init` cannot be run on existing Amphitheatre character");
             std::process::exit(1);
         }
 
         if let Err(e) = create(name) {
-            println!("Failed to create the character: {}", e);
+            error!("Failed to create the character: {}", e.to_string());
             std::process::exit(1);
         }
 
-        println!("Created the character: {}. See more definitions at `.amp.toml`", name);
+        info!("Created the character: {}. See more definitions at `.amp.toml`", name);
 
         Ok(())
     }
@@ -77,8 +80,8 @@ fn create(name: &str) -> Result<()> {
     };
 
     // Convert the Manifest to a TOML String.
-    let serialized = toml::to_string(&manifest).expect("Could not encode TOML value");
-    fs::write(FILE_NAME, serialized).expect("Could not write to file!");
+    let serialized = toml::to_string(&manifest).map_err(|_| anyhow!("Could not encode TOML value"))?;
+    fs::write(FILE_NAME, serialized).map_err(|_| anyhow!("Could not write to file!"))?;
 
     Ok(())
 }

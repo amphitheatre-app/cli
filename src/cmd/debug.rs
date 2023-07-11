@@ -48,18 +48,13 @@ pub struct Cli {
     cleanup: bool,
 
     /// Path or URL to the Amphitheatre config file
-    #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
+    #[arg(short, long, env = "AMP_FILENAME")]
     filename: Option<String>,
 
     /// Recreate Kubernetes resources if necessary for deployment,
     /// warning: might cause downtime!
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
     force: bool,
-
-    /// Run `status-check` iteratively after each deploy step,
-    /// instead of all-together at the end of all deploys (default)
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_ITERATIVE_STATUS_CHECK")]
-    iterative_status_check: bool,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
@@ -68,10 +63,6 @@ pub struct Cli {
     /// Priority sorted order of debugger protocols to support
     #[arg(long, default_value = "[]", env = "AMP_PROTOCOLS")]
     protocols: Option<String>,
-
-    /// Wait for deployed resources to stabilize
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_STATUS_CHECK")]
-    status_check: bool,
 
     /// Stream logs from deployed objects
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TAIL")]
