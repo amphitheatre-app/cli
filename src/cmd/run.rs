@@ -28,11 +28,7 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
 
-    /// If true, amp will try to create a config for the user's run if it doesn't find one
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_AUTO_CREATE_CONFIG")]
-    auto_create_config: bool,
-
-    /// Show the build logs and output
+    /// Delete deployments after dev or debug mode is interrupted
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_CLEANUP")]
     cleanup: bool,
 
@@ -44,18 +40,9 @@ pub struct Cli {
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
     force: bool,
 
-    /// Run `status-check` iteratively after each deploy step,
-    /// instead of all-together at the end of all deploys (default)
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_ITERATIVE_STATUS_CHECK")]
-    iterative_status_check: bool,
-
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
     profile: Option<Vec<String>>,
-
-    /// Wait for deployed resources to stabilize
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_STATUS_CHECK")]
-    status_check: bool,
 
     /// Stream logs from deployed objects
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TAIL")]
