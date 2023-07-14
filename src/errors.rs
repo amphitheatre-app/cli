@@ -26,7 +26,7 @@ pub enum Errors {
     #[error("Failed to load configuration")]
     FailedLoadConfiguration(#[source] anyhow::Error),
 
-    #[error("Not found current context")]
+    #[error("Current context not found, please use `amp context` for help")]
     NotFoundCurrentContext,
 
     #[error("Client error: {0}")]
@@ -58,4 +58,7 @@ pub enum Errors {
 
     #[error("Invalid manifest: {0}")]
     InvalidManifest(String),
+
+    #[error("Failed to create playbook: {0}")]
+    FailedCreatePlaybook(client::ClientError),
 }

@@ -17,7 +17,7 @@ use std::sync::Arc;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
-use amp_common::schema::EitherCharacter::{Git, Manifest};
+use amp_common::schema::EitherCharacter::{Git, Manifest, Name};
 use amp_common::schema::GitReference;
 use tracing::{debug, info};
 
@@ -30,6 +30,8 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
 
     if let Some(repository) = &options.git {
         payload = create_playbook_from_git(repository)?;
+    } else if let Some(name) = &options.name {
+        payload = create_playbook_from_cluster(name)?;
     } else if let Some(filename) = &options.filename {
         payload = create_playbook_from_manifest(filename)?;
     } else {
@@ -40,11 +42,24 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     let context = ctx.context().await?;
     let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
-    let playbook = client.playbooks().create(payload).map_err(Errors::ClientError);
+    let playbook = client
+        .playbooks()
+        .create(payload)
+        .map_err(Errors::FailedCreatePlaybook)?;
     info!("The playbook was created and deployed successfully!");
     debug!("{:#?}", playbook);
 
     Ok(())
+}
+
+/// Create playbook from cluster
+fn create_playbook_from_cluster(name: &str) -> Result<PlaybookPayload> {
+    Ok(PlaybookPayload {
+        title: "Untitled".to_string(),
+        description: "".to_string(),
+        preface: Name(name.to_string()),
+        live: false,
+    })
 }
 
 /// Create playbook from remote git repository

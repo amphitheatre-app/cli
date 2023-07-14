@@ -44,6 +44,10 @@ pub struct Cli {
     #[arg(long, env = "AMP_GIT")]
     pub git: Option<String>,
 
+    /// The name of the character on the cluster you want to run on
+    #[arg(long, env = "AMP_NAME")]
+    pub name: Option<String>,
+
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
     profile: Option<Vec<String>>,
