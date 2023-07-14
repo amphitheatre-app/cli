@@ -14,6 +14,7 @@
 
 pub mod cli;
 pub mod delete;
+pub mod init;
 pub mod list;
 pub mod show;
 pub mod using;
