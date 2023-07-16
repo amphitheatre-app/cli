@@ -12,15 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::Path;
 use std::sync::Arc;
 
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::EitherCharacter;
+use ignore::gitignore::GitignoreBuilder;
 use ignore::WalkBuilder;
+use notify::event::{CreateKind, DataChange, ModifyKind, RemoveKind};
+use notify::EventKind::{Create, Modify, Remove};
+use notify::RecursiveMode::Recursive;
+use notify::{RecommendedWatcher, Watcher};
 use tar::Builder;
-use tracing::{debug, info};
+use tracing::{debug, error, info, trace};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
@@ -29,6 +35,7 @@ use crate::utils;
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // Create playbook from this Character
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
+    let workspace = path.parent().unwrap();
     let content = utils::read_manifest(&path)?;
 
     let payload = PlaybookPayload {
@@ -46,23 +53,56 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     info!("The playbook was created and deployed successfully!");
     debug!("{:#?}", playbook);
 
-    // let bytes = archive(path.parent().unwrap().to_str().unwrap()).unwrap();
+    // let bytes = archive(workspace).unwrap();
     // let manifest: Manifest = toml::from_str(&content).map_err(Errors::InvalidManifest)?;
     // client
     //     .actors()
     //     .sync(playbook.id, manifest.name, bytes)
     //     .map_err(Errors::ClientError)?;
 
+    let matcher = GitignoreBuilder::new(".gitignore").build().unwrap();
+
+    let (tx, rx) = std::sync::mpsc::channel();
+    // We listen to the file changes giving Notify
+    // a function that will get called when events happen.
+    let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).expect("Listen to file changes failed");
+    watcher.watch(workspace, Recursive).expect("watch failed");
+
+    for event in rx {
+        match event {
+            Ok(event) => {
+                trace!("Changed: {:#?}", event);
+                for path in &event.paths {
+                    let name = path.strip_prefix(workspace).map_err(Errors::FailedStripPrefix)?;
+                    debug!("Striped path is {:?}", name);
+                    if matcher.matched(name, false).is_ignore() {
+                        continue;
+                    }
+                }
+                match event.kind {
+                    Create(CreateKind::File) | Create(CreateKind::Folder) => debug!("File created {:?}", event.paths),
+                    Modify(ModifyKind::Data(DataChange::Content)) => debug!("File modified {:?}", event.paths),
+                    Modify(ModifyKind::Name(_)) => debug!("File renamed {:?}", event.paths),
+                    Remove(RemoveKind::File) | Remove(RemoveKind::Folder) => {
+                        debug!("File removed {:?}", event.paths)
+                    }
+                    _ => {}
+                }
+            }
+            Err(err) => error!("Error: {err:?}"),
+        }
+    }
+
     Ok(())
 }
 
 #[allow(dead_code)]
 /// Archive the given directory into a tarball and return the bytes.
-fn archive(path: &str) -> Result<Vec<u8>> {
+fn archive(path: &Path) -> Result<Vec<u8>> {
     debug!("The given path is {:?}", path);
     let mut tar = Builder::new(Vec::new());
 
-    let base = std::path::Path::new(path);
+    let base = path.clone();
     for entry in WalkBuilder::new(path).build() {
         let entry = entry.map_err(Errors::WalkError)?;
         let path = entry.path();
