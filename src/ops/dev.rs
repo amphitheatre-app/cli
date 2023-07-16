@@ -74,7 +74,7 @@ fn archive(path: &str) -> Result<Vec<u8>> {
         debug!("append path: {:?}, {:?}", path, path.to_path_buf());
         let name = path.strip_prefix(base).map_err(Errors::FailedStripPrefix)?;
         debug!("Striped path is {:?}", name);
-        tar.append_path(name.to_path_buf()).map_err(Errors::FailedAppendPath)?;
+        tar.append_path(name).map_err(Errors::FailedAppendPath)?;
     }
 
     tar.into_inner().map_err(Errors::FailedFinishTar)
