@@ -23,7 +23,7 @@ pub fn read_manifest<P: AsRef<Path>>(path: P) -> Result<String> {
     let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
 
     if let Err(e) = toml::from_str::<Manifest>(&content) {
-        return Err(Errors::InvalidManifest(e.to_string()));
+        return Err(Errors::InvalidManifest(e));
     }
 
     Ok(content)

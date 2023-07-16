@@ -18,10 +18,14 @@ amp-common = { git = "https://github.com/amphitheatre-app/common", tag="v0.2.2" 
 clap = {version = "4.0.26", features = ["derive", "env"]}
 clap-verbosity-flag = "2.0.0"
 clap_complete = "4.0.5"
+confy = "0.5.1"
 ctrlc = "3.2.3"
+dunce = "1.0.3"
 log = "0.4.17"
+ignore = "0.4.20"
 once_cell = "1.16.0"
 owo-colors = {version = "3.5.0", features = ["supports-colors"]}
+tar = "0.4.39"
 thiserror = "1.0.43"
 tokio = { version = "1.22.0", features = ["full"] }
 tracing = "0.1.37"
@@ -29,5 +33,3 @@ tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
 toml = "0.5"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0.89"
-confy = "0.5.1"
-dunce = "1.0.3"

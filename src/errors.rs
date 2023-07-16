@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::StripPrefixError;
+
 use amp_common::{client, filesystem};
 pub use anyhow::*;
 use thiserror::Error;
@@ -57,8 +59,20 @@ pub enum Errors {
     FailedSaveManifest(std::io::Error),
 
     #[error("Invalid manifest: {0}")]
-    InvalidManifest(String),
+    InvalidManifest(toml::de::Error),
 
     #[error("Failed to create playbook: {0}")]
     FailedCreatePlaybook(client::ClientError),
+
+    #[error("Failed to finish tar: {0}")]
+    FailedFinishTar(std::io::Error),
+
+    #[error("Walk directory error: {0}")]
+    WalkError(ignore::Error),
+
+    #[error("Failed to strip prefix: {0}")]
+    FailedStripPrefix(StripPrefixError),
+
+    #[error("Failed to append path: {0}")]
+    FailedAppendPath(std::io::Error),
 }
