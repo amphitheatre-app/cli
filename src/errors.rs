@@ -75,4 +75,10 @@ pub enum Errors {
 
     #[error("Failed to append path: {0}")]
     FailedAppendPath(std::io::Error),
+
+    #[error("Failed to create watcher: {0}")]
+    FailedCreateWatcher(notify::Error),
+
+    #[error("Failed to watch directory: {0}")]
+    FailedWatchDirectory(notify::Error),
 }
