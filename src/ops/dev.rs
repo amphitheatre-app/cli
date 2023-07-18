@@ -109,7 +109,7 @@ fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()
 
     let pyaload = archive(&paths).unwrap();
     let req = SynchronizationRequest {
-        kind: EventKinds::Overwrite.to_string(),
+        kind: EventKinds::Override.to_string(),
         paths: vec![],
         attributes: None,
         payload: Some(pyaload),
@@ -179,7 +179,7 @@ fn is_ignored(matcher: &Gitignore, root: &Path, paths: &Vec<PathBuf>) -> Result<
 
 #[derive(PartialEq, Eq)]
 enum EventKinds {
-    Overwrite,
+    Override,
     Create,
     Modify,
     Rename,
@@ -202,7 +202,7 @@ impl From<EventKind> for EventKinds {
 impl ToString for EventKinds {
     fn to_string(&self) -> String {
         match self {
-            Self::Overwrite => "Overwrite".to_string(),
+            Self::Override => "Override".to_string(),
             Self::Create => "Create".to_string(),
             Self::Modify => "Modify".to_string(),
             Self::Rename => "Rename".to_string(),
