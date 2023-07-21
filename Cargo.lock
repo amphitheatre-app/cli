@@ -31,7 +31,7 @@ dependencies = [
 
 [[package]]
 name = "amp"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "amp-client",
  "amp-common",
@@ -59,8 +59,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.2.0"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.0#61b4d0e57ada3f782d880390d7ab2c81f669bda4"
+version = "0.2.1"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.1#06f199040bda83c1eb86a43faf277afc656ee412"
 dependencies = [
  "amp-common",
  "serde",
@@ -69,8 +69,8 @@ dependencies = [
 
 [[package]]
 name = "amp-common"
-version = "0.3.0"
-source = "git+https://github.com/amphitheatre-app/common?tag=v0.3.0#d2a30ef43aff957f9ed671223a2b01ec32f8d700"
+version = "0.3.1"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.3.1#fa313fab7248d329c341126e2e55e4e311d7ef2b"
 dependencies = [
  "anyhow",
  "chrono",

@@ -20,7 +20,7 @@ use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::{EitherCharacter, Manifest};
-use amp_common::sync::{EventKinds, Synchronization};
+use amp_common::sync::{self, EventKinds, Synchronization};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use ignore::WalkBuilder;
 use notify::RecursiveMode::Recursive;
@@ -134,7 +134,17 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
 
     let mut req = Synchronization {
         kind: kind.clone(),
-        paths: paths.iter().map(|(_, a)| a.to_str().unwrap().to_string()).collect(),
+        paths: paths
+            .iter()
+            .map(|(_, path)| {
+                let path_string = path.to_str().unwrap().to_string();
+                if path.is_dir() {
+                    sync::Path::Directory(path_string)
+                } else {
+                    sync::Path::File(path_string)
+                }
+            })
+            .collect(),
         attributes: None,
         payload: None,
     };
