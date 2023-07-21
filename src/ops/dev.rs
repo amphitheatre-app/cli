@@ -15,15 +15,14 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use amp_client::actors::{Actors, SynchronizationRequest};
+use amp_client::actors::Actors;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::schema::{EitherCharacter, Manifest};
+use amp_common::sync::{EventKinds, Synchronization};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use ignore::WalkBuilder;
-use notify::event::{CreateKind, DataChange, ModifyKind, RemoveKind};
-use notify::EventKind::{self, Create, Modify, Remove};
 use notify::RecursiveMode::Recursive;
 use notify::{Event, RecommendedWatcher, Watcher};
 use tar::Builder;
@@ -108,8 +107,8 @@ fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()
     }
 
     let pyaload = archive(&paths).unwrap();
-    let req = SynchronizationRequest {
-        kind: EventKinds::Override.to_string(),
+    let req = Synchronization {
+        kind: EventKinds::Override,
         paths: vec![],
         attributes: None,
         payload: Some(pyaload),
@@ -133,8 +132,8 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
         paths.push(strip(base, &path)?);
     }
 
-    let mut req = SynchronizationRequest {
-        kind: kind.to_string(),
+    let mut req = Synchronization {
+        kind: kind.clone(),
         paths: paths.iter().map(|(_, a)| a.to_str().unwrap().to_string()).collect(),
         attributes: None,
         payload: None,
@@ -175,39 +174,4 @@ fn is_ignored(matcher: &Gitignore, root: &Path, paths: &Vec<PathBuf>) -> Result<
         }
     }
     Ok(false)
-}
-
-#[derive(PartialEq, Eq)]
-enum EventKinds {
-    Override,
-    Create,
-    Modify,
-    Rename,
-    Remove,
-    Other,
-}
-
-impl From<EventKind> for EventKinds {
-    fn from(kind: EventKind) -> Self {
-        match kind {
-            Create(CreateKind::File) | Create(CreateKind::Folder) => Self::Create,
-            Modify(ModifyKind::Data(DataChange::Content)) => Self::Modify,
-            Modify(ModifyKind::Name(_)) => Self::Rename,
-            Remove(RemoveKind::File) | Remove(RemoveKind::Folder) => Self::Remove,
-            _ => Self::Other,
-        }
-    }
-}
-
-impl ToString for EventKinds {
-    fn to_string(&self) -> String {
-        match self {
-            Self::Override => "Override".to_string(),
-            Self::Create => "Create".to_string(),
-            Self::Modify => "Modify".to_string(),
-            Self::Rename => "Rename".to_string(),
-            Self::Remove => "Remove".to_string(),
-            Self::Other => "Other".to_string(),
-        }
-    }
 }
