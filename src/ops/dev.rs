@@ -60,6 +60,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     let manifest: Manifest = toml::from_str(&content).map_err(Errors::InvalidManifest)?;
 
     // Initial sync the full sources into the server.
+    info!("Syncing the full sources into the server...");
     upload(&actors, &playbook.id, &manifest.name, workspace)?;
 
     // Watch file changes and sync the changed files.
@@ -149,7 +150,7 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
         payload: None,
     };
 
-    if kind == EventKinds::Create || kind == EventKinds::Modify {
+    if kind == EventKinds::Modify {
         req.payload = Some(archive(&paths)?);
     }
 
@@ -159,7 +160,7 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
 
 /// Archive the given directory into a tarball and return the bytes.
 fn archive(paths: &Vec<(PathBuf, PathBuf)>) -> Result<Vec<u8>> {
-    debug!("The given path is {:?}", paths);
+    debug!("The given path for archive is {:?}", paths);
     let mut tar = Builder::new(Vec::new());
     for (path, name) in paths {
         tar.append_path_with_name(path, name)
