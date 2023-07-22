@@ -23,6 +23,8 @@ use amp_common::schema::{EitherCharacter, Manifest};
 use amp_common::sync::{self, EventKinds, Synchronization};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use ignore::WalkBuilder;
+use notify::event::RemoveKind;
+use notify::EventKind::Remove;
 use notify::RecursiveMode::Recursive;
 use notify::{Event, RecommendedWatcher, Watcher};
 use tar::Builder;
@@ -135,27 +137,36 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
 
     let mut req = Synchronization {
         kind: kind.clone(),
-        paths: paths
-            .iter()
-            .map(|(_, path)| {
-                let path_string = path.to_str().unwrap().to_string();
-                if path.is_dir() {
-                    sync::Path::Directory(path_string)
-                } else {
-                    sync::Path::File(path_string)
-                }
-            })
-            .collect(),
+        paths: vec![],
         attributes: None,
         payload: None,
     };
+
+    // Because the file or directory was removed yet, we can't get the file type.
+    // so we determine the file type by original event kind.
+    if kind == EventKinds::Remove {
+        let is_dir = event.kind == Remove(RemoveKind::Folder);
+        req.paths = paths.iter().map(|(_, b)| format_path(b, is_dir)).collect();
+    } else {
+        req.paths = paths.iter().map(|(a, b)| format_path(b, a.is_dir())).collect();
+    }
 
     if kind == EventKinds::Modify {
         req.payload = Some(archive(&paths)?);
     }
 
+    debug!("The sync request is: {:?}", req);
     client.sync(pid, name, req).map_err(Errors::ClientError)?;
     Ok(())
+}
+
+fn format_path(path: &Path, is_dir: bool) -> sync::Path {
+    let path_string = path.to_str().unwrap().to_string();
+    if is_dir {
+        sync::Path::Directory(path_string)
+    } else {
+        sync::Path::File(path_string)
+    }
 }
 
 /// Archive the given directory into a tarball and return the bytes.
