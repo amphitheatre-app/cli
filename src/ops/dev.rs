@@ -109,9 +109,9 @@ fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()
         paths.push(strip(base, path)?);
     }
 
-    let pyaload = archive(&paths).unwrap();
+    let pyaload = archive(&paths)?;
     let req = Synchronization {
-        kind: EventKinds::Override,
+        kind: EventKinds::Overwrite,
         paths: vec![],
         attributes: None,
         payload: Some(pyaload),
