@@ -31,7 +31,7 @@ dependencies = [
 
 [[package]]
 name = "amp"
-version = "0.2.6"
+version = "0.2.7"
 dependencies = [
  "amp-client",
  "amp-common",
@@ -59,8 +59,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.2.3"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.3#492d8684e7385dcbf5a11b3fdb682fd5e30621c4"
+version = "0.2.4"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.4#3c72a119e891ed2b0a1431afd725577d9ec716e0"
 dependencies = [
  "amp-common",
  "serde",
@@ -69,15 +69,15 @@ dependencies = [
 
 [[package]]
 name = "amp-common"
-version = "0.3.3"
-source = "git+https://github.com/amphitheatre-app/common?tag=v0.3.3#f1750580ee0febc126bf5d26b777e0e278ed8438"
+version = "0.3.5"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.3.5#bf6e9494b628c3bc0fdf43edd555ef38db6e7939"
 dependencies = [
  "anyhow",
  "chrono",
  "confy",
  "convert_case",
  "data-encoding",
- "directories 5.0.1",
+ "dirs",
  "k8s-openapi",
  "kube",
  "notify",
@@ -309,7 +309,7 @@ version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e37668cb35145dcfaa1931a5f37fde375eeae8068b4c0d2f289da28a270b2d2c"
 dependencies = [
- "directories 4.0.1",
+ "directories",
  "serde",
  "thiserror",
  "toml 0.5.11",
@@ -514,10 +514,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "directories"
+name = "dirs"
 version = "5.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9a49173b84e034382284f27f1af4dcbbd231ffa358c0fe316541a7337f376a35"
+checksum = "44c45a9d03d6676652bcb5e724c7e988de1acad23a711b5217ab9cbecbec2225"
 dependencies = [
  "dirs-sys 0.4.1",
 ]
