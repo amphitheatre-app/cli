@@ -46,6 +46,7 @@ pub enum Errors {
     #[error("Failed to delete context: {0}")]
     FailedDeleteContext(anyhow::Error),
 
+    #[allow(dead_code)]
     #[error("Not found context: {0}")]
     NotFoundContext(String),
 
@@ -81,4 +82,10 @@ pub enum Errors {
 
     #[error("Failed to watch directory: {0}")]
     FailedWatchDirectory(notify::Error),
+
+    #[error("Not found available contexts")]
+    NotFoundContexts,
+
+    #[error("Failed to select context: {0}")]
+    FailedSelectContext(anyhow::Error),
 }

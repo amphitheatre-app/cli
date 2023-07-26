@@ -20,7 +20,7 @@ use tabled::settings::Style;
 use tabled::Tabled;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 
 /// List all available contexts
 #[derive(Args, Debug)]
@@ -30,20 +30,17 @@ pub struct Cli {}
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let configuration = ctx.configuration.read().await;
+        let context = configuration.context.as_ref().ok_or(Errors::NotFoundContexts)?;
 
-        if let Some(context) = &configuration.context {
-            let mut table = Vec::new();
-            for cluster in context.iter() {
-                let mut row = ContextTable::from(cluster);
-                if let Some(current) = context.current() {
-                    row.default = current.title == cluster.title;
-                }
-                table.push(row);
+        let mut table = Vec::new();
+        for cluster in context.iter() {
+            let mut row = ContextTable::from(cluster);
+            if let Some(current) = context.current() {
+                row.default = current.title == cluster.title;
             }
-            println!("{}", tabled::Table::new(table).with(Style::modern()));
-        } else {
-            println!("Not found available contexts");
+            table.push(row);
         }
+        println!("{}", tabled::Table::new(table).with(Style::modern()));
 
         Ok(())
     }

@@ -31,13 +31,9 @@ impl Cli {
     // delete the context and save the contexts
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let mut configuration = ctx.configuration.write().await;
+        let context = configuration.context.as_mut().ok_or(Errors::NotFoundContexts)?;
 
-        if let Some(context) = configuration.context.as_mut() {
-            context.delete(&self.name).map_err(Errors::FailedDeleteContext)?
-        } else {
-            return Err(Errors::NotFoundContext(self.name.clone()));
-        }
-
+        context.delete(&self.name).map_err(Errors::FailedDeleteContext)?;
         configuration
             .save(Configuration::path().map_err(Errors::InvalidConfigPath)?)
             .map_err(Errors::FailedSaveConfiguration)?;

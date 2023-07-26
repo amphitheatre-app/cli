@@ -17,7 +17,7 @@ use std::sync::Arc;
 use clap::Args;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 
 /// Print the current context
 #[derive(Args, Debug)]
@@ -27,8 +27,12 @@ pub struct Cli {}
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let configuration = ctx.configuration.read().await;
-        if let Some(context) = &configuration.context {
-            println!("{:#?}", context.current());
+        let context = configuration.context.as_ref().ok_or(Errors::NotFoundContexts)?;
+
+        if let Some(current) = context.current() {
+            println!("{:#?}", current);
+        } else {
+            println!("No current context");
         }
 
         Ok(())
