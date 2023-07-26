@@ -14,7 +14,10 @@
 
 use std::sync::Arc;
 
+use amp_common::config::Cluster;
 use clap::Args;
+use tabled::settings::Style;
+use tabled::Tabled;
 
 use crate::context::Context;
 use crate::errors::Result;
@@ -28,10 +31,37 @@ impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         let configuration = ctx.configuration.read().await;
 
-        for ctx in configuration.context.iter() {
-            println!("{:#?}", ctx);
+        if let Some(context) = &configuration.context {
+            let mut table = Vec::new();
+            for cluster in context.iter() {
+                let mut row = ContextTable::from(cluster);
+                if let Some(current) = context.current() {
+                    row.default = current.title == cluster.title;
+                }
+                table.push(row);
+            }
+            println!("{}", tabled::Table::new(table).with(Style::modern()));
+        } else {
+            println!("Not found available contexts");
         }
 
         Ok(())
+    }
+}
+
+#[derive(Tabled)]
+struct ContextTable {
+    title: String,
+    server: String,
+    default: bool,
+}
+
+impl From<&Cluster> for ContextTable {
+    fn from(ctx: &Cluster) -> Self {
+        Self {
+            title: ctx.title.clone(),
+            server: ctx.server.clone(),
+            default: false,
+        }
     }
 }
