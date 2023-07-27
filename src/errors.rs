@@ -14,7 +14,7 @@
 
 use std::path::StripPrefixError;
 
-use amp_common::{client, filesystem};
+use amp_common::{filesystem, http};
 pub use anyhow::*;
 use thiserror::Error;
 
@@ -32,7 +32,7 @@ pub enum Errors {
     NotFoundCurrentContext,
 
     #[error("Client error: {0}")]
-    ClientError(client::ClientError),
+    ClientError(http::HTTPError),
 
     #[error("Failed to load manifest: {0}")]
     FailedLoadManifest(String),
@@ -63,7 +63,7 @@ pub enum Errors {
     InvalidManifest(toml::de::Error),
 
     #[error("Failed to create playbook: {0}")]
-    FailedCreatePlaybook(client::ClientError),
+    FailedCreatePlaybook(http::HTTPError),
 
     #[error("Failed to finish tar: {0}")]
     FailedFinishTar(std::io::Error),
@@ -88,4 +88,10 @@ pub enum Errors {
 
     #[error("Failed to select context: {0}")]
     FailedSelectContext(anyhow::Error),
+
+    #[error("Failed to select context: {0}")]
+    InquireError(inquire::InquireError),
+
+    #[error("Failed to add context: {0}")]
+    FailedAddContext(anyhow::Error),
 }

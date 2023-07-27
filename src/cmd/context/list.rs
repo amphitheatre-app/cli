@@ -33,8 +33,9 @@ impl Cli {
         let context = configuration.context.as_ref().ok_or(Errors::NotFoundContexts)?;
 
         let mut table = Vec::new();
-        for cluster in context.iter() {
+        for (name, cluster) in context.iter() {
             let mut row = ContextTable::from(cluster);
+            row.name = name.clone();
             if let Some(current) = context.current() {
                 row.default = current.title == cluster.title;
             }
@@ -48,6 +49,7 @@ impl Cli {
 
 #[derive(Tabled)]
 struct ContextTable {
+    name: String,
     title: String,
     server: String,
     default: bool,
@@ -56,6 +58,7 @@ struct ContextTable {
 impl From<&Cluster> for ContextTable {
     fn from(ctx: &Cluster) -> Self {
         Self {
+            name: String::new(),
             title: ctx.title.clone(),
             server: ctx.server.clone(),
             default: false,

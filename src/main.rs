@@ -33,7 +33,7 @@ use crate::cmd::cli::Cli;
 #[tokio::main]
 async fn main() -> Result<()> {
     let filter = EnvFilter::builder()
-        .with_default_directive(LevelFilter::TRACE.into())
+        .with_default_directive(LevelFilter::DEBUG.into())
         .from_env_lossy();
     tracing_subscriber::fmt()
         .without_time()
