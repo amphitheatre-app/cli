@@ -40,7 +40,7 @@ impl Cli {
         }
 
         // Print playbooks as table
-        let table: Vec<PlaybookTable> = playbooks.iter().map(|p| PlaybookTable::from(p)).collect();
+        let table: Vec<PlaybookTable> = playbooks.iter().map(PlaybookTable::from).collect();
         println!("{}", tabled::Table::new(table).with(Style::modern()));
 
         Ok(())
