@@ -31,7 +31,7 @@ dependencies = [
 
 [[package]]
 name = "amp"
-version = "0.2.18"
+version = "0.2.19"
 dependencies = [
  "amp-client",
  "amp-common",
