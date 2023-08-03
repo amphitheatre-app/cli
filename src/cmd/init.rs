@@ -17,8 +17,8 @@ use std::sync::Arc;
 
 use amp_common::schema::Manifest;
 use clap::Args;
-use log::info;
 use tracing::error;
+use tracing::info;
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};

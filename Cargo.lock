@@ -44,7 +44,6 @@ dependencies = [
  "dunce",
  "ignore",
  "inquire",
- "log",
  "notify",
  "once_cell",
  "owo-colors",
