@@ -69,8 +69,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.2.8"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.8#6be978f36538828f6603945b553dd1bf64d29b5b"
+version = "0.2.9"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.2.9#5e39b7da534ce6fc65a7a1a410783b8247354276"
 dependencies = [
  "amp-common",
  "serde",
