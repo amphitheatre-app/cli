@@ -18,7 +18,7 @@ clap = { version = "4.4.2", features = ["derive", "env"] }
 clap-verbosity-flag = "2.0.1"
 clap_complete = "4.4.0"
 confy = "0.5.1"
-ctrlc = "3.4.0"
+ctrlc = "3.4.1"
 dunce = "1.0.4"
 ignore = "0.4.20"
 inquire = "0.6.2"
