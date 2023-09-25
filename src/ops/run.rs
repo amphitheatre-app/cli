@@ -17,8 +17,7 @@ use std::sync::Arc;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
-use amp_common::schema::EitherCharacter::{Git, Manifest, Name};
-use amp_common::schema::GitReference;
+use amp_common::resource::{CharacterSpec, Preface};
 use tracing::{debug, info};
 
 use crate::context::Context;
@@ -57,30 +56,29 @@ fn create_playbook_from_cluster(name: &str) -> Result<PlaybookPayload> {
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: Name(name.to_string()),
+        preface: Preface::registry(name, "hub", "latest"),
         live: false,
     })
 }
 
 /// Create playbook from remote git repository
 fn create_playbook_from_git(repository: &str) -> Result<PlaybookPayload> {
-    let reference = GitReference::new(repository.to_string());
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: Git(reference),
+        preface: Preface::repository(repository),
         live: false,
     })
 }
 
 /// Create playbook from manifest file
 fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
-    let content = utils::read_manifest(filename)?;
+    let manifest = utils::read_manifest(filename)?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: Manifest(content),
+        preface: Preface::manifest(&CharacterSpec::from(manifest)),
         live: false,
     })
 }
@@ -88,12 +86,12 @@ fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
 /// Create playbook from localy
 fn create_playbook_from_localy() -> Result<PlaybookPayload> {
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
-    let content = utils::read_manifest(path)?;
+    let manifest = utils::read_manifest(path)?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: Manifest(content),
+        preface: Preface::manifest(&CharacterSpec::from(manifest)),
         live: false,
     })
 }

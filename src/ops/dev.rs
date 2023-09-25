@@ -19,7 +19,7 @@ use amp_client::actors::Actors;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
-use amp_common::schema::{EitherCharacter, Manifest};
+use amp_common::resource::{CharacterSpec, Preface};
 use amp_common::sync::{self, EventKinds, Synchronization};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use ignore::WalkBuilder;
@@ -38,12 +38,12 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // Create playbook from this Character
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
     let workspace = path.parent().unwrap();
-    let content = utils::read_manifest(&path)?;
+    let manifest = utils::read_manifest(&path)?;
 
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: EitherCharacter::Manifest(content.clone()),
+        preface: Preface::manifest(&CharacterSpec::from(manifest.clone())),
         live: true,
     };
     debug!("{:#?}", payload);
@@ -59,11 +59,10 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // first time, we need to sync all files.
     // and then, we need to sync only changed files.
     let actors = client.actors();
-    let manifest: Manifest = toml::from_str(&content).map_err(Errors::InvalidManifest)?;
 
     // Initial sync the full sources into the server.
     info!("Syncing the full sources into the server...");
-    upload(&actors, &playbook.id, &manifest.name, workspace)?;
+    upload(&actors, &playbook.id, &manifest.meta.name, workspace)?;
 
     // Watch file changes and sync the changed files.
     let (tx, rx) = std::sync::mpsc::channel();
@@ -88,7 +87,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
             continue;
         }
 
-        handle(&actors, &playbook.id, &manifest.name, workspace, event)?;
+        handle(&actors, &playbook.id, &manifest.meta.name, workspace, event)?;
     }
 
     Ok(())

@@ -14,17 +14,12 @@
 
 use std::path::Path;
 
-use amp_common::schema::Manifest;
+use amp_common::schema::Character;
 
 use crate::errors::{Errors, Result};
 
 /// Read manifest file, validate and return content
-pub fn read_manifest<P: AsRef<Path>>(path: P) -> Result<String> {
+pub fn read_manifest<P: AsRef<Path>>(path: P) -> Result<Character> {
     let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
-
-    if let Err(e) = toml::from_str::<Manifest>(&content) {
-        return Err(Errors::InvalidManifest(e));
-    }
-
-    Ok(content)
+    toml::from_str::<Character>(&content).map_err(Errors::InvalidManifest)
 }

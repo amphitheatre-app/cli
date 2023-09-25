@@ -15,7 +15,7 @@
 use std::fs;
 use std::sync::Arc;
 
-use amp_common::schema::Manifest;
+use amp_common::schema::Character;
 use clap::Args;
 use tracing::error;
 use tracing::info;
@@ -32,15 +32,12 @@ pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
     assume_yes: bool,
-
     /// File to write generated manifests to
     #[arg(short, long, default_value = ".amp.toml", env = "AMP_FILENAME")]
     filename: Option<String>,
-
     /// Force the generation of the Amphitheatre character
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
     force: bool,
-
     /// Set the character name. Defaults to the directory name.
     #[arg(long, env = "AMP_NAME")]
     name: Option<String>,
@@ -73,10 +70,7 @@ impl Cli {
 
 fn create(name: &str) -> Result<()> {
     // Init and fill the Manifest fields.
-    let manifest = Manifest {
-        name: String::from(name),
-        ..Default::default()
-    };
+    let manifest = Character::new(name);
 
     // Convert the Manifest to a TOML String.
     let serialized = toml::to_string(&manifest).map_err(Errors::TomlSerializeError)?;
