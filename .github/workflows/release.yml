@@ -42,7 +42,7 @@ jobs:
             target: aarch64-pc-windows-msvc
     steps:
     - uses: actions/checkout@v4
-    - uses: dtolnay/rust-toolchain@stable
+    - uses: taiki-e/install-action@cross
     - uses: taiki-e/upload-rust-binary-action@v1
       with:
         bin: amp
