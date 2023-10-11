@@ -40,11 +40,13 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     let workspace = path.parent().unwrap();
     let manifest = utils::read_manifest(&path)?;
 
+    let mut character = CharacterSpec::from(manifest.clone());
+    character.live = true;
+
     let payload = PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
-        preface: Preface::manifest(&CharacterSpec::from(manifest.clone())),
-        live: true,
+        preface: Preface::manifest(&character),
     };
     debug!("{:#?}", payload);
 
@@ -55,7 +57,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     info!("The playbook was created and deployed successfully!");
     debug!("{:#?}", playbook);
 
-    // Continuous Synchornize file changes.
+    // Continuous Synchronize file changes.
     // first time, we need to sync all files.
     // and then, we need to sync only changed files.
     let actors = client.actors();

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::Path;
 use std::sync::Arc;
 
 use amp_client::client::Client;
@@ -31,10 +32,11 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
         payload = create_playbook_from_git(repository)?;
     } else if let Some(name) = &options.name {
         payload = create_playbook_from_cluster(name)?;
-    } else if let Some(filename) = &options.filename {
-        payload = create_playbook_from_manifest(filename)?;
+    } else if let Some(path) = &options.filename {
+        payload = create_playbook_from_manifest(path)?;
     } else {
-        payload = create_playbook_from_localy()?;
+        let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
+        payload = create_playbook_from_manifest(path)?;
     }
     debug!("{:#?}", payload);
 
@@ -57,7 +59,6 @@ fn create_playbook_from_cluster(name: &str) -> Result<PlaybookPayload> {
         title: "Untitled".to_string(),
         description: "".to_string(),
         preface: Preface::registry(name, "hub", "latest"),
-        live: false,
     })
 }
 
@@ -67,31 +68,16 @@ fn create_playbook_from_git(repository: &str) -> Result<PlaybookPayload> {
         title: "Untitled".to_string(),
         description: "".to_string(),
         preface: Preface::repository(repository),
-        live: false,
     })
 }
 
 /// Create playbook from manifest file
-fn create_playbook_from_manifest(filename: &str) -> Result<PlaybookPayload> {
-    let manifest = utils::read_manifest(filename)?;
-
-    Ok(PlaybookPayload {
-        title: "Untitled".to_string(),
-        description: "".to_string(),
-        preface: Preface::manifest(&CharacterSpec::from(manifest)),
-        live: false,
-    })
-}
-
-/// Create playbook from localy
-fn create_playbook_from_localy() -> Result<PlaybookPayload> {
-    let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
+fn create_playbook_from_manifest<P: AsRef<Path>>(path: P) -> Result<PlaybookPayload> {
     let manifest = utils::read_manifest(path)?;
 
     Ok(PlaybookPayload {
         title: "Untitled".to_string(),
         description: "".to_string(),
         preface: Preface::manifest(&CharacterSpec::from(manifest)),
-        live: false,
     })
 }
