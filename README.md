@@ -15,9 +15,16 @@ on refining it and contributions are welcome!
 
 ## Installation
 
-Binaries for Windows, Linux and macOS are available [from Github](https://github.com/amphitheatre-app/cli/releases/latest).
+### Pre-build binaries
 
-Compiling from this repository also works similarly:
+Binaries for Windows, Linux and macOS are available from [Github release page](https://github.com/amphitheatre-app/cli/releases/latest).
+
+
+### From source
+
+To build Amphitheatre CLI from source, you will need to have Git, Rust and Cargo installed.
+
+From a terminal, you can now run the following commands:
 
 ```
 git clone https://github.com/amphitheatre-app/cli.git
@@ -26,7 +33,23 @@ cargo build --release
 ```
 
 Compilation will probably take a few minutes depending on your machine.
-The binary will end up in `./target/release/amp`.
+The binary will end up in `./target/release/amp`.  You can move it in your `$PATH` to have the `amp` command available globally:
+
+```
+cp target/release/amp ~/.cargo/bin/amp
+```
+
+### Install the latest development build through git
+
+To get the latest bug fixes and features, you can install the development version from git. However, this is not fully tested. That means you're probably going to have more bugs despite having the latest bug fixes.
+
+```
+cargo install --git https://github.com/amphitheatre-app/cli.git amp
+```
+
+This will download the CLI from the master branch, and install it in Cargo's global binary directory (`~/.cargo/bin/` by default).
+
+Run `amp --help` for a list of all the available commands. Furthermore, you can run `amp <command> --help` to get help with a specific command.
 
 ## Contributing
 
