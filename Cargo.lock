@@ -46,7 +46,7 @@ checksum = "0942ffc6dcaadf03badf6e6a2d0228460359d5e34b57ccdc720b7382dfbd5ec5"
 
 [[package]]
 name = "amp"
-version = "0.2.29"
+version = "0.3.0"
 dependencies = [
  "amp-client",
  "amp-common",
@@ -75,8 +75,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.3.3"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.3.3#31b0ab188eb07bb0a507da019cda926c2a2a7381"
+version = "0.4.0"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.4.0#b2a6e0af28996a59e21f057748af0cd9420ea974"
 dependencies = [
  "amp-common",
  "serde",
