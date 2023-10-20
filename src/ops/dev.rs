@@ -71,9 +71,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     // We listen to the file changes giving Notify
     // a function that will get called when events happen.
     let mut watcher = RecommendedWatcher::new(tx, notify::Config::default()).map_err(Errors::FailedCreateWatcher)?;
-    watcher
-        .watch(workspace, Recursive)
-        .map_err(Errors::FailedWatchDirectory)?;
+    watcher.watch(workspace, Recursive).map_err(Errors::FailedWatchDirectory)?;
 
     let mut builder = GitignoreBuilder::new(workspace);
     builder.add(".gitignore");
@@ -111,12 +109,7 @@ fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()
     }
 
     let pyaload = archive(&paths)?;
-    let req = Synchronization {
-        kind: EventKinds::Overwrite,
-        paths: vec![],
-        attributes: None,
-        payload: Some(pyaload),
-    };
+    let req = Synchronization { kind: EventKinds::Overwrite, paths: vec![], attributes: None, payload: Some(pyaload) };
     client.sync(pid, name, req).map_err(Errors::ClientError)?;
 
     Ok(())
@@ -136,12 +129,7 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
         paths.push(strip(base, &path)?);
     }
 
-    let mut req = Synchronization {
-        kind: kind.clone(),
-        paths: vec![],
-        attributes: None,
-        payload: None,
-    };
+    let mut req = Synchronization { kind: kind.clone(), paths: vec![], attributes: None, payload: None };
 
     // Because the file or directory was removed yet, we can't get the file type.
     // so we determine the file type by original event kind.
@@ -175,8 +163,7 @@ fn archive(paths: &Vec<(PathBuf, PathBuf)>) -> Result<Vec<u8>> {
     debug!("The given path for archive is {:?}", paths);
     let mut tar = Builder::new(Vec::new());
     for (path, name) in paths {
-        tar.append_path_with_name(path, name)
-            .map_err(Errors::FailedAppendPath)?;
+        tar.append_path_with_name(path, name).map_err(Errors::FailedAppendPath)?;
     }
     tar.into_inner().map_err(Errors::FailedFinishTar)
 }

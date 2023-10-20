@@ -26,9 +26,7 @@ impl Context {
         let path = Configuration::path().map_err(Errors::InvalidConfigPath)?;
         let configuration = Configuration::load(path).map_err(Errors::FailedLoadConfiguration)?;
 
-        Ok(Context {
-            configuration: RwLock::new(configuration),
-        })
+        Ok(Context { configuration: RwLock::new(configuration) })
     }
 
     /// Get the current context from the configuration

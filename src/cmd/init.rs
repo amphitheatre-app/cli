@@ -15,13 +15,12 @@
 use std::fs;
 use std::sync::Arc;
 
-use amp_common::schema::Character;
-use clap::Args;
-use tracing::error;
-use tracing::info;
-
 use crate::context::Context;
 use crate::errors::{Errors, Result};
+use amp_common::schema::Character;
+use clap::Args;
+use colored::Colorize;
+use tracing::error;
 
 const FILE_NAME: &str = ".amp.toml";
 
@@ -47,10 +46,7 @@ impl Cli {
     pub async fn exec(&self, _ctx: Arc<Context>) -> Result<()> {
         let path = std::env::current_dir().unwrap();
 
-        let name = self
-            .name
-            .as_deref()
-            .unwrap_or_else(|| path.file_name().unwrap().to_str().unwrap());
+        let name = self.name.as_deref().unwrap_or_else(|| path.file_name().unwrap().to_str().unwrap());
 
         if !self.force && path.join(FILE_NAME).exists() {
             error!("`amp init` cannot be run on existing Amphitheatre character");
@@ -62,7 +58,9 @@ impl Cli {
             std::process::exit(1);
         }
 
-        info!("Created the character: {}. See more definitions at `.amp.toml`", name);
+        println!("Configuration .amp.toml was created successfully");
+        println!("{}", "You can now run [amp run] to build and deploy your character".green());
+        println!("{}", "or [amp dev] to enter development mode, with hot reloading".green());
 
         Ok(())
     }
@@ -74,6 +72,7 @@ fn create(name: &str) -> Result<()> {
 
     // Convert the Manifest to a TOML String.
     let serialized = toml::to_string(&manifest).map_err(Errors::TomlSerializeError)?;
+    println!("{}", serialized);
     fs::write(FILE_NAME, serialized).map_err(Errors::FailedSaveManifest)?;
 
     Ok(())

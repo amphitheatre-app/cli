@@ -32,14 +32,8 @@ use crate::cmd::cli::Cli;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let filter = EnvFilter::builder()
-        .with_default_directive(LevelFilter::INFO.into())
-        .from_env_lossy();
-    tracing_subscriber::fmt()
-        .without_time()
-        .with_target(false)
-        .with_env_filter(filter)
-        .init();
+    let filter = EnvFilter::builder().with_default_directive(LevelFilter::INFO.into()).from_env_lossy();
+    tracing_subscriber::fmt().without_time().with_target(false).with_env_filter(filter).init();
 
     let ctx = Arc::new(Context::init().await?);
     match Cli::parse().exec(ctx).await {

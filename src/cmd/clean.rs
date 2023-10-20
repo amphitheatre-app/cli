@@ -55,13 +55,8 @@ impl Cli {
         }
 
         // create a options list for the user to select from
-        let options: Vec<OptionItem> = playbooks
-            .iter()
-            .map(|p| OptionItem(p.id.clone(), p.title.clone()))
-            .collect();
-        let answer = Select::new("Select playbook to delete: ", options)
-            .prompt()
-            .map_err(Errors::InquireError)?;
+        let options: Vec<OptionItem> = playbooks.iter().map(|p| OptionItem(p.id.clone(), p.title.clone())).collect();
+        let answer = Select::new("Select playbook to delete: ", options).prompt().map_err(Errors::InquireError)?;
         delete(&client, answer.0.as_str()).await?;
 
         Ok(())

@@ -57,11 +57,6 @@ struct ContextTable {
 
 impl From<&Cluster> for ContextTable {
     fn from(ctx: &Cluster) -> Self {
-        Self {
-            name: String::new(),
-            title: ctx.title.clone(),
-            server: ctx.server.clone(),
-            default: false,
-        }
+        Self { name: String::new(), title: ctx.title.clone(), server: ctx.server.clone(), default: false }
     }
 }

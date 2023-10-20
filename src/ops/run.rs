@@ -43,10 +43,7 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     let context = ctx.context().await?;
     let client = Client::new(&format!("{}/v1", &context.server), context.token);
 
-    let playbook = client
-        .playbooks()
-        .create(payload)
-        .map_err(Errors::FailedCreatePlaybook)?;
+    let playbook = client.playbooks().create(payload).map_err(Errors::FailedCreatePlaybook)?;
     info!("The playbook was created and deployed successfully!");
     debug!("{:#?}", playbook);
 

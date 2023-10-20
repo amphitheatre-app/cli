@@ -51,15 +51,11 @@ async fn select_context(ctx: &Arc<Context>) -> Result<OptionItem> {
     let context = configuration.context.as_ref().ok_or(Errors::NotFoundContexts)?;
 
     // create a options with the available contexts
-    let options: Vec<OptionItem> = context
-        .iter()
-        .map(|(name, ctx)| OptionItem(String::from(name), ctx.title.clone()))
-        .collect();
+    let options: Vec<OptionItem> =
+        context.iter().map(|(name, ctx)| OptionItem(String::from(name), ctx.title.clone())).collect();
 
     // run the select prompt
-    let answer = Select::new("Select the context:", options)
-        .prompt()
-        .map_err(Errors::InquireError)?;
+    let answer = Select::new("Select the context:", options).prompt().map_err(Errors::InquireError)?;
 
     Ok(answer)
 }
