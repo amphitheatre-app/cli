@@ -37,6 +37,10 @@ pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user and default to yes
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_DRY_RUN")]
     dry_run: bool,
+
+    /// If true, amp will delete all playbooks
+    #[arg(long, action = clap::ArgAction::SetTrue, default_value = "false")]
+    all: bool,
 }
 
 impl Cli {
@@ -51,6 +55,19 @@ impl Cli {
         let playbooks = client.playbooks().list(None).map_err(Errors::ClientError)?;
         if playbooks.is_empty() {
             println!("No playbooks found");
+            return Ok(());
+        }
+
+        if self.all {
+            if self.dry_run {
+                println!("Would delete all playbooks");
+                return Ok(());
+            }
+
+            for playbook in playbooks {
+                delete(&client, &playbook.id).await?;
+            }
+
             return Ok(());
         }
 
