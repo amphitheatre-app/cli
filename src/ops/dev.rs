@@ -22,12 +22,10 @@ use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
 use amp_common::sync::{self, EventKinds, Synchronization};
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
-use ignore::WalkBuilder;
 use notify::event::RemoveKind;
 use notify::EventKind::Remove;
 use notify::RecursiveMode::Recursive;
 use notify::{Event, RecommendedWatcher, Watcher};
-use tar::Builder;
 use tracing::{debug, error, info, trace, warn};
 
 use crate::context::Context;
@@ -35,7 +33,10 @@ use crate::errors::{Errors, Result};
 use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
-    // Create playbook from this Character
+    let context = ctx.context().await?;
+    let client = Client::new(&format!("{}/v1", &context.server), context.token);
+
+    // Create playbook from local manifest file
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
     let workspace = path.parent().unwrap();
     let manifest = utils::read_manifest(&path)?;
@@ -43,19 +44,14 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     let mut character = CharacterSpec::from(manifest.clone());
     character.live = true;
 
-    let payload = PlaybookPayload {
-        title: "Untitled".to_string(),
-        description: "".to_string(),
-        preface: Preface::manifest(&character),
-    };
-    debug!("{:#?}", payload);
-
-    let context = ctx.context().await?;
-    let client = Client::new(&format!("{}/v1", &context.server), context.token);
-
-    let playbook = client.playbooks().create(payload).map_err(Errors::ClientError)?;
-    info!("The playbook was created and deployed successfully!");
-    debug!("{:#?}", playbook);
+    let playbook = utils::create(
+        client.playbooks(),
+        PlaybookPayload {
+            title: "Untitled".to_string(),
+            description: "".to_string(),
+            preface: Preface::manifest(&character),
+        },
+    )?;
 
     // Continuous Synchronize file changes.
     // first time, we need to sync all files.
@@ -64,7 +60,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
 
     // Initial sync the full sources into the server.
     info!("Syncing the full sources into the server...");
-    upload(&actors, &playbook.id, &manifest.meta.name, workspace)?;
+    utils::upload(&actors, &playbook.id, &manifest.meta.name, workspace)?;
 
     // Watch file changes and sync the changed files.
     let (tx, rx) = std::sync::mpsc::channel();
@@ -93,28 +89,6 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     Ok(())
 }
 
-fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()> {
-    let mut paths: Vec<(PathBuf, PathBuf)> = vec![];
-
-    let base = workspace;
-    for entry in WalkBuilder::new(workspace).build() {
-        let entry = entry.map_err(Errors::WalkError)?;
-        let path = entry.path();
-
-        if path.is_dir() {
-            continue;
-        }
-
-        paths.push(strip(base, path)?);
-    }
-
-    let pyaload = archive(&paths)?;
-    let req = Synchronization { kind: EventKinds::Overwrite, paths: vec![], attributes: None, payload: Some(pyaload) };
-    client.sync(pid, name, req).map_err(Errors::ClientError)?;
-
-    Ok(())
-}
-
 fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> Result<()> {
     trace!("Changed: {:?}", event);
 
@@ -126,7 +100,7 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
 
     let mut paths: Vec<(PathBuf, PathBuf)> = vec![];
     for path in event.paths {
-        paths.push(strip(base, &path)?);
+        paths.push(utils::strip(base, &path)?);
     }
 
     let mut req = Synchronization { kind: kind.clone(), paths: vec![], attributes: None, payload: None };
@@ -141,7 +115,7 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
     }
 
     if kind == EventKinds::Modify {
-        req.payload = Some(archive(&paths)?);
+        req.payload = Some(utils::archive(&paths)?);
     }
 
     debug!("The sync request is: {:?}", req);
@@ -156,23 +130,6 @@ fn format_path(path: &Path, is_dir: bool) -> sync::Path {
     } else {
         sync::Path::File(path_string)
     }
-}
-
-/// Archive the given directory into a tarball and return the bytes.
-fn archive(paths: &Vec<(PathBuf, PathBuf)>) -> Result<Vec<u8>> {
-    debug!("The given path for archive is {:?}", paths);
-    let mut tar = Builder::new(Vec::new());
-    for (path, name) in paths {
-        tar.append_path_with_name(path, name).map_err(Errors::FailedAppendPath)?;
-    }
-    tar.into_inner().map_err(Errors::FailedFinishTar)
-}
-
-#[inline]
-fn strip(base: &Path, path: &Path) -> Result<(PathBuf, PathBuf)> {
-    let striped_path = path.strip_prefix(base).map_err(Errors::FailedStripPrefix)?;
-    debug!("the full path and striped path is: {:?}, {:?}", path, striped_path);
-    Ok((path.to_path_buf(), striped_path.to_path_buf()))
 }
 
 fn is_ignored(matcher: &Gitignore, root: &Path, paths: &Vec<PathBuf>) -> Result<bool> {
