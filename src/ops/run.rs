@@ -63,12 +63,16 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     let workspace = path.parent().unwrap();
     let manifest = utils::read_manifest(&path)?;
 
+    let mut character = CharacterSpec::from(manifest.clone());
+    character.live = true;
+    character.once = true;
+
     let playbook = utils::create(
         client.playbooks(),
         PlaybookPayload {
             title: "Untitled".to_string(),
             description: "".to_string(),
-            preface: Preface::manifest(&CharacterSpec::from(manifest.clone())),
+            preface: Preface::manifest(&character),
         },
     )?;
 
