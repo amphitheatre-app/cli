@@ -19,6 +19,8 @@ use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
+use futures::StreamExt;
+use reqwest_eventsource::Event;
 use tracing::info;
 
 use crate::context::Context;
@@ -79,6 +81,15 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     // Sync the full sources into the server for build.
     info!("Syncing the full sources into the server...");
     utils::upload(&client.actors(), &playbook.id, &manifest.meta.name, workspace)?;
+
+    // Receive the log stream from the server.
+    info!("Receiving the log stream from the server...");
+    let mut es = client.actors().logs(&playbook.id, &manifest.meta.name);
+    while let Some(event) = es.next().await {
+        if let Ok(Event::Message(message)) = event {
+            println!("{}", message.data);
+        }
+    }
 
     Ok(())
 }
