@@ -15,12 +15,12 @@
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use amp_client::actors::Actors;
 use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
 use amp_common::sync::{self, EventKinds, Synchronization};
+use futures::StreamExt;
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use notify::event::RemoveKind;
 use notify::EventKind::Remove;
@@ -34,11 +34,11 @@ use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     let context = ctx.context().await?;
-    let client = Client::new(&format!("{}/v1", &context.server), context.token);
+    let client = Arc::new(Client::new(&format!("{}/v1", &context.server), context.token));
 
     // Create playbook from local manifest file
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
-    let workspace = path.parent().unwrap();
+    let workspace = Arc::new(path.parent().unwrap().to_path_buf());
     let manifest = utils::read_manifest(&path)?;
 
     let mut character = CharacterSpec::from(manifest.clone());
@@ -53,16 +53,40 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
         },
     )?;
 
-    // Continuous Synchronize file changes.
-    // first time, we need to sync all files.
-    // and then, we need to sync only changed files.
-    let actors = client.actors();
+    let pid = Arc::new(playbook.id);
+    let name = Arc::new(manifest.meta.name);
 
     // Initial sync the full sources into the server.
     info!("Syncing the full sources into the server...");
-    utils::upload(&actors, &playbook.id, &manifest.meta.name, workspace)?;
+    utils::upload(&client.actors(), &pid, &name, &workspace)?;
 
     // Watch file changes and sync the changed files.
+    let client1 = client.clone();
+    let pid1 = pid.clone();
+    let name1 = name.clone();
+    let workspace1 = workspace.clone();
+
+    let watcher = tokio::spawn(async move {
+        if let Err(err) = watch(&workspace1, &client1, &pid1, &name1).await {
+            error!("The watcher is stopped: {:?}", err);
+        }
+    });
+
+    // Receive the log stream from the server.
+    let logger = tokio::spawn(async move {
+        if let Err(err) = stream(&client, &pid, &name).await {
+            error!("The log stream is stopped: {:?}", err);
+        }
+    });
+
+    // Wait for the watcher and logger to finish.
+    let _ = tokio::join!(watcher, logger);
+
+    Ok(())
+}
+
+///  Watch file changes and sync the changed files.
+async fn watch(workspace: &Path, client: &Client, pid: &str, name: &str) -> Result<()> {
     let (tx, rx) = std::sync::mpsc::channel();
     // We listen to the file changes giving Notify
     // a function that will get called when events happen.
@@ -83,13 +107,13 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
             continue;
         }
 
-        handle(&actors, &playbook.id, &manifest.meta.name, workspace, event)?;
+        handle(client, pid, name, workspace, event)?;
     }
 
     Ok(())
 }
 
-fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> Result<()> {
+fn handle(client: &Client, pid: &str, name: &str, base: &Path, event: Event) -> Result<()> {
     trace!("Changed: {:?}", event);
 
     let kind = EventKinds::from(event.kind);
@@ -119,12 +143,14 @@ fn handle(client: &Actors, pid: &str, name: &str, base: &Path, event: Event) -> 
     }
 
     debug!("The sync request is: {:?}", req);
-    client.sync(pid, name, req).map_err(Errors::ClientError)?;
+    client.actors().sync(pid, name, req).map_err(Errors::ClientError)?;
+
     Ok(())
 }
 
 fn format_path(path: &Path, is_dir: bool) -> sync::Path {
     let path_string = path.to_str().unwrap().to_string();
+
     if is_dir {
         sync::Path::Directory(path_string)
     } else {
@@ -140,5 +166,20 @@ fn is_ignored(matcher: &Gitignore, root: &Path, paths: &Vec<PathBuf>) -> Result<
             return Ok(true);
         }
     }
+
     Ok(false)
+}
+
+/// Receive the log stream from the server.
+async fn stream(client: &Client, pid: &str, name: &str) -> Result<()> {
+    info!("Receiving the log stream from the server...");
+    let mut es = client.actors().logs(pid, name);
+
+    while let Some(event) = es.next().await {
+        if let Ok(reqwest_eventsource::Event::Message(message)) = event {
+            println!("{}", message.data);
+        }
+    }
+
+    Ok(())
 }
