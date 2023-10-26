@@ -35,13 +35,10 @@ async fn main() -> Result<()> {
     let filter = EnvFilter::builder().with_default_directive(LevelFilter::INFO.into()).from_env_lossy();
     tracing_subscriber::fmt().without_time().with_target(false).with_env_filter(filter).init();
 
-    let ctx = Arc::new(Context::init().await?);
-    match Cli::parse().exec(ctx).await {
-        Ok(_) => {}
-        Err(err) => {
-            error!("{:#}", err);
-            std::process::exit(1);
-        }
+    let ctx = Arc::new(Context::init()?);
+    if let Err(err) = Cli::parse().exec(ctx).await {
+        error!("{:#}", err);
+        std::process::exit(1);
     }
 
     Ok(())

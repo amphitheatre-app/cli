@@ -33,35 +33,35 @@ use crate::errors::{Errors, Result};
 use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
-    let context = ctx.context().await?;
-    let client = Arc::new(Client::new(&format!("{}/v1", &context.server), context.token));
-
     // Create playbook from local manifest file
     let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
     let workspace = Arc::new(path.parent().unwrap().to_path_buf());
+
     let manifest = utils::read_manifest(&path)?;
+    ctx.session.character.write().await.replace(manifest.clone());
 
     let mut character = CharacterSpec::from(manifest.clone());
     character.live = true;
 
     let playbook = utils::create(
-        client.playbooks(),
+        ctx.client.playbooks(),
         PlaybookPayload {
             title: "Untitled".to_string(),
             description: "".to_string(),
             preface: Preface::manifest(&character),
         },
     )?;
+    ctx.session.playbook.write().await.replace(playbook.clone());
 
     let pid = Arc::new(playbook.id);
     let name = Arc::new(manifest.meta.name);
 
     // Initial sync the full sources into the server.
     info!("Syncing the full sources into the server...");
-    utils::upload(&client.actors(), &pid, &name, &workspace)?;
+    utils::upload(&ctx.client.actors(), &pid, &name, &workspace)?;
 
     // Watch file changes and sync the changed files.
-    let client1 = client.clone();
+    let client1 = ctx.client.clone();
     let pid1 = pid.clone();
     let name1 = name.clone();
     let workspace1 = workspace.clone();
@@ -74,7 +74,7 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
 
     // Receive the log stream from the server.
     let logger = tokio::spawn(async move {
-        if let Err(err) = stream(&client, &pid, &name).await {
+        if let Err(err) = stream(&ctx.client, &pid, &name).await {
             error!("The log stream is stopped: {:?}", err);
         }
     });

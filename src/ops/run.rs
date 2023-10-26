@@ -15,7 +15,6 @@
 use std::path::PathBuf;
 use std::sync::Arc;
 
-use amp_client::client::Client;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
@@ -28,13 +27,10 @@ use crate::errors::{Errors, Result};
 use crate::utils;
 
 pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()> {
-    let context = ctx.context().await?;
-    let client = Client::new(&format!("{}/v1", &context.server), context.token);
-
     // Create playbook from cluster, return if success
     if let Some(repository) = &options.git {
         return utils::create(
-            client.playbooks(),
+            ctx.client.playbooks(),
             PlaybookPayload {
                 title: "Untitled".to_string(),
                 description: "".to_string(),
@@ -47,7 +43,7 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     // Create playbook from registry, return if success
     if let Some(name) = &options.name {
         return utils::create(
-            client.playbooks(),
+            ctx.client.playbooks(),
             PlaybookPayload {
                 title: "Untitled".to_string(),
                 description: "".to_string(),
@@ -63,28 +59,31 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
         None => Finder::new().find().map_err(Errors::NotFoundManifest)?,
     };
     let workspace = path.parent().unwrap();
+
     let manifest = utils::read_manifest(&path)?;
+    ctx.session.character.write().await.replace(manifest.clone());
 
     let mut character = CharacterSpec::from(manifest.clone());
     character.live = true;
     character.once = true;
 
     let playbook = utils::create(
-        client.playbooks(),
+        ctx.client.playbooks(),
         PlaybookPayload {
             title: "Untitled".to_string(),
             description: "".to_string(),
             preface: Preface::manifest(&character),
         },
     )?;
+    ctx.session.playbook.write().await.replace(playbook.clone());
 
     // Sync the full sources into the server for build.
     info!("Syncing the full sources into the server...");
-    utils::upload(&client.actors(), &playbook.id, &manifest.meta.name, workspace)?;
+    utils::upload(&ctx.client.actors(), &playbook.id, &manifest.meta.name, workspace)?;
 
     // Receive the log stream from the server.
     info!("Receiving the log stream from the server...");
-    let mut es = client.actors().logs(&playbook.id, &manifest.meta.name);
+    let mut es = ctx.client.actors().logs(&playbook.id, &manifest.meta.name);
     while let Some(event) = es.next().await {
         if let Ok(Event::Message(message)) = event {
             println!("{}", message.data);

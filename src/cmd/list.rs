@@ -14,7 +14,6 @@
 
 use std::sync::Arc;
 
-use amp_client::client::Client;
 use amp_client::playbooks::Playbook;
 use clap::Args;
 use tabled::settings::Style;
@@ -30,9 +29,7 @@ pub struct Cli {}
 
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
-        let context = ctx.context().await?;
-        let client = Client::new(&format!("{}/v1", &context.server), context.token);
-        let playbooks = client.playbooks().list(None).map_err(Errors::ClientError)?;
+        let playbooks = ctx.client.playbooks().list(None).map_err(Errors::ClientError)?;
 
         if playbooks.is_empty() {
             println!("No playbooks found");

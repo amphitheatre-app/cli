@@ -12,8 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-mod dev;
-mod run;
+pub mod cleaner;
+pub mod dev;
+pub mod run;
 
 pub use dev::dev;
 pub use run::run;

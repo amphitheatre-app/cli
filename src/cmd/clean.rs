@@ -45,14 +45,11 @@ pub struct Cli {
 
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
-        let context = ctx.context().await?;
-        let client = Client::new(&format!("{}/v1", &context.server), context.token);
-
         if let Some(id) = &self.id {
-            return delete(&client, id).await;
+            return delete(&ctx.client, id).await;
         }
 
-        let playbooks = client.playbooks().list(None).map_err(Errors::ClientError)?;
+        let playbooks = ctx.client.playbooks().list(None).map_err(Errors::ClientError)?;
         if playbooks.is_empty() {
             println!("No playbooks found");
             return Ok(());
@@ -65,7 +62,7 @@ impl Cli {
             }
 
             for playbook in playbooks {
-                delete(&client, &playbook.id).await?;
+                delete(&ctx.client, &playbook.id).await?;
             }
 
             return Ok(());
@@ -74,7 +71,7 @@ impl Cli {
         // create a options list for the user to select from
         let options: Vec<OptionItem> = playbooks.iter().map(|p| OptionItem(p.id.clone(), p.title.clone())).collect();
         let answer = Select::new("Select playbook to delete: ", options).prompt().map_err(Errors::InquireError)?;
-        delete(&client, answer.0.as_str()).await?;
+        delete(&ctx.client, answer.0.as_str()).await?;
 
         Ok(())
     }
