@@ -12,32 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::path::PathBuf;
 use std::sync::Arc;
 
 use amp_client::playbooks::PlaybookPayload;
-use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
 use tracing::{error, info};
 
 use crate::context::Context;
-use crate::errors::{Errors, Result};
+use crate::errors::Result;
 use crate::ops::{logger, watcher};
 use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>, options: &crate::cmd::dev::Cli) -> Result<()> {
-    // Create playbook from local manifest file
-    let path = match &options.filename {
-        Some(filename) => PathBuf::from(filename),
-        None => Finder::new().find().map_err(Errors::NotFoundManifest)?,
-    };
-    let workspace = Arc::new(path.parent().unwrap().to_path_buf());
+    // Read the character manifest from the specified file.
+    if let Some(filename) = &options.filename {
+        ctx.session.load(filename).await?;
+    }
 
-    let manifest = utils::read_manifest(&path)?;
-    ctx.session.character.write().await.replace(manifest.clone());
-
-    let mut character = CharacterSpec::from(manifest.clone());
-    character.live = true;
+    let manifest = ctx.session.character.read().await.clone().unwrap();
+    let character = CharacterSpec { live: true, ..CharacterSpec::from(&manifest) };
 
     let playbook = utils::create(
         ctx.client.playbooks(),
@@ -54,6 +47,7 @@ pub async fn dev(ctx: Arc<Context>, options: &crate::cmd::dev::Cli) -> Result<()
 
     // Initial sync the full sources into the server.
     info!("Syncing the full sources into the server...");
+    let workspace = ctx.session.workspace.read().await.clone().unwrap();
     utils::upload(&ctx.client.actors(), &pid, &name, &workspace)?;
 
     // Watch file changes and sync the changed files.

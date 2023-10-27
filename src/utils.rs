@@ -18,21 +18,12 @@ use amp_client::{
     actors::Actors,
     playbooks::{Playbook, PlaybookPayload, Playbooks},
 };
-use amp_common::{
-    schema::Character,
-    sync::{EventKinds, Synchronization},
-};
+use amp_common::sync::{EventKinds, Synchronization};
 use ignore::WalkBuilder;
 use tar::Builder;
 use tracing::{debug, info};
 
 use crate::errors::{Errors, Result};
-
-/// Read manifest file, validate and return content
-pub fn read_manifest<P: AsRef<Path>>(path: P) -> Result<Character> {
-    let content = std::fs::read_to_string(path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
-    toml::from_str::<Character>(&content).map_err(Errors::InvalidManifest)
-}
 
 /// Upload the given directory to the server.
 pub fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()> {

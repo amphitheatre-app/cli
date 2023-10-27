@@ -59,9 +59,6 @@ pub enum Errors {
     #[error("Failed to save manifest: {0}")]
     FailedSaveManifest(std::io::Error),
 
-    #[error("Invalid manifest: {0}")]
-    InvalidManifest(toml::de::Error),
-
     #[error("Failed to create playbook: {0}")]
     FailedCreatePlaybook(http::HTTPError),
 

@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::sync::Arc;
+use std::{path::PathBuf, sync::Arc};
 
 use amp_client::{actors::Actor, client::Client, playbooks::Playbook};
 use amp_common::{
     config::{Cluster, Configuration},
+    filesystem::Finder,
     schema::Character,
 };
 use tokio::sync::RwLock;
+use tracing::debug;
 
 use crate::errors::{Errors, Result};
 
 /// Session holds the current session state
 #[derive(Default, Debug)]
 pub struct Session {
+    pub workspace: RwLock<Option<PathBuf>>,
     pub character: RwLock<Option<Character>>,
     pub playbook: RwLock<Option<Playbook>>,
     pub actor: RwLock<Option<Actor>>,
@@ -33,8 +36,49 @@ pub struct Session {
 
 impl Session {
     pub fn init() -> Session {
-        Session::default()
+        // Try to load the character from the current or parent directory.
+        let (workspace, character) = try_load_character()
+            .map(|(workspace, character)| (Some(workspace), Some(character)))
+            .unwrap_or((None, None));
+
+        Session {
+            workspace: RwLock::new(workspace),
+            character: RwLock::new(character),
+            playbook: RwLock::new(None),
+            actor: RwLock::new(None),
+        }
     }
+
+    /// Load the character from the specified file.
+    pub async fn load(&self, filename: &str) -> Result<()> {
+        let path = PathBuf::from(filename);
+        let workspace = path.parent().unwrap().to_path_buf();
+        let character = Character::load(&path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
+
+        self.workspace.write().await.replace(workspace);
+        self.character.write().await.replace(character);
+
+        Ok(())
+    }
+}
+
+/// Try to load the character from the current directory
+fn try_load_character() -> Option<(PathBuf, Character)> {
+    let path = Finder::new().find();
+    if let Err(err) = path {
+        debug!("Not found character in current or parent directories: {}", err);
+        return None;
+    }
+
+    let path = path.unwrap();
+    let workspace = path.parent().unwrap().to_path_buf();
+    let character = Character::load(&path);
+    if let Err(err) = character {
+        debug!("Failed to read character manifest: {}", err);
+        return None;
+    }
+
+    Some((workspace, character.unwrap()))
 }
 
 /// Context holds the current context state

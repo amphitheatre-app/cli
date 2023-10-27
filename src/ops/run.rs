@@ -18,6 +18,7 @@ use std::sync::Arc;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
+use amp_common::schema::Character;
 use tracing::{error, info};
 
 use crate::context::Context;
@@ -59,10 +60,10 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     };
     let workspace = Arc::new(path.parent().unwrap().to_path_buf());
 
-    let manifest = utils::read_manifest(&path)?;
+    let manifest = Character::load(&path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
     ctx.session.character.write().await.replace(manifest.clone());
 
-    let mut character = CharacterSpec::from(manifest.clone());
+    let mut character = CharacterSpec::from(&manifest);
     character.live = true;
     character.once = true;
 
