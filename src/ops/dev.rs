@@ -20,7 +20,6 @@ use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
 use amp_common::sync::{self, EventKinds, Synchronization};
-use futures::StreamExt;
 use ignore::gitignore::{Gitignore, GitignoreBuilder};
 use notify::event::RemoveKind;
 use notify::EventKind::Remove;
@@ -30,6 +29,7 @@ use tracing::{debug, error, info, trace, warn};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
+use crate::ops::logger;
 use crate::utils;
 
 pub async fn dev(ctx: Arc<Context>) -> Result<()> {
@@ -66,21 +66,16 @@ pub async fn dev(ctx: Arc<Context>) -> Result<()> {
     let name1 = name.clone();
     let workspace1 = workspace.clone();
 
-    let watcher = tokio::spawn(async move {
+    tokio::spawn(async move {
         if let Err(err) = watch(&workspace1, &client1, &pid1, &name1).await {
             error!("The watcher is stopped: {:?}", err);
         }
     });
 
     // Receive the log stream from the server.
-    let logger = tokio::spawn(async move {
-        if let Err(err) = stream(&ctx.client, &pid, &name).await {
-            error!("The log stream is stopped: {:?}", err);
-        }
-    });
-
-    // Wait for the watcher and logger to finish.
-    let _ = tokio::join!(watcher, logger);
+    if let Err(err) = logger::tail(&ctx.client, &pid, &name).await {
+        error!("The log stream is stopped: {:?}", err);
+    }
 
     Ok(())
 }
@@ -168,18 +163,4 @@ fn is_ignored(matcher: &Gitignore, root: &Path, paths: &Vec<PathBuf>) -> Result<
     }
 
     Ok(false)
-}
-
-/// Receive the log stream from the server.
-async fn stream(client: &Client, pid: &str, name: &str) -> Result<()> {
-    info!("Receiving the log stream from the server...");
-    let mut es = client.actors().logs(pid, name);
-
-    while let Some(event) = es.next().await {
-        if let Ok(reqwest_eventsource::Event::Message(message)) = event {
-            println!("{}", message.data);
-        }
-    }
-
-    Ok(())
 }

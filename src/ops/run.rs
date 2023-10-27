@@ -18,12 +18,11 @@ use std::sync::Arc;
 use amp_client::playbooks::PlaybookPayload;
 use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, Preface};
-use futures::StreamExt;
-use reqwest_eventsource::Event;
-use tracing::info;
+use tracing::{error, info};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
+use crate::ops::logger;
 use crate::utils;
 
 pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()> {
@@ -58,7 +57,7 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
         Some(filename) => PathBuf::from(filename),
         None => Finder::new().find().map_err(Errors::NotFoundManifest)?,
     };
-    let workspace = path.parent().unwrap();
+    let workspace = Arc::new(path.parent().unwrap().to_path_buf());
 
     let manifest = utils::read_manifest(&path)?;
     ctx.session.character.write().await.replace(manifest.clone());
@@ -77,17 +76,16 @@ pub async fn run(ctx: Arc<Context>, options: &crate::cmd::run::Cli) -> Result<()
     )?;
     ctx.session.playbook.write().await.replace(playbook.clone());
 
+    let pid = Arc::new(playbook.id);
+    let name = Arc::new(manifest.meta.name);
+
     // Sync the full sources into the server for build.
     info!("Syncing the full sources into the server...");
-    utils::upload(&ctx.client.actors(), &playbook.id, &manifest.meta.name, workspace)?;
+    utils::upload(&ctx.client.actors(), &pid, &name, &workspace)?;
 
     // Receive the log stream from the server.
-    info!("Receiving the log stream from the server...");
-    let mut es = ctx.client.actors().logs(&playbook.id, &manifest.meta.name);
-    while let Some(event) = es.next().await {
-        if let Ok(Event::Message(message)) = event {
-            println!("{}", message.data);
-        }
+    if let Err(err) = logger::tail(&ctx.client, &pid, &name).await {
+        error!("The log stream is stopped: {:?}", err);
     }
 
     Ok(())

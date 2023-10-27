@@ -12,10 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pub mod cleaner;
-pub mod dev;
-pub mod logger;
-pub mod run;
+use crate::errors::Result;
+use amp_client::client::Client;
+use futures::StreamExt;
+use tracing::info;
 
-pub use dev::dev;
-pub use run::run;
+/// Receive the log stream from the server.
+pub async fn tail(client: &Client, pid: &str, name: &str) -> Result<()> {
+    info!("Receiving the log stream from the server...");
+    let mut es = client.actors().logs(pid, name);
+
+    while let Some(event) = es.next().await {
+        if let Ok(reqwest_eventsource::Event::Message(message)) = event {
+            println!("{}", message.data);
+        }
+    }
+
+    Ok(())
+}
