@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use amp_client::playbooks::PlaybookPayload;
@@ -24,9 +25,12 @@ use crate::errors::{Errors, Result};
 use crate::ops::{logger, watcher};
 use crate::utils;
 
-pub async fn dev(ctx: Arc<Context>) -> Result<()> {
+pub async fn dev(ctx: Arc<Context>, options: &crate::cmd::dev::Cli) -> Result<()> {
     // Create playbook from local manifest file
-    let path = Finder::new().find().map_err(Errors::NotFoundManifest)?;
+    let path = match &options.filename {
+        Some(filename) => PathBuf::from(filename),
+        None => Finder::new().find().map_err(Errors::NotFoundManifest)?,
+    };
     let workspace = Arc::new(path.parent().unwrap().to_path_buf());
 
     let manifest = utils::read_manifest(&path)?;

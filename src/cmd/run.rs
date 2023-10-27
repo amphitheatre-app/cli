@@ -26,19 +26,15 @@ use crate::ops;
 pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
-    assume_yes: bool,
+    pub assume_yes: bool,
 
     /// Delete deployments after dev or debug mode is interrupted
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_CLEANUP")]
-    cleanup: bool,
+    pub cleanup: bool,
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, env = "AMP_FILENAME")]
     pub filename: Option<String>,
-
-    /// Recreate Kubernetes resources if necessary for deployment, warning: might cause downtime!
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
-    force: bool,
 
     /// The URL of the remote git repository for your character where you want to run
     #[arg(long, env = "AMP_GIT")]
@@ -49,12 +45,12 @@ pub struct Cli {
     pub name: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
-    #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
-    profile: Option<Vec<String>>,
+    #[arg(short, long, env = "AMP_PROFILE")]
+    pub profile: Option<Vec<String>>,
 
     /// Stream logs from deployed objects
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TAIL")]
-    tail: bool,
+    pub tail: bool,
 }
 
 impl Cli {

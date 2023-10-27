@@ -26,48 +26,27 @@ use crate::ops;
 pub struct Cli {
     /// If true, amp will skip yes/no confirmation from the user
     #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_ASSUME_YES")]
-    assume_yes: bool,
-
-    /// When set to false, builds wait for API request instead of running automatically
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_AUTO_BUILD")]
-    auto_build: bool,
-
-    /// If true, amp will try to create a config for the user's run if it doesn't find one
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_AUTO_CREATE_CONFIG")]
-    auto_create_config: bool,
-
-    /// When set to false, deploys wait for API request instead of running automatically
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_AUTO_DEPLOY")]
-    auto_deploy: bool,
-
-    /// When set to false, syncs wait for API request instead of running automatically
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_AUTO_SYNC")]
-    auto_sync: bool,
+    pub assume_yes: bool,
 
     /// Delete deployments after dev or debug mode is interrupted
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_CLEANUP")]
-    cleanup: bool,
+    pub cleanup: bool,
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, env = "AMP_FILENAME")]
-    filename: Option<String>,
-
-    /// Recreate Kubernetes resources if necessary for deployment,
-    /// warning: might cause downtime!
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_FORCE")]
-    force: bool,
+    pub filename: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
-    #[arg(short, long, default_value = "[]", env = "AMP_PROFILE")]
-    profile: Option<Vec<String>>,
+    #[arg(short, long, env = "AMP_PROFILE")]
+    pub profile: Option<Vec<String>>,
 
     /// Stream logs from deployed objects
     #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TAIL")]
-    tail: bool,
+    pub tail: bool,
 
     /// How is change detection triggered? (polling, notify, or manual)
     #[arg(long, default_value = "notify", env = "AMP_TRIGGER")]
-    trigger: Option<String>,
+    pub trigger: Option<String>,
 }
 
 impl Cli {
@@ -76,6 +55,6 @@ impl Cli {
         ops::cleaner::setup_signal_handler(ctx.clone());
 
         // Run dev mode.
-        ops::dev(ctx).await
+        ops::dev(ctx, self).await
     }
 }
