@@ -16,6 +16,7 @@ pub mod cleaner;
 pub mod dev;
 pub mod logger;
 pub mod run;
+pub mod watcher;
 
 pub use dev::dev;
 pub use run::run;
