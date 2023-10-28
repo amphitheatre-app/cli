@@ -14,14 +14,11 @@
 
 use std::path::{Path, PathBuf};
 
-use amp_client::{
-    actors::Actors,
-    playbooks::{Playbook, PlaybookPayload, Playbooks},
-};
+use amp_client::actors::Actors;
 use amp_common::sync::{EventKinds, Synchronization};
 use ignore::WalkBuilder;
 use tar::Builder;
-use tracing::{debug, info};
+use tracing::debug;
 
 use crate::errors::{Errors, Result};
 
@@ -64,12 +61,4 @@ pub fn strip(base: &Path, path: &Path) -> Result<(PathBuf, PathBuf)> {
     let striped_path = path.strip_prefix(base).map_err(Errors::FailedStripPrefix)?;
     debug!("the full path and striped path is: {:?}, {:?}", path, striped_path);
     Ok((path.to_path_buf(), striped_path.to_path_buf()))
-}
-
-pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<Playbook> {
-    let playbook = client.create(payload).map_err(Errors::FailedCreatePlaybook)?;
-    info!("The playbook was created successfully!");
-    debug!("{:#?}", playbook);
-
-    Ok(playbook)
 }

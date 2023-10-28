@@ -14,7 +14,7 @@
 
 use std::path::StripPrefixError;
 
-use amp_common::{filesystem, http};
+use amp_common::http;
 pub use anyhow::*;
 use thiserror::Error;
 
@@ -36,9 +36,6 @@ pub enum Errors {
 
     #[error("Failed to load manifest: {0}")]
     FailedLoadManifest(String),
-
-    #[error("Could not find `.amp.toml` in current directory or any parent directory")]
-    NotFoundManifest(#[source] filesystem::Error),
 
     #[error("Failed to delete playbook: {0}")]
     FailedDeletePlaybook(String),

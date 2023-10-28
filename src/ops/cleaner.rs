@@ -21,19 +21,21 @@ use crate::context::Context;
 use crate::errors::{Errors, Result};
 
 /// Setup handler for for handling Ctrl-C signals.
-pub fn setup_signal_handler(ctx: Arc<Context>) {
+pub fn setup_signal_handler(ctx: Arc<Context>, cleanup: bool) {
     ctrlc::set_handler(move || {
-        warn!("Received Ctrl-C, cleaning up...");
+        warn!("Received Ctrl-C, will exit now");
 
-        // Try to delete playbook if it is available in the session.
-        let context: Arc<Context> = ctx.clone();
-        // need a tokio runtime to spawn a future, so we create one here.
-        let rt = Runtime::new().expect("Failed to create tokio runtime");
-        rt.block_on(async move {
-            if let Err(err) = try_cleanup_playbook(&context).await {
-                warn!("Failed to cleanup playbook: {:?}", err);
-            }
-        });
+        if cleanup {
+            // Try to delete playbook if it is available in the session.
+            let context: Arc<Context> = ctx.clone();
+            // need a tokio runtime to spawn a future, so we create one here.
+            let rt = Runtime::new().expect("Failed to create tokio runtime");
+            rt.block_on(async move {
+                if let Err(err) = try_cleanup_playbook(&context).await {
+                    warn!("Failed to cleanup playbook: {:?}", err);
+                }
+            });
+        }
 
         std::process::exit(1);
     })

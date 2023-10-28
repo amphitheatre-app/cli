@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use clap::Args;
 use std::sync::Arc;
 
-use clap::Args;
+use amp_client::playbooks::Playbook;
 
 use crate::context::Context;
 use crate::errors::Result;
-use crate::ops;
+use crate::ops::pipeline::Options;
+use crate::ops::{cleaner, pipeline};
 
 /// Run a pipeline, build & deploy once
 #[derive(Args, Debug)]
@@ -29,36 +31,58 @@ pub struct Cli {
     pub assume_yes: bool,
 
     /// Delete deployments after dev or debug mode is interrupted
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_CLEANUP")]
-    pub cleanup: bool,
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_CLEANUP")]
+    cleanup: bool,
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, env = "AMP_FILENAME")]
-    pub filename: Option<String>,
+    filename: Option<String>,
 
     /// The URL of the remote git repository for your character where you want to run
     #[arg(long, env = "AMP_GIT")]
-    pub git: Option<String>,
+    git: Option<String>,
 
     /// The name of the character on the cluster you want to run on
     #[arg(long, env = "AMP_NAME")]
-    pub name: Option<String>,
+    name: Option<String>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, env = "AMP_PROFILE")]
-    pub profile: Option<Vec<String>>,
+    profile: Option<Vec<String>>,
 
     /// Stream logs from deployed objects
-    #[arg(long, action = clap::ArgAction::SetTrue, env = "AMP_TAIL")]
-    pub tail: bool,
+    #[arg(long, action = clap::ArgAction::Set, default_value = "true", env = "AMP_TAIL")]
+    tail: bool,
 }
 
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
         // Setup handler for for handling Ctrl-C signals.
-        ops::cleaner::setup_signal_handler(ctx.clone());
+        cleaner::setup_signal_handler(ctx.clone(), self.cleanup);
 
-        // Run the pipeline.
-        ops::run(ctx, self).await
+        // load the character from the local character manifest.
+        if let Some(filename) = &self.filename {
+            ctx.session.load(filename).await?;
+        }
+
+        // Define the options for the pipeline.
+        let opt = Options {
+            tail: self.tail, // toggle log streaming
+            live: true,      // sync the sources from local to server
+            once: true,      // build & deploy once, then exit
+        };
+
+        // Create the playbook based on the options
+        let playbook: Playbook;
+        if let Some(repository) = &self.git {
+            playbook = pipeline::pull(&ctx, repository)?;
+        } else if let Some(name) = &self.name {
+            playbook = pipeline::fetch(&ctx, name)?;
+        } else {
+            playbook = pipeline::load(&ctx, opt.live, opt.once).await?;
+        }
+
+        // Run the pipeline, build & deploy once.
+        pipeline::run(&ctx, playbook, opt).await
     }
 }
