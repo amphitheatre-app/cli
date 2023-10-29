@@ -20,11 +20,13 @@ use tracing::{debug, error, info};
 
 use crate::context::Context;
 use crate::errors::{Errors, Result};
-use crate::ops::{logger, watcher};
+use crate::ops::{cleaner, logger, watcher};
 use crate::utils;
 
 /// The options for the pipeline.
 pub struct Options {
+    /// Delete deployments after dev or debug mode is interrupted
+    pub cleanup: bool,
     /// Stream logs from deployed objects
     pub tail: bool,
     /// Whether this character is live or not
@@ -117,6 +119,13 @@ pub async fn run(ctx: &Arc<Context>, playbook: Playbook, options: Options) -> Re
     if options.tail {
         if let Err(err) = logger::tail(&ctx.client, &pid, &name).await {
             error!("The log stream is stopped: {:?}", err);
+        }
+    }
+
+    // Cleanup the playbook if cleanup is enabled.
+    if options.cleanup {
+        if let Err(err) = cleaner::try_cleanup_playbook(ctx).await {
+            error!("Failed to cleanup playbook: {:?}", err);
         }
     }
 

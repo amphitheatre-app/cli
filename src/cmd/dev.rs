@@ -61,6 +61,7 @@ impl Cli {
 
         // Define the options for the pipeline.
         let opt = Options {
+            cleanup: self.cleanup,
             tail: self.tail, // toggle log streaming
             live: true,      // sync the sources from local to server
             once: false,     // watch for changes and sync them incrementally
