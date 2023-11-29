@@ -11,8 +11,8 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust", tag = "v0.4.3" }
-amp-common = { git = "https://github.com/amphitheatre-app/common", tag = "v0.5.4" }
+amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust", tag = "v0.5.0" }
+amp-common = { git = "https://github.com/amphitheatre-app/common", tag = "v0.5.5" }
 anyhow = "1.0.75"
 clap = { version = "4.4.8", features = ["derive", "env"] }
 clap-verbosity-flag = "2.1.0"
