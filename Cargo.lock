@@ -46,7 +46,7 @@ checksum = "0942ffc6dcaadf03badf6e6a2d0228460359d5e34b57ccdc720b7382dfbd5ec5"
 
 [[package]]
 name = "amp"
-version = "0.4.2"
+version = "0.5.0"
 dependencies = [
  "amp-client",
  "amp-common",
@@ -78,8 +78,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.5.1"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.5.1#0e0d4fde117e200a4e39b5e3e1f24a17bad10258"
+version = "0.6.0"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.6.0#60110a3de0df44769bb85b34727eed485d4bf934"
 dependencies = [
  "amp-common",
  "futures",
@@ -91,8 +91,8 @@ dependencies = [
 
 [[package]]
 name = "amp-common"
-version = "0.5.6"
-source = "git+https://github.com/amphitheatre-app/common?tag=v0.5.6#fe105fa92a5d1e41b5c6b59fe5f91fcb4537ca0a"
+version = "0.6.0"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.6.0#a3b5bdaa520b84df43eea6baac0b8ff35e71927a"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1566,11 +1566,12 @@ dependencies = [
 
 [[package]]
 name = "oci-distribution"
-version = "0.9.4"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2ac5b780ce1bd6c3c2ff72a3013f4b2d56d53ae03b20d424e99d2f6556125138"
+checksum = "2a635cabf7a6eb4e5f13e9e82bd9503b7c2461bf277132e38638a935ebd684b4"
 dependencies = [
- "futures",
+ "bytes",
+ "chrono",
  "futures-util",
  "http",
  "http-auth",
@@ -1584,7 +1585,6 @@ dependencies = [
  "sha2",
  "thiserror",
  "tokio",
- "tokio-util",
  "tracing",
  "unicase",
 ]
@@ -2475,7 +2475,6 @@ checksum = "1d68074620f57a0b21594d9735eb2e98ab38b17f80d3fcb189fca266771ca60d"
 dependencies = [
  "bytes",
  "futures-core",
- "futures-io",
  "futures-sink",
  "pin-project-lite",
  "slab",
