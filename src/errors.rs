@@ -15,7 +15,6 @@
 use std::path::StripPrefixError;
 
 use amp_common::http;
-pub use anyhow::*;
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Errors>;
