@@ -36,8 +36,8 @@ impl Cli {
         for (name, cluster) in context.iter() {
             let mut row = ContextTable::from(cluster);
             row.name = name.clone();
-            if let Some(current) = context.current() {
-                row.default = current.title == cluster.title;
+            if let Some((current, _)) = &context.current() {
+                row.default = name.eq(current);
             }
             table.push(row);
         }

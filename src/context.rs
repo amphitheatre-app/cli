@@ -109,7 +109,7 @@ impl Context {
 /// Get the current context from the configuration
 fn get_context(configuration: &Configuration) -> Result<Cluster> {
     if let Some(context) = &configuration.context {
-        if let Some(current) = context.current() {
+        if let Some((_, current)) = context.current() {
             return Ok(current.to_owned());
         }
     }
