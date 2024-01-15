@@ -62,14 +62,15 @@ impl Cli {
             }
 
             for playbook in playbooks {
-                delete(&ctx.client, &playbook.id).await?;
+                delete(&ctx.client, &playbook.id()).await?;
             }
 
             return Ok(());
         }
 
         // create a options list for the user to select from
-        let options: Vec<OptionItem> = playbooks.iter().map(|p| OptionItem(p.id.clone(), p.title.clone())).collect();
+        let options: Vec<OptionItem> =
+            playbooks.iter().map(|p| OptionItem(p.id().to_string(), p.title.clone())).collect();
         let answer = Select::new("Select playbook to delete: ", options).prompt().map_err(Errors::InquireError)?;
         delete(&ctx.client, answer.0.as_str()).await?;
 

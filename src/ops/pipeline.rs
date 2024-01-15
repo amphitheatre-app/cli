@@ -14,8 +14,8 @@
 
 use std::sync::Arc;
 
-use amp_client::playbooks::{Playbook, PlaybookPayload, Playbooks};
-use amp_common::resource::{CharacterSpec, Preface};
+use amp_client::playbooks::{PlaybookPayload, Playbooks};
+use amp_common::resource::{CharacterSpec, PlaybookSpec, Preface};
 use tracing::{debug, error, info};
 
 use crate::context::Context;
@@ -36,7 +36,7 @@ pub struct Options {
 }
 
 /// Create a playbook from the remote git repository.
-pub fn pull(ctx: &Context, repository: &str) -> Result<Playbook> {
+pub fn pull(ctx: &Context, repository: &str) -> Result<PlaybookSpec> {
     create(
         ctx.client.playbooks(),
         PlaybookPayload {
@@ -48,7 +48,7 @@ pub fn pull(ctx: &Context, repository: &str) -> Result<Playbook> {
 }
 
 /// Create a playbook from the remote registry.
-pub fn fetch(ctx: &Context, name: &str) -> Result<Playbook> {
+pub fn fetch(ctx: &Context, name: &str) -> Result<PlaybookSpec> {
     create(
         ctx.client.playbooks(),
         PlaybookPayload {
@@ -60,7 +60,7 @@ pub fn fetch(ctx: &Context, name: &str) -> Result<Playbook> {
 }
 
 /// Create a playbook from the local manifest file.
-pub async fn load(ctx: &Context, live: bool, once: bool) -> Result<Playbook> {
+pub async fn load(ctx: &Context, live: bool, once: bool) -> Result<PlaybookSpec> {
     let manifest = ctx.session.character.read().await.clone().unwrap();
     let character = CharacterSpec { live, once, ..CharacterSpec::from(&manifest) };
 
@@ -75,7 +75,7 @@ pub async fn load(ctx: &Context, live: bool, once: bool) -> Result<Playbook> {
 }
 
 /// Create a playbook from the given payload.
-pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<Playbook> {
+pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<PlaybookSpec> {
     let playbook = client.create(payload).map_err(Errors::FailedCreatePlaybook)?;
 
     info!("The playbook begins to create...");
@@ -85,11 +85,11 @@ pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<Playbook> {
 }
 
 /// Run a pipeline.
-pub async fn run(ctx: &Arc<Context>, playbook: Playbook, options: Options) -> Result<()> {
+pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -> Result<()> {
     ctx.session.playbook.write().await.replace(playbook.clone());
 
     let character = ctx.session.character.read().await.clone().unwrap();
-    let pid = Arc::new(playbook.id);
+    let pid = Arc::new(playbook.id().to_owned());
     let name = Arc::new(character.meta.name);
 
     // Initial sync the full sources into the server.

@@ -14,10 +14,11 @@
 
 use std::{path::PathBuf, sync::Arc};
 
-use amp_client::{actors::Actor, client::Client, playbooks::Playbook};
+use amp_client::client::Client;
 use amp_common::{
     config::{Cluster, Configuration},
     filesystem::Finder,
+    resource::{ActorSpec, PlaybookSpec},
     schema::Character,
 };
 use tokio::sync::RwLock;
@@ -30,8 +31,8 @@ use crate::errors::{Errors, Result};
 pub struct Session {
     pub workspace: RwLock<Option<PathBuf>>,
     pub character: RwLock<Option<Character>>,
-    pub playbook: RwLock<Option<Playbook>>,
-    pub actor: RwLock<Option<Actor>>,
+    pub playbook: RwLock<Option<PlaybookSpec>>,
+    pub actor: RwLock<Option<ActorSpec>>,
 }
 
 impl Session {

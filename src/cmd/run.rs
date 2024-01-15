@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use amp_common::resource::PlaybookSpec;
 use clap::Args;
 use std::sync::Arc;
-
-use amp_client::playbooks::Playbook;
 
 use crate::context::Context;
 use crate::errors::Result;
@@ -74,7 +73,7 @@ impl Cli {
         };
 
         // Create the playbook based on the options
-        let playbook: Playbook;
+        let playbook: PlaybookSpec;
         if let Some(repository) = &self.git {
             playbook = pipeline::pull(&ctx, repository)?;
         } else if let Some(name) = &self.name {

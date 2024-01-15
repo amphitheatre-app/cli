@@ -14,7 +14,7 @@
 
 use std::sync::Arc;
 
-use amp_client::playbooks::Playbook;
+use amp_common::resource::PlaybookSpec;
 use clap::Args;
 use tabled::settings::Style;
 use tabled::Tabled;
@@ -49,18 +49,14 @@ struct PlaybookTable {
     id: String,
     title: String,
     description: String,
-    created_at: String,
-    updated_at: String,
 }
 
-impl From<&Playbook> for PlaybookTable {
-    fn from(value: &Playbook) -> Self {
+impl From<&PlaybookSpec> for PlaybookTable {
+    fn from(value: &PlaybookSpec) -> Self {
         Self {
-            id: value.id.clone(),
+            id: value.id().to_string(),
             title: value.title.clone(),
-            description: value.description.clone(),
-            created_at: value.created_at.clone(),
-            updated_at: value.updated_at.clone(),
+            description: value.description.clone().unwrap_or_default(),
         }
     }
 }
