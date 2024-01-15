@@ -54,7 +54,7 @@ struct PlaybookTable {
 impl From<&PlaybookSpec> for PlaybookTable {
     fn from(value: &PlaybookSpec) -> Self {
         Self {
-            id: value.id().to_string(),
+            id: value.id.clone(),
             title: value.title.clone(),
             description: value.description.clone().unwrap_or_default(),
         }

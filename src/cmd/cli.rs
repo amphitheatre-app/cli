@@ -24,7 +24,7 @@ pub const AFTER_HELP_STRING: &str =
     "Use \"amp options\" for a list of global command-line options (applies to all commands).";
 pub const DEFAULT_CONFIG_FILEPATH: &str = "~/.config/amphitheatre/config.toml";
 
-/// Amphitheatre's offcial command line tool
+/// Amphitheatre's official command line tool
 #[derive(Parser, Debug)]
 #[command(
     arg_required_else_help = true,

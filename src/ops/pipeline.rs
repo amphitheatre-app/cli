@@ -89,7 +89,7 @@ pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -
     ctx.session.playbook.write().await.replace(playbook.clone());
 
     let character = ctx.session.character.read().await.clone().unwrap();
-    let pid = Arc::new(playbook.id().to_owned());
+    let pid = Arc::new(playbook.id.clone());
     let name = Arc::new(character.meta.name);
 
     // Initial sync the full sources into the server.

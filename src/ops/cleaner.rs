@@ -53,8 +53,8 @@ pub async fn try_cleanup_playbook(ctx: &Arc<Context>) -> Result<()> {
     }
 
     // Delete playbook from the server.
-    let pid = playbook.as_ref().unwrap().id();
-    let status = ctx.client.playbooks().delete(&pid).map_err(Errors::ClientError)?;
+    let pid = &playbook.as_ref().unwrap().id;
+    let status = ctx.client.playbooks().delete(pid).map_err(Errors::ClientError)?;
     if status != 204 {
         return Err(Errors::FailedDeletePlaybook(pid.to_string()));
     }
