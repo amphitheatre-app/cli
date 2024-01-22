@@ -49,7 +49,7 @@ name = "amp"
 version = "0.6.1"
 dependencies = [
  "amp-client",
- "amp-common",
+ "amp-common 0.7.1",
  "anyhow",
  "clap",
  "clap-verbosity-flag",
@@ -78,10 +78,10 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.7.1"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.7.1#5f36b79fba0190e1d164a6f33543389a7ce93619"
+version = "0.7.6"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.7.6#082f4db7d0668b8249e1cb7f3e744149711e9ee3"
 dependencies = [
- "amp-common",
+ "amp-common 0.7.7",
  "futures",
  "reqwest-eventsource",
  "serde",
@@ -93,6 +93,34 @@ dependencies = [
 name = "amp-common"
 version = "0.7.1"
 source = "git+https://github.com/amphitheatre-app/common?tag=v0.7.1#75fd87993cebb961bf924a87a7c3180be79fcefd"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "confy",
+ "convert_case",
+ "data-encoding",
+ "dirs",
+ "json_comments",
+ "k8s-openapi",
+ "kube",
+ "notify",
+ "oci-distribution",
+ "schemars",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "toml",
+ "tracing",
+ "ureq",
+ "url",
+ "utoipa",
+ "validator",
+]
+
+[[package]]
+name = "amp-common"
+version = "0.7.7"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.7.7#663f18822f1a3cad634ef38396698c9add0e2f22"
 dependencies = [
  "anyhow",
  "chrono",
