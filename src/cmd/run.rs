@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use amp_common::filesystem::Finder;
 use amp_common::resource::PlaybookSpec;
 use clap::Args;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 use crate::ops::pipeline::Options;
 use crate::ops::{cleaner, pipeline};
 
@@ -35,7 +37,7 @@ pub struct Cli {
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, env = "AMP_FILENAME")]
-    filename: Option<String>,
+    filename: Option<PathBuf>,
 
     /// The URL of the remote git repository for your character where you want to run
     #[arg(long, env = "AMP_GIT")]
@@ -60,9 +62,8 @@ impl Cli {
         cleaner::setup_signal_handler(ctx.clone(), self.cleanup);
 
         // load the character from the local character manifest.
-        if let Some(filename) = &self.filename {
-            ctx.session.load(filename).await?;
-        }
+        let path = &self.filename.clone().unwrap_or(Finder::new().find().map_err(Errors::NotFoundManifest)?);
+        ctx.session.load(path).await?;
 
         // Define the options for the pipeline.
         let opt = Options {

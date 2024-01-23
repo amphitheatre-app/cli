@@ -14,7 +14,7 @@
 
 use std::path::StripPrefixError;
 
-use amp_common::http;
+use amp_common::{filesystem, http};
 use thiserror::Error;
 
 pub type Result<T> = std::result::Result<T, Errors>;
@@ -34,7 +34,7 @@ pub enum Errors {
     ClientError(http::HTTPError),
 
     #[error("Failed to load manifest: {0}")]
-    FailedLoadManifest(String),
+    FailedLoadManifest(anyhow::Error),
 
     #[error("Failed to delete playbook: {0}")]
     FailedDeletePlaybook(String),
@@ -87,4 +87,7 @@ pub enum Errors {
 
     #[error("Failed to add context: {0}")]
     FailedAddContext(anyhow::Error),
+
+    #[error("Not found character in current or parent directories: {0}")]
+    NotFoundManifest(filesystem::Error),
 }

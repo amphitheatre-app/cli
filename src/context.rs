@@ -17,12 +17,10 @@ use std::{path::PathBuf, sync::Arc};
 use amp_client::client::Client;
 use amp_common::{
     config::{Cluster, Configuration},
-    filesystem::Finder,
     resource::{ActorSpec, PlaybookSpec},
     schema::Character,
 };
 use tokio::sync::RwLock;
-use tracing::debug;
 
 use crate::errors::{Errors, Result};
 
@@ -36,50 +34,16 @@ pub struct Session {
 }
 
 impl Session {
-    pub fn init() -> Session {
-        // Try to load the character from the current or parent directory.
-        let (workspace, character) = try_load_character()
-            .map(|(workspace, character)| (Some(workspace), Some(character)))
-            .unwrap_or((None, None));
-
-        Session {
-            workspace: RwLock::new(workspace),
-            character: RwLock::new(character),
-            playbook: RwLock::new(None),
-            actor: RwLock::new(None),
-        }
-    }
-
     /// Load the character from the specified file.
-    pub async fn load(&self, filename: &str) -> Result<()> {
-        let path = PathBuf::from(filename);
+    pub async fn load(&self, path: &PathBuf) -> Result<()> {
         let workspace = path.parent().unwrap().to_path_buf();
-        let character = Character::load(&path).map_err(|e| Errors::FailedLoadManifest(e.to_string()))?;
+        let character = Character::load(path).map_err(Errors::FailedLoadManifest)?;
 
         self.workspace.write().await.replace(workspace);
         self.character.write().await.replace(character);
 
         Ok(())
     }
-}
-
-/// Try to load the character from the current directory
-fn try_load_character() -> Option<(PathBuf, Character)> {
-    let path = Finder::new().find();
-    if let Err(err) = path {
-        debug!("Not found character in current or parent directories: {}", err);
-        return None;
-    }
-
-    let path = path.unwrap();
-    let workspace = path.parent().unwrap().to_path_buf();
-    let character = Character::load(&path);
-    if let Err(err) = character {
-        debug!("Failed to read character manifest: {}", err);
-        return None;
-    }
-
-    Some((workspace, character.unwrap()))
 }
 
 /// Context holds the current context state
@@ -101,7 +65,7 @@ impl Context {
         Ok(Context {
             configuration: RwLock::new(configuration),
             cluster: RwLock::new(cluster),
-            session: Session::init(),
+            session: Session::default(),
             client: Arc::new(client),
         })
     }

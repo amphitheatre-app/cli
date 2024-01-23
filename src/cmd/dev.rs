@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use amp_common::filesystem::Finder;
 use clap::Args;
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use crate::context::Context;
-use crate::errors::Result;
+use crate::errors::{Errors, Result};
 use crate::ops::pipeline::Options;
 use crate::ops::{cleaner, pipeline};
 
@@ -34,7 +36,7 @@ pub struct Cli {
 
     /// Path or URL to the Amphitheatre config file
     #[arg(short, long, env = "AMP_FILENAME")]
-    filename: Option<String>,
+    filename: Option<PathBuf>,
 
     /// Activate profiles by name (prefixed with `-` to disable a profile)
     #[arg(short, long, env = "AMP_PROFILE")]
@@ -55,9 +57,9 @@ impl Cli {
         cleaner::setup_signal_handler(ctx.clone(), self.cleanup);
 
         // Create the playbook from the local character manifest.
-        if let Some(filename) = &self.filename {
-            ctx.session.load(filename).await?;
-        }
+        // load the character from the local character manifest.
+        let path = &self.filename.clone().unwrap_or(Finder::new().find().map_err(Errors::NotFoundManifest)?);
+        ctx.session.load(path).await?;
 
         // Define the options for the pipeline.
         let opt = Options {
