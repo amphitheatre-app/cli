@@ -15,7 +15,7 @@ readme = "README.md"
 amp-client = { git = "https://github.com/amphitheatre-app/amp-client-rust", tag = "v0.7.7" }
 amp-common = { git = "https://github.com/amphitheatre-app/common", tag = "v0.7.8" }
 
-anyhow = "1.0.80"
+anyhow = "1.0.81"
 clap = { version = "4.5.2", features = ["derive", "env"] }
 clap-verbosity-flag = "2.2.0"
 clap_complete = "4.5.1"
