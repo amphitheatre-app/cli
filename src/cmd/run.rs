@@ -12,14 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use amp_common::filesystem::Finder;
 use amp_common::resource::PlaybookSpec;
 use clap::Args;
 use std::path::PathBuf;
 use std::sync::Arc;
 
 use crate::context::Context;
-use crate::errors::{Errors, Result};
+use crate::errors::Result;
 use crate::ops::pipeline::Options;
 use crate::ops::{cleaner, pipeline};
 
@@ -61,15 +60,11 @@ impl Cli {
         // Setup handler for for handling Ctrl-C signals.
         cleaner::setup_signal_handler(ctx.clone(), self.cleanup);
 
-        // load the character from the local character manifest.
-        let path = &self.filename.clone().unwrap_or(Finder::new().find().map_err(Errors::NotFoundManifest)?);
-        ctx.session.load(path).await?;
-
         // Define the options for the pipeline.
-        let opt = Options {
+        let mut opt = Options {
             cleanup: self.cleanup,
             tail: self.tail, // toggle log streaming
-            live: true,      // sync the sources from local to server
+            live: false,     // sync the sources from local to server
             once: true,      // build & deploy once, then exit
         };
 
@@ -80,7 +75,8 @@ impl Cli {
         } else if let Some(name) = &self.name {
             playbook = pipeline::fetch(&ctx, name)?;
         } else {
-            playbook = pipeline::load(&ctx, opt.live, opt.once).await?;
+            opt.live = true;
+            playbook = pipeline::load(&ctx, &self.filename, opt.once).await?;
         }
 
         // Run the pipeline, build & deploy once.

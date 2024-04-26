@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use amp_common::filesystem::Finder;
 use clap::Args;
 use std::path::PathBuf;
 use std::sync::Arc;
 
 use crate::context::Context;
-use crate::errors::{Errors, Result};
+use crate::errors::Result;
 use crate::ops::pipeline::Options;
 use crate::ops::{cleaner, pipeline};
 
@@ -56,11 +55,6 @@ impl Cli {
         // Setup handler for for handling Ctrl-C signals.
         cleaner::setup_signal_handler(ctx.clone(), self.cleanup);
 
-        // Create the playbook from the local character manifest.
-        // load the character from the local character manifest.
-        let path = &self.filename.clone().unwrap_or(Finder::new().find().map_err(Errors::NotFoundManifest)?);
-        ctx.session.load(path).await?;
-
         // Define the options for the pipeline.
         let opt = Options {
             cleanup: self.cleanup,
@@ -68,7 +62,7 @@ impl Cli {
             live: true,      // sync the sources from local to server
             once: false,     // watch for changes and sync them incrementally
         };
-        let playbook = pipeline::load(&ctx, opt.live, opt.once).await?;
+        let playbook = pipeline::load(&ctx, &self.filename, opt.once).await?;
 
         // Run dev mode. This will sync the full sources into the server,
         // and then watch for changes and sync them incrementally.

@@ -12,10 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+use std::path::PathBuf;
 use std::sync::Arc;
 
 use amp_client::playbooks::{PlaybookPayload, Playbooks};
+use amp_common::filesystem::Finder;
 use amp_common::resource::{CharacterSpec, PlaybookSpec, Preface};
+use tokio::time::{sleep, Duration};
 use tracing::{debug, error, info};
 
 use crate::context::Context;
@@ -60,9 +63,13 @@ pub fn fetch(ctx: &Context, name: &str) -> Result<PlaybookSpec> {
 }
 
 /// Create a playbook from the local manifest file.
-pub async fn load(ctx: &Context, live: bool, once: bool) -> Result<PlaybookSpec> {
+pub async fn load(ctx: &Context, filename: &Option<PathBuf>, once: bool) -> Result<PlaybookSpec> {
+    // load the character from the local character manifest.
+    let path = &filename.clone().unwrap_or(Finder::new().find().map_err(Errors::NotFoundManifest)?);
+    ctx.session.load(path).await?;
+
     let manifest = ctx.session.character.read().await.clone().unwrap();
-    let character = CharacterSpec { live, once, ..CharacterSpec::from(&manifest) };
+    let character = CharacterSpec { live: true, once, ..CharacterSpec::from(&manifest) };
 
     return create(
         ctx.client.playbooks(),
@@ -86,11 +93,14 @@ pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<PlaybookSpe
 
 /// Run a pipeline.
 pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -> Result<()> {
+    // wait playbook resolve finished.
+    sleep(Duration::from_secs(10)).await;
+
+    let playbook = ctx.client.playbooks().get(&playbook.id).map_err(Errors::ClientError)?;
     ctx.session.playbook.write().await.replace(playbook.clone());
 
-    let character = ctx.session.character.read().await.clone().unwrap();
     let pid = Arc::new(playbook.id.clone());
-    let name = Arc::new(character.meta.name);
+    let name = Arc::new(lead_name(&playbook).ok_or(Errors::InvalidCharacter)?);
 
     // Initial sync the full sources into the server.
     if options.live {
@@ -130,4 +140,22 @@ pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -
     }
 
     Ok(())
+}
+
+/// get lead character name based on preface type.
+fn lead_name(playbook: &PlaybookSpec) -> Option<String> {
+    if playbook.preface.registry.is_some() || playbook.preface.manifest.is_some() {
+        return Some(playbook.preface.name.clone());
+    }
+
+    if let Some(repo) = &playbook.preface.repository {
+        if let Some(characters) = &playbook.characters {
+            return characters
+                .iter()
+                .find(|x: &&CharacterSpec| x.meta.repository.eq(&repo.repo))
+                .map(|x: &CharacterSpec| x.meta.name.clone());
+        }
+    }
+
+    None
 }

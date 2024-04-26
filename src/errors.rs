@@ -90,4 +90,7 @@ pub enum Errors {
 
     #[error("Not found character in current or parent directories: {0}")]
     NotFoundManifest(filesystem::Error),
+
+    #[error("Invalid character")]
+    InvalidCharacter,
 }
