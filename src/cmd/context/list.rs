@@ -35,7 +35,7 @@ impl Cli {
         let mut table = Vec::new();
         for (name, cluster) in context.iter() {
             let mut row = ContextTable::from(cluster);
-            row.name = name.clone();
+            row.name.clone_from(name);
             if let Some((current, _)) = &context.current() {
                 row.default = name.eq(current);
             }
