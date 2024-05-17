@@ -145,7 +145,7 @@ pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -
 /// get lead character name based on preface type.
 fn lead_name(playbook: &PlaybookSpec) -> Option<String> {
     if playbook.preface.registry.is_some() || playbook.preface.manifest.is_some() {
-        return Some(playbook.preface.name.clone());
+        return playbook.preface.name.clone();
     }
 
     if let Some(repo) = &playbook.preface.repository {
