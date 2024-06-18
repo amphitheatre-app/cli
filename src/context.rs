@@ -26,6 +26,7 @@ use crate::errors::{Errors, Result};
 
 /// Session holds the current session state
 #[derive(Default, Debug)]
+#[allow(dead_code)]
 pub struct Session {
     pub workspace: RwLock<Option<PathBuf>>,
     pub character: RwLock<Option<Character>>,
@@ -47,6 +48,7 @@ impl Session {
 }
 
 /// Context holds the current context state
+#[allow(dead_code)]
 pub struct Context {
     pub configuration: RwLock<Configuration>,
     pub cluster: RwLock<Cluster>,
