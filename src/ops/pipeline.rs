@@ -71,14 +71,14 @@ pub async fn load(ctx: &Context, filename: &Option<PathBuf>, once: bool) -> Resu
     let manifest = ctx.session.character.read().await.clone().unwrap();
     let character = CharacterSpec { live: true, once, ..CharacterSpec::from(&manifest) };
 
-    return create(
+    create(
         ctx.client.playbooks(),
         PlaybookPayload {
             title: "Untitled".to_string(),
             description: "".to_string(),
             preface: Preface::manifest(&character),
         },
-    );
+    )
 }
 
 /// Create a playbook from the given payload.
