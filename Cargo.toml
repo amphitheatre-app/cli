@@ -17,7 +17,7 @@ anyhow = "1.0.95"
 clap = { version = "4.5.26", features = ["derive", "env"] }
 clap-verbosity-flag = "3.0.2"
 clap_complete = "4.5.42"
-colored = "2.2.0"
+colored = "3.0.0"
 confy = "0.6.1"
 ctrlc = "3.4.5"
 dunce = "1.0.5"
