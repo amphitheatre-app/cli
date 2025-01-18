@@ -24,7 +24,7 @@ dunce = "1.0.5"
 futures = "0.3.31"
 ignore = "0.4.23"
 inquire = "0.7.5"
-notify = "7.0.0"
+notify = "8.0.0"
 once_cell = "1.20.2"
 owo-colors = { version = "4.1.0", features = ["supports-colors"] }
 reqwest-eventsource = "0.6.0"
