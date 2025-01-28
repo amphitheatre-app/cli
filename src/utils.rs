@@ -23,7 +23,7 @@ use tracing::debug;
 use crate::errors::{Errors, Result};
 
 /// Upload the given directory to the server.
-pub fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Result<()> {
+pub async fn upload(client: &Actors<'_>, pid: &str, name: &str, workspace: &Path) -> Result<()> {
     let mut paths: Vec<(PathBuf, PathBuf)> = vec![];
 
     let base = workspace;
@@ -40,7 +40,7 @@ pub fn upload(client: &Actors, pid: &str, name: &str, workspace: &Path) -> Resul
 
     let payload = archive(&paths)?;
     let req = Synchronization { kind: EventKinds::Overwrite, paths: vec![], attributes: None, payload: Some(payload) };
-    client.sync(pid, name, req).map_err(Errors::ClientError)?;
+    client.sync(pid, name, req).await.map_err(Errors::ClientError)?;
 
     Ok(())
 }

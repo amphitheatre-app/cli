@@ -29,7 +29,7 @@ pub struct Cli {}
 
 impl Cli {
     pub async fn exec(&self, ctx: Arc<Context>) -> Result<()> {
-        let playbooks = ctx.client.playbooks().list(None).map_err(Errors::ClientError)?;
+        let playbooks = ctx.client.playbooks().list(None).await.map_err(Errors::ClientError)?;
 
         if playbooks.is_empty() {
             println!("No playbooks found");

@@ -50,13 +50,13 @@ pub async fn watch(workspace: &Path, client: &Client, pid: &str, name: &str) -> 
             continue;
         }
 
-        handle(client, pid, name, workspace, event)?;
+        handle(client, pid, name, workspace, event).await?;
     }
 
     Ok(())
 }
 
-fn handle(client: &Client, pid: &str, name: &str, base: &Path, event: Event) -> Result<()> {
+async fn handle(client: &Client, pid: &str, name: &str, base: &Path, event: Event) -> Result<()> {
     trace!("Changed: {:?}", event);
 
     let kind = EventKinds::from(event.kind);
@@ -86,7 +86,7 @@ fn handle(client: &Client, pid: &str, name: &str, base: &Path, event: Event) -> 
     }
 
     debug!("The sync request is: {:?}", req);
-    client.actors().sync(pid, name, req).map_err(Errors::ClientError)?;
+    client.actors().sync(pid, name, req).await.map_err(Errors::ClientError)?;
 
     Ok(())
 }

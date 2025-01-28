@@ -39,7 +39,7 @@ pub struct Options {
 }
 
 /// Create a playbook from the remote git repository.
-pub fn pull(ctx: &Context, repository: &str) -> Result<PlaybookSpec> {
+pub async fn pull(ctx: &Context, repository: &str) -> Result<PlaybookSpec> {
     create(
         ctx.client.playbooks(),
         PlaybookPayload {
@@ -48,10 +48,11 @@ pub fn pull(ctx: &Context, repository: &str) -> Result<PlaybookSpec> {
             preface: Preface::repository(repository),
         },
     )
+    .await
 }
 
 /// Create a playbook from the remote registry.
-pub fn fetch(ctx: &Context, name: &str) -> Result<PlaybookSpec> {
+pub async fn fetch(ctx: &Context, name: &str) -> Result<PlaybookSpec> {
     create(
         ctx.client.playbooks(),
         PlaybookPayload {
@@ -60,6 +61,7 @@ pub fn fetch(ctx: &Context, name: &str) -> Result<PlaybookSpec> {
             preface: Preface::registry(name, "hub", "latest"),
         },
     )
+    .await
 }
 
 /// Create a playbook from the local manifest file.
@@ -79,11 +81,12 @@ pub async fn load(ctx: &Context, filename: &Option<PathBuf>, once: bool) -> Resu
             preface: Preface::manifest(&character),
         },
     )
+    .await
 }
 
 /// Create a playbook from the given payload.
-pub fn create(client: Playbooks, payload: PlaybookPayload) -> Result<PlaybookSpec> {
-    let playbook = client.create(payload).map_err(Errors::FailedCreatePlaybook)?;
+pub async fn create(client: Playbooks<'_>, payload: PlaybookPayload) -> Result<PlaybookSpec> {
+    let playbook = client.create(payload).await.map_err(Errors::FailedCreatePlaybook)?;
 
     info!("The playbook begins to create...");
     debug!("The created playbook is:\n {:#?}", playbook);
@@ -96,7 +99,7 @@ pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -
     // wait playbook resolve finished.
     sleep(Duration::from_secs(10)).await;
 
-    let playbook = ctx.client.playbooks().get(&playbook.id).map_err(Errors::ClientError)?;
+    let playbook = ctx.client.playbooks().get(&playbook.id).await.map_err(Errors::ClientError)?;
     ctx.session.playbook.write().await.replace(playbook.clone());
 
     let pid = Arc::new(playbook.id.clone());
@@ -106,7 +109,7 @@ pub async fn run(ctx: &Arc<Context>, playbook: PlaybookSpec, options: Options) -
     if options.live {
         info!("Syncing the full sources into the server...");
         let workspace = ctx.session.workspace.read().await.clone().unwrap();
-        utils::upload(&ctx.client.actors(), &pid, &name, &workspace)?;
+        utils::upload(&ctx.client.actors(), &pid, &name, &workspace).await?;
     }
 
     // Watch file changes and sync the changed files.

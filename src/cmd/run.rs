@@ -71,9 +71,9 @@ impl Cli {
         // Create the playbook based on the options
         let playbook: PlaybookSpec;
         if let Some(repository) = &self.git {
-            playbook = pipeline::pull(&ctx, repository)?;
+            playbook = pipeline::pull(&ctx, repository).await?;
         } else if let Some(name) = &self.name {
-            playbook = pipeline::fetch(&ctx, name)?;
+            playbook = pipeline::fetch(&ctx, name).await?;
         } else {
             opt.live = true;
             playbook = pipeline::load(&ctx, &self.filename, opt.once).await?;

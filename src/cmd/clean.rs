@@ -49,7 +49,7 @@ impl Cli {
             return delete(&ctx.client, id).await;
         }
 
-        let playbooks = ctx.client.playbooks().list(None).map_err(Errors::ClientError)?;
+        let playbooks = ctx.client.playbooks().list(None).await.map_err(Errors::ClientError)?;
         if playbooks.is_empty() {
             println!("No playbooks found");
             return Ok(());
@@ -87,7 +87,7 @@ impl Display for OptionItem {
 }
 
 async fn delete(client: &Client, id: &str) -> Result<()> {
-    let status = client.playbooks().delete(id).map_err(Errors::ClientError)?;
+    let status = client.playbooks().delete(id).await.map_err(Errors::ClientError)?;
     if status != 204 {
         return Err(Errors::FailedDeletePlaybook(id.to_string()));
     }
