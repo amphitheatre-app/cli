@@ -16,7 +16,7 @@ amp-common = { git = "https://github.com/amphitheatre-app/common", tag = "v0.10.
 anyhow = "1.0.96"
 clap = { version = "4.5.31", features = ["derive", "env"] }
 clap-verbosity-flag = "3.0.2"
-clap_complete = "4.5.42"
+clap_complete = "4.5.46"
 colored = "3.0.0"
 confy = "0.6.1"
 ctrlc = "3.4.5"
