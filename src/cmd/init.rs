@@ -72,7 +72,7 @@ fn create(name: &str) -> Result<()> {
 
     // Convert the Manifest to a TOML String.
     let serialized = toml::to_string(&manifest).map_err(Errors::TomlSerializeError)?;
-    println!("{}", serialized);
+    println!("{serialized}");
     fs::write(FILE_NAME, serialized).map_err(Errors::FailedSaveManifest)?;
 
     Ok(())

@@ -30,7 +30,7 @@ impl Cli {
         let context = configuration.context.as_ref().ok_or(Errors::NotFoundContexts)?;
 
         if let Some((_, current)) = context.current() {
-            println!("{:#?}", current);
+            println!("{current:#?}");
         } else {
             println!("No current context");
         }
