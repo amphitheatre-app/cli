@@ -9,18 +9,22 @@ permissions:
   contents: read
   packages: write
 
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/amp
+
 jobs:
   build:
     name: Build Image
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        platform: [linux/amd64,linux/arm64]
+        include:
+          - platform: linux/amd64
+            os: ubuntu-latest
+          - platform: linux/arm64
+            os: ubuntu-22.04-arm
     steps:
-      - name: Set environment variable
-        run: echo "IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/amp" >> $GITHUB_ENV
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -72,11 +76,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Set environment variable
-        run: echo "IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/amp" >> $GITHUB_ENV
-
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: /tmp/digests
           pattern: digests-*
