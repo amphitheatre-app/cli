@@ -50,7 +50,7 @@ name = "amp"
 version = "0.9.3"
 dependencies = [
  "amp-client",
- "amp-common",
+ "amp-common 0.10.5",
  "anyhow",
  "clap",
  "clap-verbosity-flag",
@@ -78,7 +78,7 @@ name = "amp-client"
 version = "0.10.2"
 source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.10.2#337021b06f798b38851de77286c90ebd6152e60b"
 dependencies = [
- "amp-common",
+ "amp-common 0.10.4",
  "futures",
  "reqwest-eventsource",
  "serde",
@@ -110,6 +110,36 @@ dependencies = [
  "thiserror 2.0.12",
  "tokio",
  "toml 0.8.23",
+ "tracing",
+ "url",
+ "utoipa",
+ "validator",
+]
+
+[[package]]
+name = "amp-common"
+version = "0.10.5"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.10.5#c64ef5f3fd6951df43d65aa06f7fd18b084e6686"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bytes",
+ "confy",
+ "convert_case",
+ "data-encoding",
+ "dirs",
+ "json_comments",
+ "k8s-openapi",
+ "kube",
+ "notify",
+ "oci-distribution",
+ "reqwest",
+ "schemars",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "tokio",
+ "toml 0.9.4",
  "tracing",
  "url",
  "utoipa",
@@ -438,7 +468,7 @@ version = "3.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fde0e0ec90c9dfb3b4b1a0891a7dcd0e2bffde2f7efed5fe7c9bb00e5bfb915e"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
@@ -3523,7 +3553,7 @@ version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cf221c93e13a30d793f7645a0e7762c55d169dbb0a49671918a2319d289b10bb"
 dependencies = [
- "windows-sys 0.59.0",
+ "windows-sys 0.48.0",
 ]
 
 [[package]]
