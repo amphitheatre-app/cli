@@ -41,7 +41,7 @@ dependencies = [
  "clap-verbosity-flag",
  "clap_complete",
  "colored",
- "confy",
+ "confy 2.0.0",
  "ctrlc",
  "dunce",
  "futures",
@@ -79,7 +79,7 @@ dependencies = [
  "anyhow",
  "async-trait",
  "bytes",
- "confy",
+ "confy 1.0.0",
  "convert_case 0.8.0",
  "data-encoding",
  "dirs",
@@ -427,6 +427,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "confy"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8807c397789cbe02bbdb1a27ea5f345584132808697b2a3f957c829829ee4814"
+dependencies = [
+ "etcetera",
+ "lazy_static",
+ "serde",
+ "thiserror 2.0.17",
+ "toml 0.9.8",
+]
+
+[[package]]
 name = "convert_case"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -770,6 +783,17 @@ checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
  "windows-sys 0.61.0",
+]
+
+[[package]]
+name = "etcetera"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "26c7b13d0780cb82722fd59f6f57f925e143427e4a75313a6c77243bf5326ae6"
+dependencies = [
+ "cfg-if",
+ "home",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]

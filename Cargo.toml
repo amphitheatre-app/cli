@@ -18,7 +18,7 @@ clap = { version = "4.5", features = ["derive", "env"] }
 clap-verbosity-flag = "3"
 clap_complete = "4.5"
 colored = "3"
-confy = "1"
+confy = "2"
 ctrlc = "3"
 dunce = "1"
 futures = "0.3"
