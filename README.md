@@ -4,7 +4,7 @@
 Amphitheatre concepts to the terminal next to where you are already working with
 Kubernetes and your code.
 
-[![License](https://img.shields.io/github/license/amphitheatre-app/cli)](https://github.com/amphitheatre-app/cli/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/amphitheatre-app/cli)](https://github.com/amphitheatre-app/cli/blob/main/LICENSE)
 [![GitHub contributors](https://img.shields.io/github/contributors/amphitheatre-app/cli)](https://github.com/amphitheatre-app/cli/graphs/contributors)
 [![GitHub issues](https://img.shields.io/github/issues/amphitheatre-app/cli)](https://github.com/amphitheatre-app/cli/issues)
 
