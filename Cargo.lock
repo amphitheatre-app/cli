@@ -35,7 +35,7 @@ name = "amp"
 version = "0.10.2"
 dependencies = [
  "amp-client",
- "amp-common",
+ "amp-common 0.11.1",
  "anyhow",
  "clap",
  "clap-verbosity-flag",
@@ -63,7 +63,7 @@ name = "amp-client"
 version = "0.11.0"
 source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.11.0#e64a542d1d8113a840d4de75fa3afc72486fd6ae"
 dependencies = [
- "amp-common",
+ "amp-common 0.11.0",
  "futures",
  "reqwest-eventsource",
  "serde",
@@ -80,7 +80,7 @@ dependencies = [
  "async-trait",
  "bytes",
  "confy",
- "convert_case",
+ "convert_case 0.10.0",
  "data-encoding",
  "dirs",
  "jiff",
@@ -96,6 +96,37 @@ dependencies = [
  "thiserror 2.0.18",
  "tokio",
  "toml 0.9.12+spec-1.1.0",
+ "tracing",
+ "url",
+ "utoipa",
+ "validator",
+]
+
+[[package]]
+name = "amp-common"
+version = "0.11.1"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.11.1#0a74d1d34f24b4c4af531f805e3346e912c2b3e3"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "bytes",
+ "confy",
+ "convert_case 0.11.0",
+ "data-encoding",
+ "dirs",
+ "jiff",
+ "json_comments",
+ "k8s-openapi",
+ "kube",
+ "notify",
+ "oci-distribution",
+ "reqwest 0.13.2",
+ "schemars",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.18",
+ "tokio",
+ "toml 1.0.3+spec-1.1.0",
  "tracing",
  "url",
  "utoipa",
@@ -447,6 +478,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "convert_case"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "affbf0190ed2caf063e3def54ff444b449371d55c58e513a95ab98eca50adb49"
+dependencies = [
+ "unicode-segmentation",
+]
+
+[[package]]
 name = "core-foundation"
 version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -634,7 +674,7 @@ version = "2.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "799a97264921d8623a957f6c3b9011f3b5492f557bbb7a5a19b7fa6d06ba8dcb"
 dependencies = [
- "convert_case",
+ "convert_case 0.10.0",
  "proc-macro2",
  "quote",
  "rustc_version",
