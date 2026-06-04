@@ -27,7 +27,7 @@ ignore = "0.4"
 inquire = "0.9"
 notify = "8"
 reqwest-eventsource = "0.6"
-tabled = "0.20"
+tabled = "0.21"
 tar = "0.4"
 thiserror = "2"
 tokio = { version = "1", features = ["full"] }
