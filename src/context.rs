@@ -62,7 +62,7 @@ impl Context {
         let path = Configuration::path().map_err(Errors::InvalidConfigPath)?;
         let configuration = Configuration::load(path).map_err(Errors::FailedLoadConfiguration)?;
         let cluster = get_context(&configuration)?;
-        let client = Client::new(&format!("{}/v1", &cluster.server), cluster.token.clone());
+        let client = Client::new(&format!("{}/v1", cluster.server), cluster.token.clone());
 
         Ok(Context {
             configuration: RwLock::new(configuration),
