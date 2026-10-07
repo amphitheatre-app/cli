@@ -60,8 +60,8 @@ dependencies = [
 
 [[package]]
 name = "amp-client"
-version = "0.11.5"
-source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.11.5#3fd08302dba6f7d956269217cc1cdb56e2b6f520"
+version = "0.11.6"
+source = "git+https://github.com/amphitheatre-app/amp-client-rust?tag=v0.11.6#9e6302e8e98ee17bbd1e724f74660c2e8077a3d5"
 dependencies = [
  "amp-common",
  "futures",
@@ -73,8 +73,8 @@ dependencies = [
 
 [[package]]
 name = "amp-common"
-version = "0.12.2"
-source = "git+https://github.com/amphitheatre-app/common?tag=v0.12.2#de0286dd098febdad2a0241e25589efccbef7060"
+version = "0.12.3"
+source = "git+https://github.com/amphitheatre-app/common?tag=v0.12.3#428aee3246bc17a36e15156f79d27a13a0752f80"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -3314,9 +3314,9 @@ checksum = "06abde3611657adf66d383f00b093d7faecc7fa57071cce2578660c9f1010821"
 
 [[package]]
 name = "utoipa"
-version = "5.4.0"
+version = "6.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fcc29c80c21c31608227e0912b2d7fddba57ad76b606890627ba8ee7964e993"
+checksum = "8765fe27aeff71012a3f90fa474cf1df863a7d0dd81ed25de4e63fff2544994f"
 dependencies = [
  "indexmap",
  "serde",
@@ -3326,14 +3326,14 @@ dependencies = [
 
 [[package]]
 name = "utoipa-gen"
-version = "5.4.0"
+version = "6.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d79d08d92ab8af4c5e8a6da20c47ae3f61a0f1dabc1997cdf2d082b757ca08b"
+checksum = "d935f1c83fdf8b88f09bbe050d0cea78ea4afee6d7b0317403228c1200b2c8ab"
 dependencies = [
  "proc-macro2",
  "quote",
  "regex",
- "syn 2.0.117",
+ "syn 3.0.3",
  "uuid",
 ]
 
